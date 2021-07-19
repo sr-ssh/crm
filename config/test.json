@@ -16,13 +16,14 @@
     },
     "test": {
         "user": {
-            "password": "rey",
+            "password": "1234",
             "family": "ریحانه شکوهی",
             "email": "m.min@gmail.com",
-            "mobile": "09625835475",
-            "company": "شکوهی",
+            "mobile": "09307580142",
+            "companyName": "شکوه",
+            "companyAddress": "راهنمایی 23",
             "mobileOrEmail": "09307580142",
-            "code": "3823",
+            "code": "7386",
             "position": 1
         },
         "newUser": {

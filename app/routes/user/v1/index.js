@@ -10,7 +10,7 @@ const finance = require('./finance');
 const reminder = require('./reminder');
 const discount = require('./discount');
 const account = require('./account');
-
+const settings = require('./settings');
 
 
 
@@ -23,6 +23,8 @@ router.use('/finance', finance)
 router.use('/reminder', reminder)
 router.use('/discount', discount)
 router.use('/account', account)
+router.use('/settings', settings)
+
 
 
 module.exports = router;
