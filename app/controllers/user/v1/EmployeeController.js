@@ -21,7 +21,13 @@ module.exports = new class EmployeeController extends Controller {
                 return res.json({ success: false, message: 'کاربر موجود نمی باشد'})
             
             filter = {_id: user._id}
-            let update = { employer: req.decodedData.user_id }
+            let update = { 
+                employer: req.decodedData.user_id, 
+                'permission.addOrder': true, 
+                'permission.getOrders': true, 
+                'permission.getProducts': true, 
+                'permission.getCustomers': true
+            }
             await this.model.User.findOneAndUpdate(filter, update)
             update = { $addToSet: { employee: user._id}}
             await this.model.User.findByIdAndUpdate(req.decodedData.user_id, update)
@@ -385,9 +391,21 @@ module.exports = new class EmployeeController extends Controller {
                     return res.json({ success: false, message: 'کاربر موجود نمی باشد'})
                 
                 filter = {_id: user._id}
-                let update = { employer: req.decodedData.user_id }
+                let update = { 
+                    employer: req.decodedData.user_id, 
+                    permission : { 
+                        addOrder: true,
+                        getOrders: true,
+                        reminder: false,
+                        getProducts: true,
+                        finance: false,
+                        getCustomers: true,
+                        getEmployees: false,
+                        getDiscounts: false 
+                    }
+                }
                 await this.model.User.findOneAndUpdate(filter, update)
-                update = { $addToSet: { employee: user._id}}
+                update = {$addToSet: { employee: user._id}} 
                 await this.model.User.findByIdAndUpdate(req.decodedData.user_id, update)
             }
             
