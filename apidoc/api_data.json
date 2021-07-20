@@ -433,7 +433,7 @@
     "title": "edit employee application",
     "version": "1.0.0",
     "name": "editApplication",
-    "description": "<p>edit employee application, in status : send 1 for in progress, 2 for hired, 3 for closed application. if an employer wants to change the status applicationId is required not employeeId and if an employee wants ti change the status employeeId is required not applicationId . status is required in both way.</p>",
+    "description": "<p>edit employee application, in status : send 1 for in progress, 2 for hired, 3 for closed application.</p>",
     "group": "employee",
     "parameter": {
       "fields": {
@@ -450,13 +450,6 @@
             "type": "varchar",
             "optional": false,
             "field": "applicationId",
-            "description": "<p>application id</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "employeeId",
             "description": "<p>application id</p>"
           }
         ]
@@ -973,6 +966,62 @@
   },
   {
     "type": "put",
+    "url": "/api/user/v1/order/price",
+    "title": "edit order price",
+    "version": "1.0.0",
+    "name": "editOrderPrice",
+    "description": "<p>edit order price of one of it's products</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "status",
+            "description": "<p>order status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "productId",
+            "description": "<p>product id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"قیمت سفارش با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"سفارش موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "put",
     "url": "/api/user/v1/order/status",
     "title": "edit order status",
     "version": "1.0.0",
@@ -1003,54 +1052,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"وضعیت سفارش با موفقیت ویرایش شد\"",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/order.js",
-    "groupTitle": "order"
-  },
-  {
-    "type": "put",
-    "url": "/api/user/v1/order/sms",
-    "title": "edit sms settings",
-    "version": "1.0.0",
-    "name": "editSms",
-    "description": "<p>edit sms settings, type 1 is customer sms after adding order, type 2 is customer info for delivery, type 3 ic acknowledge for customer that your product is sent.</p>",
-    "group": "order",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "int",
-            "optional": false,
-            "field": "type",
-            "description": "<p>sms type , {min:1, max:3}</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "text",
-            "description": "<p>sms text</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "status",
-            "description": "<p>sms status</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"ویرایش با موفقیت انجام شد\"",
+          "content": "{\n     success: true,\n     message: \"وضعیت سفارش با موفقیت ویرایش شد\"\n}",
           "type": "json"
         }
       ]
@@ -1104,27 +1106,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"سفارشات با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         products: [...{\n             _id: \"60b72a70e353f0385c2fe5af\",\n             name: \"لاته\",\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             createdAt: \"2021-06-01T06:54:01.691Z\"\n         },\n        createdAt: \"2021-06-01T06:54:01.691Z\",\n        updatedAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/order.js",
-    "groupTitle": "order"
-  },
-  {
-    "type": "get",
-    "url": "/api/user/v1/order/sms",
-    "title": "get sms messages and status",
-    "version": "1.0.0",
-    "name": "getSms",
-    "description": "<p>get sms messages and status</p>",
-    "group": "order",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"با موفقیت انجام شد\",\n     data: {}\n}",
+          "content": "{\n     success: true,\n     message: \"سفارشات با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         id: \"60b72a70e353f0385c2fe5af\",\n         products: [...{\n             _id: \"60b72a70e353f0385c2fe5af\",\n             name: \"لاته\",\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             createdAt: \"2021-06-01T06:54:01.691Z\"\n         },\n        createdAt: \"2021-06-01T06:54:01.691Z\",\n        updatedAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
           "type": "json"
         }
       ]
@@ -1337,5 +1319,72 @@
     },
     "filename": "app/routes/user/v1/reminder.js",
     "groupTitle": "reminder"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/settings/order/sms",
+    "title": "edit sms settings",
+    "version": "1.0.0",
+    "name": "editSms",
+    "description": "<p>edit sms settings, type 1 is customer sms after adding order, type 2 is customer info for delivery, type 3 ic acknowledge for customer that your product is sent.</p>",
+    "group": "settings",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "type",
+            "description": "<p>sms type , {min:1, max:3}</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "text",
+            "description": "<p>sms text</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "status",
+            "description": "<p>sms status</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"ویرایش با موفقیت انجام شد\"",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/settings.js",
+    "groupTitle": "settings"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/settings/order/sms",
+    "title": "get sms messages and status",
+    "version": "1.0.0",
+    "name": "getSms",
+    "description": "<p>get sms messages and status</p>",
+    "group": "settings",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"با موفقیت انجام شد\",\n     data: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/settings.js",
+    "groupTitle": "settings"
   }
 ]

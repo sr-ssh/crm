@@ -95,8 +95,33 @@ const OrderController = require(`${userController}/v1/OrderController`)
  * {
  *      success: true,
  *      message: "وضعیت سفارش با موفقیت ویرایش شد"
+ * }
  */
    router.put('/status',OrderController.editOrderStatus.bind(OrderController));
+
+
+
+ /**
+ * @api {put} /api/user/v1/order/price edit order price
+ * @apiVersion 1.0.0
+ * @apiName editOrderPrice
+ * @apiDescription edit order price of one of it's products
+ * @apiGroup order
+ * @apiParam {int} status order status
+ * @apiParam {varchar} orderId order id
+ * @apiParam {varchar} productId product id
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "قیمت سفارش با موفقیت ویرایش شد"
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "سفارش موجود نیست"
+ * }
+ */
+  router.put('/price',OrderController.editOrderPrice.bind(OrderController));
 
 
 /**

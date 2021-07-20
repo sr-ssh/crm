@@ -266,6 +266,39 @@ module.exports = new class OrderController extends Controller {
         }
     }
 
+    async editOrderPrice(req, res) {
+        try {
+
+            req.checkBody('orderId', 'please set order id').notEmpty();
+            req.checkBody('productId', 'please set product id').notEmpty();
+            req.checkBody('price', 'please set order price').notEmpty().isString();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active : true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+            let order = await this.model.Order.findOne(filter, { products: 1 })
+
+            if(!order)
+                return res.json({ success : false, message : 'سفارش موجود نیست'})
+
+            order.products.map(product => {if(product._id === req.body.productId) product.sellingPrice = req.body.price})
+            order.markModified('products')
+            
+            await order.save()
+
+            res.json({ success : true, message : 'وضعیت سفارش با موفقیت ویرایش شد'})
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editOrderStatus')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 
     async sendDeliverySms(req, res) {
         try {
