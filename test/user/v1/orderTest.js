@@ -24,6 +24,7 @@ describe(`${sectionName}`, () => {
         deliverySms = appConfig.test.deliverySms;
         editSms = appConfig.test.editSms;
         editOrderQuantity = appConfig.test.editOrderQuantity;
+
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -115,8 +116,9 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-    });
 
+
+    });
 
     after(async () => {
         console.log(`Section ${sectionName} finished`);
