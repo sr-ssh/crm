@@ -334,7 +334,38 @@ module.exports = new class OrderController extends Controller {
 
 
 
+    async deleteOrder(req, res) {
+        try {
+            req.checkBody('orderId', 'please set order id').notEmpty().isString();
+            req.checkBody('productId', 'please set product id').notEmpty().isString();
+            if (this.showValidationErrors(req, res)) return;
 
+            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+            let order = await this.model.Order.findOne(filter)
+
+
+            if (!order)
+                return res.json({ success: false, message: 'سفارش موجود نیست' })
+
+
+            order.products = order.products.filter(item => item._id !== req.body.productId)
+            order.markModified('products')
+
+            await order.save()
+
+            res.json({ success: true, message: 'تعداد سفارش با موفقیت ویرایش شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editOrderStatus')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
 
 
 

@@ -147,7 +147,26 @@ router.put('/price', OrderController.editOrderPrice.bind(OrderController));
 */
 router.put('/quantity', OrderController.editOrderQuantity.bind(OrderController));
 
-
+/**
+* @api {delete} /api/user/v1/order/ delete order 
+* @apiVersion 1.0.0
+* @apiName deleteOrder
+* @apiDescription delete order product
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiParam {varchar} productId product id
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سفارش با موفقیت حذف شد"
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "سفارش موجود نیست"
+* }
+*/
+router.delete('/', OrderController.deleteOrder.bind(OrderController));
 
 /**
  * @api {post} /api/user/v1/order/delivery/sms send delivery sms

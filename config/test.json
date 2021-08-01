@@ -159,6 +159,10 @@
             "orderId": "60f2c0374ca7f01d68ad6da9",
             "productId": "60f2bff24ca7f01d68ad6da7",
             "quantity": 10
+        },
+        "deleteOrder": {
+            "orderId": "60f2c37d4ca7f01d68ad6daf",
+            "productId": "60f2bfb84ca7f01d68ad6da6"
         }
     }
 }
