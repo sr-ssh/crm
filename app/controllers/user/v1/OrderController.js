@@ -300,6 +300,25 @@ module.exports = new class OrderController extends Controller {
     }
 
 
+    async editOrderQuantity(req, res) {
+        try {
+
+            
+            res.json({ success : true, message : 'تعداد سفارش با موفقیت ویرایش شد'})
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editOrderStatus')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
     async sendDeliverySms(req, res) {
         try {
 
