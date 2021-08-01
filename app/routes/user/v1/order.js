@@ -166,7 +166,7 @@ router.put('/quantity', OrderController.editOrderQuantity.bind(OrderController))
 *      message: "سفارش موجود نیست"
 * }
 */
-router.delete('/', OrderController.deleteOrder.bind(OrderController));
+router.delete('/product', OrderController.deleteProdcutOrder.bind(OrderController));
 
 /**
  * @api {post} /api/user/v1/order/delivery/sms send delivery sms

@@ -119,7 +119,7 @@ describe(`${sectionName}`, () => {
         it('check delete order ', async () => {
             const res = await chai
                 .request(server)
-                .delete(`${baseRoute}/`)
+                .delete(`${baseRoute}/product`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(deleteOrder);

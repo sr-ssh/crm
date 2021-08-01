@@ -161,8 +161,8 @@
             "quantity": 10
         },
         "deleteOrder": {
-            "orderId": "60f2c37d4ca7f01d68ad6daf",
-            "productId": "60f2bfb84ca7f01d68ad6da6"
+            "orderId": "60f2d9b4b2357e24ec08e9d1",
+            "productId": "60f2d919b2357e24ec08e9cd"
         }
     }
 }

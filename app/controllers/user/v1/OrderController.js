@@ -334,7 +334,7 @@ module.exports = new class OrderController extends Controller {
 
 
 
-    async deleteOrder(req, res) {
+    async deleteProdcutOrder(req, res) {
         try {
             req.checkBody('orderId', 'please set order id').notEmpty().isString();
             req.checkBody('productId', 'please set product id').notEmpty().isString();
