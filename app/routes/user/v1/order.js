@@ -121,7 +121,7 @@ router.put('/status', OrderController.editOrderStatus.bind(OrderController));
 *      message: "سفارش موجود نیست"
 * }
 */
-router.put('/price', OrderController.editOrderPrice.bind(OrderController));
+router.put('/product/price', OrderController.editOrderPrice.bind(OrderController));
 
 
 
@@ -145,7 +145,7 @@ router.put('/price', OrderController.editOrderPrice.bind(OrderController));
 *      message: "سفارش موجود نیست"
 * }
 */
-router.put('/quantity', OrderController.editOrderQuantity.bind(OrderController));
+router.put('/product/quantity', OrderController.editOrderQuantity.bind(OrderController));
 
 /**
 * @api {delete} /api/user/v1/order/ delete order 
