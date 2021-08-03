@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/order';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder;
+let order, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -24,7 +24,8 @@ describe(`${sectionName}`, () => {
         deliverySms = appConfig.test.deliverySms;
         editSms = appConfig.test.editSms;
         editOrderQuantity = appConfig.test.editOrderQuantity;
-        deleteOrder = appConfig.test.deleteOrder
+        deleteOrder = appConfig.test.deleteOrder;
+        editProductOrder = appConfig.test.editProductOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -99,7 +100,7 @@ describe(`${sectionName}`, () => {
         it('check edit order price', async () => {
             const res = await chai
                 .request(server)
-                .put(`${baseRoute}/price`)
+                .put(`${baseRoute}/product/price`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editOrderPrice);
@@ -109,7 +110,7 @@ describe(`${sectionName}`, () => {
         it('check edit order quantity', async () => {
             const res = await chai
                 .request(server)
-                .put(`${baseRoute}/quantity`)
+                .put(`${baseRoute}/product/quantity`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editOrderQuantity);
@@ -123,6 +124,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(deleteOrder);
+            res.should.have.status(200);
+        });
+
+        it('check edit product order ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/product`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editProductOrder);
             res.should.have.status(200);
         });
 

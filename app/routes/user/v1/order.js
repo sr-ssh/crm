@@ -169,6 +169,46 @@ router.put('/product/quantity', OrderController.editOrderQuantity.bind(OrderCont
 router.delete('/product', OrderController.deleteProdcutOrder.bind(OrderController));
 
 /**
+* @api {put} /api/user/v1/order/ edit product order 
+* @apiVersion 1.0.0
+* @apiName editeProductOrder
+* @apiDescription edit product order 
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiParam {varchar} productId product id
+* @apiParam {Object[]} products array of product objects 
+* @apiParam {varchar} address user address order
+* @apiParamExample {json} Request-Example:
+*  {
+*    orderId : "60f2c37d4ca7f01d68ad6daf",
+*      products: [...{
+*          _id: "60b72a70e353f0385c2fe5af",
+*          quantity: 2,
+*          sellingPrice: "30000"
+*      }],
+*      address: "معلم 24"
+*  }
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سفارش با موفقیت ویرایش شد"
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "سفارش موجود نیست"
+* }
+*/
+router.put('/product', OrderController.editProductOrder.bind(OrderController));
+
+
+
+
+
+
+
+
+/**
  * @api {post} /api/user/v1/order/delivery/sms send delivery sms
  * @apiVersion 1.0.0
  * @apiName sendDeliverySms

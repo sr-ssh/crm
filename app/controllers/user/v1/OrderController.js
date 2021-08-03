@@ -348,12 +348,52 @@ module.exports = new class OrderController extends Controller {
             if (order.products.length <= 1)
                 return res.json({ success: false, message: 'کمتر از یک کالا نمیتواند در سفارش باشد.' })
 
+
             order.products = order.products.filter(item => item._id !== req.body.productId)
             order.markModified('products')
 
             await order.save()
 
             res.json({ success: true, message: 'تعداد سفارش  کالا با موفقیت ویرایش شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editOrderStatus')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+    async editProductOrder(req, res) {
+        try {
+            req.checkBody('orderId', 'please set order id').notEmpty();
+            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('products', 'please enter products').notEmpty();
+            req.checkBody('products.*._id', 'please enter product id').notEmpty();
+            req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
+            req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+            let order = await this.model.Order.findOne(filter)
+
+            if (!order)
+                return res.json({ success: false, message: 'کالا موجود نیست' })
+
+            order.products = req.body.products
+
+            if (req.body.address)
+                order.address = req.body.address;
+
+            order.markModified('products')
+            await order.save()
+
+            res.json({ success: true, message: 'سفارش با موفقیت ویرایش شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)

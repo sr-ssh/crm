@@ -163,6 +163,21 @@
         "deleteOrder": {
             "orderId": "60f2d9b4b2357e24ec08e9d1",
             "productId": "60f2d919b2357e24ec08e9cd"
+        },
+        "editProductOrder": {
+            "orderId": "60f2cd3b3aab183cc4823af8",
+            "products" : [
+                {
+                    "_id": "60f2bff24ca7f01d68ad6da7",
+                    "quantity": 3,
+                    "sellingPrice": "30000"
+                }
+            ],
+            "address": "کلاهدوز 4 اولین کوچه پلاک 50"
         }
+       
+        
     }
 }
+
+
