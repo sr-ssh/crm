@@ -18,7 +18,6 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('customer.family', 'please enter customer family').notEmpty();
             req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
             req.checkBody('customer.birthday', 'please enter customer birthday').notEmpty().isISO8601();
-            req.checkBody('customer.companyName', 'please enter customer Company name').notEmpty().isString();
             req.checkBody('reminder', 'please enter customer birthday').notEmpty().isInt({ min: -1 });
             req.checkBody('address', 'please enter address').notEmpty().isString();
             req.checkBody('duration', 'please enter order duration').notEmpty().isInt({ min: -1 });
@@ -35,8 +34,7 @@ module.exports = new class OrderController extends Controller {
             let params = {
                 family: req.body.customer.family,
                 mobile: req.body.customer.mobile,
-                user: req.decodedData.user_employer,
-                company: req.body.customer.companyName
+                user: req.decodedData.user_employer
             }
 
             if (req.body.customer.birthday != TIME_FLAG)

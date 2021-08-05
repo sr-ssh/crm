@@ -28,8 +28,7 @@ const OrderController = require(`${userController}/v1/OrderController`)
  *      customer: {
  *          family: "شکوهی",
  *          mobile: "09307580142",
- *          birthday: "2021-05-31T05:42:13.845Z",
- *          companyName: "تیم ایکس"
+ *          birthday: "2021-05-31T05:42:13.845Z"
  *      },
  *      reminder: 7,
  *      duration: 40,
