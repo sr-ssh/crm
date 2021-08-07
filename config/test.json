@@ -62,6 +62,25 @@
             "address": "معلم 24",
             "duration": 40
         },
+        "order_V1": {
+            "products": [
+                {
+                    "_id": "60b72afa1f24b03fe4fc7b51",
+                    "quantity": 3,
+                    "sellingPrice": "30000"
+                }
+            ],
+            "customer": {
+                "family": "ریحانه شکوهی",
+                "mobile": "09307580142",
+                "birthday": "1900-01-01T05:42:13.845Z",
+                "company":"تیم ایکس"
+            },
+            "description": "",
+            "reminder": 7,
+            "address": "معلم 24",
+            "duration": 40
+        },
         "product": {
             "name": "لیموناد",
             "description": "دورچین لیمو",

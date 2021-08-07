@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/order';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder;
+let order, order_V1, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -17,6 +17,7 @@ describe(`${sectionName}`, () => {
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
         order = appConfig.test.order;
+        order_V1 = appConfig.test.order_V1;
         user = appConfig.test.user;
         getOrderParams = appConfig.test.getOrderParams;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -69,6 +70,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(order);
+            res.should.have.status(200);
+        });
+
+        it('check add order V1', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/v1`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(order_V1);
             res.should.have.status(200);
         });
 
