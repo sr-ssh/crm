@@ -113,6 +113,113 @@ module.exports = new class OrderController extends Controller {
         }
     }
 
+    async addOrderV1(req, res) {
+        try {
+            req.checkBody('products', 'please enter products').notEmpty();
+            req.checkBody('products.*._id', 'please enter product id').notEmpty();
+            req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
+            req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            req.checkBody('customer', 'please enter customer').notEmpty();
+            req.checkBody('customer.family', 'please enter customer family').notEmpty();
+            req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
+            req.checkBody('customer.birthday', 'please enter customer birthday').notEmpty().isISO8601();
+            req.checkBody('customer.company', 'please enter customer company').notEmpty().isString();
+            req.checkBody('reminder', 'please enter customer birthday').notEmpty().isInt({ min: -1 });
+            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('duration', 'please enter order duration').notEmpty().isInt({ min: -1 });
+            if (this.showValidationErrors(req, res)) return;
+
+            const TIME_FLAG = "1900-01-01T05:42:13.845Z";
+            const INT_FLAG = "-1";
+            const STRING_FLAG = " ";
+
+            // add customer
+            let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
+            let customer = await this.model.Customer.findOne(filter)
+
+            let params = {
+                family: req.body.customer.family,
+                mobile: req.body.customer.mobile,
+                user: req.decodedData.user_employer,
+                company: req.body.customer.companyName
+            }
+
+            if (req.body.customer.birthday != TIME_FLAG)
+                params.birthday = req.body.customer.birthday
+
+            if (!customer)
+                customer = await this.model.Customer.create(params)
+            if (customer && !customer.birthday && req.body.customer.birthday != TIME_FLAG)
+                customer.birthday = req.body.customer.birthday;
+
+            // add order
+            params = {
+                products: req.body.products,
+                customer: customer._id,
+                provider: req.decodedData.user_employer,
+                employee: req.decodedData.user_id,
+                description: req.body.description
+            }
+
+            if (req.body.address != STRING_FLAG)
+                params.address = req.body.address
+            if (req.body.duration != INT_FLAG) {
+                const event = new Date();
+                event.setMinutes(event.getMinutes() + parseInt(req.body.duration));
+                params.readyTime = event.toISOString()
+            }
+
+            let order = await this.model.Order.create(params)
+
+
+            // add reminder
+            if (req.body.reminder !== INT_FLAG) {
+
+                // calculate date
+                const event = new Date();
+                event.setDate(event.getDate() + parseInt(req.body.reminder));
+
+                params = {
+                    date: event.toISOString(),
+                    user: req.decodedData.user_employer,
+                    customer: customer._id,
+                    order: order._id
+                }
+                let reminder = await this.model.Reminder.create(params)
+
+                // add reminder to customer
+                await customer.reminder.push(reminder._id)
+            }
+
+            // add order to customer
+            await customer.order.push(order._id)
+            await customer.save()
+
+            res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
+
+            let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')
+            if (user.setting.order.preSms.status) {
+                let message = ""
+                if (user.company)
+                    message = user.setting.order.preSms.text + ` \n${req.decodedData.user_company}`
+                else
+                    message = user.setting.order.preSms.text
+
+                this.sendSms(req.body.customer.mobile, message)
+            }
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('addOrder')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
     async getOrders(req, res) {
         try {
             req.checkParams('customerName', 'please set customerName').notEmpty();

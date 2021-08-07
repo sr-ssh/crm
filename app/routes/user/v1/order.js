@@ -43,6 +43,43 @@ const OrderController = require(`${userController}/v1/OrderController`)
 router.post('/', OrderController.addOrder.bind(OrderController));
 
 
+/**
+ * @api {post} /api/user/v1/order/v1 add order 
+ * @apiVersion 1.1.0
+ * @apiName addOrder
+ * @apiDescription add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is "1900-01-01T05:42:13.845Z".reminder flag and duration flag are -1.address flag is " "
+ * @apiGroup order
+ * @apiParam {Object[]} products array of product objects
+ * @apiParam {Object} customer customer information
+ * @apiParam {int} reminder number of days for reminding
+ * @apiParam {int} duration minutes to the order become ready
+ * @apiParam {varchar} address number of days for reminding
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *      products: [...{
+ *          _id: "60b72a70e353f0385c2fe5af",
+ *          quantity: 2,
+ *          sellingPrice: "30000"
+ *      }],
+ *      customer: {
+ *          family: "شکوهی",
+ *          mobile: "09307580142",
+ *          birthday: "2021-05-31T05:42:13.845Z",
+ *          company: "تیم ایکس"
+ *      },
+ *      reminder: 7,
+ *      duration: 40,
+ *      address: "معلم 24"
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "سفارش شما با موفقیت ثبت شد"
+ * }
+ */
+router.post('/v1', OrderController.addOrderV1.bind(OrderController));
+
+
 
 
 /**

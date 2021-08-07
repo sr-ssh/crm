@@ -8,6 +8,7 @@ let Customer = new Schema({
     username: { type: String, required: true, sparse: true },
     mobile: { type: String, required: true, sparse: true },
     birthday: { type: Date },
+    company: { type: String },
     order: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Order' }] },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     reminder: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] }
