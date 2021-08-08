@@ -155,6 +155,7 @@ module.exports = new class OrderController extends Controller {
             // add order
             params = {
                 products: req.body.products,
+                notes: req.body.notes,
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
                 employee: req.decodedData.user_id,
@@ -168,6 +169,9 @@ module.exports = new class OrderController extends Controller {
                 event.setMinutes(event.getMinutes() + parseInt(req.body.duration));
                 params.readyTime = event.toISOString()
             }
+            if (req.body.status === 3)
+                params.status = req.body.status
+
 
             let order = await this.model.Order.create(params)
 
