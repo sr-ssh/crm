@@ -153,7 +153,7 @@ module.exports = new class OrderController extends Controller {
                 customer.birthday = req.body.customer.birthday;
 
             if (req.body.notes.length > 0)
-                req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id } })
+                req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
 
 
             // add order
