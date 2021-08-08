@@ -64,8 +64,7 @@ router.post('/', OrderController.addOrder.bind(OrderController));
  *     notes: [...{
  *          text: "مشتری خواهان کالاست",
  *          private: false,
- *          createdAt : "1900-01-01T05:42:13.845Z",
- *          "writtenBy": "60f5249b7a68a84600beb527"
+ *          createdAt : "2020-05-31T05:42:13.845Z",
  *     }],
  *     status : 3,
  *      customer: {

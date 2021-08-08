@@ -152,6 +152,10 @@ module.exports = new class OrderController extends Controller {
             if (customer && !customer.birthday && req.body.customer.birthday != TIME_FLAG)
                 customer.birthday = req.body.customer.birthday;
 
+            if (req.body.notes.length > 0)
+                req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id } })
+
+
             // add order
             params = {
                 products: req.body.products,
