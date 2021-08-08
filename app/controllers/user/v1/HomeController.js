@@ -19,19 +19,19 @@ module.exports = new class HomeController extends Controller {
             req.checkBody('email', 'please enter email').notEmpty().isEmail();
             req.checkBody('mobile', 'please enter mobile').notEmpty().isNumeric();
             req.checkBody('code', 'please enter code').notEmpty();
-            req.checkBody('position', 'please enter user position').notEmpty().isInt({min: 1, max: 2});
-            
+            req.checkBody('position', 'please enter user position').notEmpty().isInt({ min: 1, max: 2 });
+
             //employer
-            if(req.body.position === 1){
+            if (req.body.position === 1) {
                 req.checkBody('companyName', 'please enter company name').notEmpty().isString();
                 req.checkBody('companyAddress', 'please enter company address').notEmpty().isString();
             }
 
             //employee
-            if(req.body.position === 2){
+            if (req.body.position === 2) {
                 req.checkBody('employerMobile', 'please enter employer mobile').notEmpty().isString();
             }
-            
+
             if (this.showValidationErrors(req, res)) return;
 
             const STRING_FLAG = " ";
@@ -46,86 +46,87 @@ module.exports = new class HomeController extends Controller {
             }
 
 
-            if(req.body.email !== EMAIL_FLAG)
+            if (req.body.email !== EMAIL_FLAG)
                 params.email = req.body.email
-            
+
             let filter = { mobile: params.mobile };
             let user = await this.model.User.findOne(filter);
 
             if (user)
                 return res.json({ success: false, message: "شماره موبایل قبلا برای حساب دیگری استفاده شده است" });
 
-            if(req.body.email !== EMAIL_FLAG){
+            if (req.body.email !== EMAIL_FLAG) {
                 filter = { email: params.email };
                 user = await this.model.User.findOne(filter);
                 if (user)
                     return res.json({ success: false, message: "این ایمیل قبلا برای حساب دیگری استفاده شده است" });
             }
-            
+
             //verification code
             filter = { code: req.body.code, mobile: req.body.mobile }
 
-            let veriCode = await this.model.VerificationCode.find(filter).sort({createdAt:-1}).limit(1)
+            let veriCode = await this.model.VerificationCode.find(filter).sort({ createdAt: -1 }).limit(1)
             veriCode = veriCode[0]
-            if(!veriCode)
+            if (!veriCode)
                 return res.json({ success: false, message: "کد تایید صحیح نمی باشد", data: {} });
             // timeDiff on verification code unit
             let timeDiff = this.getTimeDiff(veriCode.createdAt.toISOString(), new Date().toISOString(), config.verificationCodeUnit)
             // check verification code valid duration
-            if(timeDiff > config.verificationCodeDuration)
+            if (timeDiff > config.verificationCodeDuration)
                 return res.json({ success: false, message: "کد تایید منقضی شده است", data: {} });
 
             //remove the code
-            await this.model.VerificationCode.findOneAndRemove({_id:veriCode._id})
+            await this.model.VerificationCode.findOneAndRemove({ _id: veriCode._id })
 
             //employer
-            if(req.body.position === 1){
+            if (req.body.position === 1) {
                 params.company = req.body.companyName
                 params.address = req.body.companyAddress
                 params.setting = {
-                        order: {
-                            preSms: { text: config.addOrderSms, status: false },
-                            postDeliverySms: { text: "" , status: false },
-                            postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false }
-                        }
+                    order: {
+                        preSms: { text: config.addOrderSms, status: false },
+                        postDeliverySms: { text: "", status: false },
+                        postCustomerSms: { text: config.deliveryAcknowledgeSms, status: false }
+                    }
                 }
-                params.permission = { 
+                params.permission = {
                     addOrder: true,
                     getOrders: true,
+                    saleOpprotunity: true,
                     reminder: true,
                     getProducts: true,
                     finance: true,
                     getCustomers: true,
                     getEmployees: true,
                     getDiscounts: true
-                } 
+                }
             }
 
             let employer;
-            if(req.body.position === 2){
-                filter = { active : true, mobile: req.body.employerMobile, type: 1}
+            if (req.body.position === 2) {
+                filter = { active: true, mobile: req.body.employerMobile, type: 1 }
                 employer = await this.model.User.findOne(filter, { id: 1 })
-                if(!employer)
+                if (!employer)
                     return res.json({ success: false, message: " کارفرمایی با این شماره یافت نشد" });
             }
-            
+
             user = await this.model.User.create(params);
 
-            if(req.body.position === 1){
+            if (req.body.position === 1) {
                 user.employer = user._id;
-                    await user.save()
+                await user.save()
             }
-            
 
-            if(req.body.position === 2){
-                
+
+            if (req.body.position === 2) {
+
                 //make a job application for employer
                 let params = {
                     employer: employer._id,
                     employee: user._id
                 }
                 await this.model.Application.create(params)
-                
+
             }
 
             //token
@@ -142,7 +143,7 @@ module.exports = new class HomeController extends Controller {
                 user_company: user.company ? user.company : null,
                 user_type: req.body.position
             }
-            let idToken = jwt.sign(payload, config.secret, options )
+            let idToken = jwt.sign(payload, config.secret, options)
 
             options = {
                 expiresIn: config.accesssTokenExpire,
@@ -151,13 +152,13 @@ module.exports = new class HomeController extends Controller {
                 audience: config.audience
             }
 
-            payload = { scope : config.userScope};
+            payload = { scope: config.userScope };
 
             let accessToken = jwt.sign(payload, config.secret, options)
 
-            let data = { idToken, accessToken};
-            
-            return res.json({ success: true, message: "کاربر با موفقیت ثبت شد", data: data  });
+            let data = { idToken, accessToken };
+
+            return res.json({ success: true, message: "کاربر با موفقیت ثبت شد", data: data });
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
@@ -178,14 +179,14 @@ module.exports = new class HomeController extends Controller {
 
             if (this.showValidationErrors(req, res)) return;
 
-            if(!req.decodedData.user_active)
-                return res.json({ success: false, message: "کاربر بلاک می باشد", data: {}})
+            if (!req.decodedData.user_active)
+                return res.json({ success: false, message: "کاربر بلاک می باشد", data: {} })
 
             // save in mongodb
-            let filter = { os: req.body.os, version: req.body.versionCode}
-            let updateInfo = await this.model.AppInfo.find(filter).sort({createdAt:-1}).limit(1)
+            let filter = { os: req.body.os, version: req.body.versionCode }
+            let updateInfo = await this.model.AppInfo.find(filter).sort({ createdAt: -1 }).limit(1)
             updateInfo = updateInfo[0]
-            if(!updateInfo)
+            if (!updateInfo)
                 return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {} });
 
             let data = { active: true, update: updateInfo.update, isForce: updateInfo.isForce, updateUrl: updateInfo.updateUrl }
@@ -211,7 +212,7 @@ module.exports = new class HomeController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             // save in mongodb
-            let filter = { $or: [{ mobile: req.body.mobileOrEmail }, { email: req.body.mobileOrEmail }]};
+            let filter = { $or: [{ mobile: req.body.mobileOrEmail }, { email: req.body.mobileOrEmail }] };
             let user = await this.model.User.findOne(filter);
             if (!(user && user.active))
                 return res.json({ success: false, message: "کاربر در دسترس نمی باشد", data: {} });
@@ -233,7 +234,7 @@ module.exports = new class HomeController extends Controller {
                 user_company: user.company ? user.company : null,
                 user_type: user.type
             }
-            let idToken = jwt.sign(payload, config.secret, options )
+            let idToken = jwt.sign(payload, config.secret, options)
 
             options = {
                 expiresIn: config.accesssTokenExpire,
@@ -242,11 +243,11 @@ module.exports = new class HomeController extends Controller {
                 audience: config.audience
             }
 
-            payload = { scope : config.userScope};
+            payload = { scope: config.userScope };
 
             let accessToken = jwt.sign(payload, config.secret, options)
 
-            let data = { idToken, accessToken};
+            let data = { idToken, accessToken };
 
             return res.json({ success: true, message: "کاربر با موفقیت وارد شد", data: data });
         }
@@ -274,13 +275,13 @@ module.exports = new class HomeController extends Controller {
             let code;
 
             //check if the last code is steel valid
-            let lastCode = await this.model.VerificationCode.find(filter).sort({createdAt:-1}).limit(1)
+            let lastCode = await this.model.VerificationCode.find(filter).sort({ createdAt: -1 }).limit(1)
             lastCode = lastCode[0]
-            if(lastCode){
+            if (lastCode) {
                 // timeDiff on verification code unit
                 let timeDiff = this.getTimeDiff(lastCode.createdAt, new Date().toISOString(), config.verificationCodeUnit)
                 // check verification code valid duration
-                if(timeDiff < config.verificationCodeDuration){
+                if (timeDiff < config.verificationCodeDuration) {
                     code = lastCode.code
                     this.sendSms(req.body.mobile, config.verificationCodeText + code)
                     return res.json({ success: true, message: "کد تاییدیه به شماره موبایل داده شده ، با موفقیت فرستاده شد" });

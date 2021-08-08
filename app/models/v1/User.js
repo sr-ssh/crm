@@ -14,33 +14,36 @@ let User = new Schema({
     mobile: { type: String, required: true, unique: true },
     company: String,
     address: String,
-    employer: { type: Schema.Types.ObjectId, ref: 'User'},
+    employer: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'User' }] },
-    permission:{ type: Object, default: { 
-                                        addOrder: false,
-                                        getOrders: false,
-                                        reminder: false,
-                                        getProducts: false,
-                                        finance: false,
-                                        getCustomers: false,
-                                        getEmployees: false,
-                                        getDiscounts: false
-                                    }  },
-                                    
+    permission: {
+        type: Object, default: {
+            addOrder: false,
+            getOrders: false,
+            saleOpprotunity: false,
+            reminder: false,
+            getProducts: false,
+            finance: false,
+            getCustomers: false,
+            getEmployees: false,
+            getDiscounts: false
+        }
+    },
+
     setting: { type: Object } // {
-                                // order: {
-                                //     preSms: { text: config.addOrderSms, status: false },
-                                //     postDeliverySms: { text: "" , status: false },
-                                //     postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false }
-                                // }
+    // order: {
+    //     preSms: { text: config.addOrderSms, status: false },
+    //     postDeliverySms: { text: "" , status: false },
+    //     postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false }
+    // }
 });
 
-User.pre('validate', function(next){
+User.pre('validate', function (next) {
     this.username = this.get('mobile');
     next();
 })
 
-User.pre('save', function(next){
+User.pre('save', function (next) {
 
     if (!this.isModified('password')) return next();
 
@@ -48,7 +51,7 @@ User.pre('save', function(next){
         this.password = hash;
         next();
     })
-    
+
 
 })
 
