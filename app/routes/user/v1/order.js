@@ -333,6 +333,31 @@ router.get('/notes/:orderId', OrderController.getOrdersNotes.bind(OrderControlle
 router.put('/notes', OrderController.addOrdersNotes.bind(OrderController));
 
 
+/**
+* @api {put} /api/user/v1/order/notes/status edit status notes 
+* @apiVersion 1.0.0
+* @apiName editstatusnotes
+* @apiDescription edit status notes : all params are necessary.
+* @apiGroup order
+* @apiParam {varchar} orderId  orderId
+* @apiParam {varchar} status  status Should be '0' as false Or '1' as true 
+* @apiParamExample {json} Request-Example:
+*  {
+*     orderId : "60b72a70e353f0385c2fe5af",
+*  }
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "یادداشت با موفقیت ویرایش شد",
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "یادداشت موجود نیست"
+* }
+*/
+router.put('/notes/status', OrderController.editStatusNotes.bind(OrderController));
+
 
 
 /**

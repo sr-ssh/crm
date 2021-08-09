@@ -30,6 +30,7 @@ describe(`${sectionName}`, () => {
         editProductOrder = appConfig.test.editProductOrder;
         getNotes = appConfig.test.getNotes;
         addOrderNotes = appConfig.test.addOrderNotes;
+        editeStatusNotes = appConfig.test.editeStatusNotes;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -179,6 +180,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(addOrderNotes);
+            res.should.have.status(200);
+        });
+
+        it('check edit status order notes ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/notes/status`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editeStatusNotes);
             res.should.have.status(200);
         });
 
