@@ -20,6 +20,7 @@ describe(`${sectionName}`, () => {
         order_V1 = appConfig.test.order_V1;
         user = appConfig.test.user;
         getOrderParams = appConfig.test.getOrderParams;
+        getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
         editOrderPrice = appConfig.test.editOrderPrice;
         deliverySms = appConfig.test.deliverySms;
@@ -57,6 +58,17 @@ describe(`${sectionName}`, () => {
                 .set('idToken', idToken)
                 .send();
             res.should.have.status(200);
+        });
+
+        it('check get Apis V1', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams.customerName)}/09307580142/${getOrderParams.startDate}/${getOrderParams.endDate}`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+            console.log(res);
         });
 
     });

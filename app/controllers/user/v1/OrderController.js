@@ -123,7 +123,6 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('customer.family', 'please enter customer family').notEmpty();
             req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
             req.checkBody('customer.birthday', 'please enter customer birthday').notEmpty().isISO8601();
-            req.checkBody('customer.company', 'please enter customer company').notEmpty().isString();
             req.checkBody('reminder', 'please enter customer birthday').notEmpty().isInt({ min: -1 });
             req.checkBody('address', 'please enter address').notEmpty().isString();
             req.checkBody('duration', 'please enter order duration').notEmpty().isInt({ min: -1 });
@@ -338,6 +337,142 @@ module.exports = new class OrderController extends Controller {
 
 
             return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: params })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('getOrders')
+                .inputParams(req.params)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+    async getOrdersV1(req, res) {
+        try {
+            req.checkParams('customerName', 'please set customerName').notEmpty();
+            req.checkParams('customerMobile', 'please set customerMobile').notEmpty();
+            req.checkParams('startDate', 'please set startDate').notEmpty().isISO8601();
+            req.checkParams('endDate', 'please set endDate').notEmpty().isISO8601();
+
+            if (this.showValidationErrors(req, res)) return;
+
+            const TIME_FLAG = "1900-01-01T05:42:13.845Z";
+
+            if (req.params.endDate !== TIME_FLAG) {
+                let nextDay = new Date(req.params.endDate).setDate(new Date(req.params.endDate).getDate() + 1);
+                req.params.endDate = nextDay
+            }
+
+            let filter;
+
+            if (req.params.startDate != TIME_FLAG && req.params.endDate === TIME_FLAG)
+                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $gt: req.params.startDate } }] }
+            if (req.params.startDate === TIME_FLAG && req.params.endDate != TIME_FLAG)
+                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }] }
+            if (req.params.startDate === TIME_FLAG && req.params.endDate === TIME_FLAG)
+                filter = { provider: req.decodedData.user_employer }
+            if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
+                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
+
+            if (req.params.status == 3)
+                filter = { status: 3, ...filter };
+            else
+                filter = { $nor: [{ status: 3 }], ...filter }
+
+
+            let orders = await this.model.Order.find(filter).sort({ createdAt: -1 });
+
+            let params = [];
+            for (let index = 0; index < orders.length; index++) {
+                let param = {
+                    id: orders[index]._id,
+                    active: orders[index].active,
+                    status: orders[index].status,
+                    products: orders[index].products,
+                    customer: orders[index].customer,
+                    address: orders[index].address,
+                    readyTime: orders[index].readyTime,
+                    createdAt: orders[index].createdAt,
+                    updatedAt: orders[index].updatedAt,
+                    employee: orders[index].employee,
+                    description: orders[index].description
+                }
+                params.push(param)
+            }
+
+            let customers = []
+            for (let index = 0; index < orders.length; index++) {
+                customers.push(orders[index].customer)
+            }
+
+            filter = { _id: { $in: customers } }
+            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+
+            let customerInfo;
+            for (let index = 0; index < orders.length; index++) {
+                customerInfo = customers.find(user => user._id.toString() == orders[index].customer)
+                params[index].customer = customerInfo;
+            }
+
+
+            let employees = []
+            for (let index = 0; index < orders.length; index++) {
+                employees.push(orders[index].employee)
+            }
+
+            filter = { _id: { $in: employees } }
+            employees = await this.model.User.find(filter, { _id: 1, family: 1 })
+
+            let employeeInfo;
+            for (let index = 0; index < orders.length; index++) {
+                employeeInfo = employees.find(user => user._id.toString() == orders[index].employee)
+                params[index].employee = employeeInfo;
+            }
+
+
+            if (req.params.customerMobile !== "0")
+                params = params.filter(param => param.customer.mobile === req.params.customerMobile)
+
+            if (req.params.customerName !== " ")
+                params = params.filter(param => {
+                    if (param.customer) {
+                        let re = new RegExp(req.params.customerName, "i");
+                        let find = param.customer.family.search(re);
+                        return find !== -1;
+                    }
+                })
+
+
+
+            let products = []
+            for (let index = 0; index < params.length; index++) {
+                for (let j = 0; j < params[index].products.length; j++) {
+                    products.push(params[index].products[j]._id)
+                }
+            }
+            filter = { _id: { $in: products } }
+            products = await this.model.Product.find(filter, { _id: 1, name: 1 })
+
+
+            for (let index = 0; index < params.length; index++) {
+                let productInfo;
+                for (let j = 0; j < params[index].products.length; j++) {
+                    productInfo = products.find(product => product._id.toString() === params[index].products[j]._id.toString())
+                    if (productInfo)
+                        params[index].products[j].name = productInfo.name;
+                }
+            }
+
+
+
+
+            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: params })
+
+
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
