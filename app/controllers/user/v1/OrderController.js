@@ -566,6 +566,46 @@ module.exports = new class OrderController extends Controller {
     }
 
 
+    async addOrdersNotes(req, res) {
+        try {
+            req.checkBody('orderId', 'please set order id').notEmpty();
+            req.checkBody('notes', 'please set order id').notEmpty();
+            req.checkBody('notes.*.text', 'please set order id').notEmpty().isString();
+            req.checkBody('notes.*.createdAt', 'please enter product sellingPrice').notEmpty();
+
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+            let order = await this.model.Order.findOne(filter)
+
+            if (!order)
+                return res.json({ success: false, message: 'سفارش موجود نیست' })
+
+            req.body.notes.map(item => {
+                let note = { ...item, writtenBy: req.decodedData.user_id, private: false }
+                order.notes.push(note)
+            })
+
+            order.markModified('notes')
+
+            await order.save()
+
+            res.json({ success: true, message: 'یادداشت با موفقیت اضافه شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('addOrdersNotes')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+
     async editOrderPrice(req, res) {
         try {
 

@@ -284,7 +284,7 @@ router.put('/product', OrderController.editProductOrder.bind(OrderController));
 
 /**
 * @api {get} /api/user/v1/order/notes get notes of order 
-* @apiVersion 1.1.0
+* @apiVersion 1.0.0
 * @apiName getNotes
 * @apiDescription get notes : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.
 * @apiGroup order
@@ -303,6 +303,34 @@ router.put('/product', OrderController.editProductOrder.bind(OrderController));
 router.get('/notes/:orderId', OrderController.getOrdersNotes.bind(OrderController));
 
 
+/**
+* @api {put} /api/user/v1/order/notes add Notes to order 
+* @apiVersion 1.0.0
+* @apiName addNotes
+* @apiDescription add notes : all params are necessary.
+* @apiGroup order
+* @apiParam {varchar} orderId  orderId
+* @apiParam {Object} notes notes information
+* @apiParamExample {json} Request-Example:
+*  {
+*     orderId : "60b72a70e353f0385c2fe5af",
+*     notes: [...{
+*          text: "مشتری خواهان کالاست",
+*          createdAt : "2020-05-31T05:42:13.845Z",
+*     }]
+*  }
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "یادداشت با موفقیت اضافه شد",
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "سفارش موجود نیست"
+* }
+*/
+router.put('/notes', OrderController.addOrdersNotes.bind(OrderController));
 
 
 

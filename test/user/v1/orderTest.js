@@ -28,7 +28,8 @@ describe(`${sectionName}`, () => {
         editOrderQuantity = appConfig.test.editOrderQuantity;
         deleteOrder = appConfig.test.deleteOrder;
         editProductOrder = appConfig.test.editProductOrder;
-        getNotes = appConfig.test.getNotes
+        getNotes = appConfig.test.getNotes;
+        addOrderNotes = appConfig.test.addOrderNotes;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -168,6 +169,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editProductOrder);
+            res.should.have.status(200);
+        });
+
+        it('check add order notes ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/notes`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(addOrderNotes);
             res.should.have.status(200);
         });
 
