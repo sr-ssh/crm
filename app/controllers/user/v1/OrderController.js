@@ -516,6 +516,56 @@ module.exports = new class OrderController extends Controller {
         }
     }
 
+
+
+
+    async getOrdersNotes(req, res) {
+        try {
+            req.checkParams('orderId', 'please set order id').notEmpty();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active: true, _id: req.params.orderId }
+            let order = await this.model.Order.findOne(filter)
+
+            if (!order)
+                return res.json({ success: false, message: 'سفارش موجود نیست' })
+            if (order.notes.length <= 0)
+                return res.json({ success: false, message: 'یادداشتی موجود نیست' })
+
+            let { notes } = await this.model.Order.findOne(filter).populate({ path: 'notes.writtenBy', model: 'User', select: 'family' })
+
+            let params;
+            let data;
+            data = notes.filter(item => item.private === false)
+            params = notes.filter(item => item.private === true && item.writtenBy._id == req.decodedData.user_id)
+
+            if (params?.length > 0)
+                params = params.reduce((result, item) => {
+                    result = item;
+                    data.push(result)
+                }, {});
+
+            data.map(item => {
+                item.writtenBy = item.writtenBy.family
+                return item
+
+            })
+
+            res.json({ success: true, message: 'یادداشت ها با موفقیت ارسال شد', data: data })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('ordersNotes')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
     async editOrderPrice(req, res) {
         try {
 

@@ -28,6 +28,7 @@ describe(`${sectionName}`, () => {
         editOrderQuantity = appConfig.test.editOrderQuantity;
         deleteOrder = appConfig.test.deleteOrder;
         editProductOrder = appConfig.test.editProductOrder;
+        getNotes = appConfig.test.getNotes
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -60,7 +61,7 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-        it('check get Apis V1', async () => {
+        it('check get orders V1', async () => {
             const res = await chai
                 .request(server)
                 .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams.customerName)}/09307580142/${getOrderParams.startDate}/${getOrderParams.endDate}`)
@@ -68,7 +69,17 @@ describe(`${sectionName}`, () => {
                 .set('idToken', idToken)
                 .send();
             res.should.have.status(200);
-            console.log(res);
+        });
+
+
+        it('check get notes ', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/notes/${getNotes}`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
         });
 
     });

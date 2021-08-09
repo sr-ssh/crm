@@ -282,6 +282,25 @@ router.delete('/product', OrderController.deleteProdcutOrder.bind(OrderControlle
 router.put('/product', OrderController.editProductOrder.bind(OrderController));
 
 
+/**
+* @api {get} /api/user/v1/order/notes get notes of order 
+* @apiVersion 1.1.0
+* @apiName getNotes
+* @apiDescription get notes : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.
+* @apiGroup order
+* @apiParam {varchar} orderId  orderId to get that order's notes
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "یادداشت ها با موفقیت ارسال شد",
+*      data: [...{
+*          text: "خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت",
+*          writtenBy: "محمد جواد حیدری",
+*          createdAt: "2021-06-01T06:54:01.691Z"
+*      }]
+* }
+*/
+router.get('/notes/:orderId', OrderController.getOrdersNotes.bind(OrderController));
 
 
 
