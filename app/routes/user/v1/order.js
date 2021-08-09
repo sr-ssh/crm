@@ -344,6 +344,7 @@ router.put('/notes', OrderController.addOrdersNotes.bind(OrderController));
 * @apiParamExample {json} Request-Example:
 *  {
 *     orderId : "60b72a70e353f0385c2fe5af",
+*     status : 1
 *  }
 * @apiSuccessExample {json} Success-Response:
 * {
