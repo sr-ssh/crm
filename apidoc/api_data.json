@@ -897,12 +897,68 @@
     "groupTitle": "home"
   },
   {
+    "type": "put",
+    "url": "/api/user/v1/order/notes",
+    "title": "add Notes to order",
+    "version": "1.0.0",
+    "name": "addNotes",
+    "description": "<p>add notes : all params are necessary.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "notes",
+            "description": "<p>notes information</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   orderId : \"60b72a70e353f0385c2fe5af\",\n   notes: [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"یادداشت با موفقیت اضافه شد\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"سفارش موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
     "type": "post",
     "url": "/api/user/v1/order/v1",
     "title": "add order",
     "version": "1.1.0",
     "name": "addOrder",
-    "description": "<p>add order: customer companyname , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;</p>",
+    "description": "<p>add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;. for set order to sale opprotunity send status 3 otherwise don't send status.</p>",
     "group": "order",
     "parameter": {
       "fields": {
@@ -947,7 +1003,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\"\n    }],\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\",\n        company: \"تیم ایکس\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
+          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\"\n    }],\n   notes: [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }],\n   status : 3,\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\",\n        company: \"تیم ایکس\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
           "type": "json"
         }
       ]
@@ -1296,6 +1352,156 @@
         {
           "title": "Error-Response:",
           "content": "{\n     success: false,\n     message: \"سفارش موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/order/notes/status",
+    "title": "edit status notes",
+    "version": "1.0.0",
+    "name": "editstatusnotes",
+    "description": "<p>edit status notes : all params are necessary.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "status",
+            "description": "<p>status Should be '0' as false Or '1' as true</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   orderId : \"60b72a70e353f0385c2fe5af\",\n   status : 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"یادداشت با موفقیت ویرایش شد\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"یادداشت موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/order/notes",
+    "title": "get notes of order",
+    "version": "1.0.0",
+    "name": "getNotes",
+    "description": "<p>get notes : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId to get that order's notes</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"یادداشت ها با موفقیت ارسال شد\",\n     data: {    \n        isPrivate : true,\n        data:[...{\n           text: \"خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت\",\n           writtenBy: \"محمد جواد حیدری\",\n           createdAt: \"2021-06-01T06:54:01.691Z\"\n        }]\n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/order/v1",
+    "title": "get orders",
+    "version": "1.1.0",
+    "name": "getOrders",
+    "description": "<p>get orders : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderStatus",
+            "description": "<p>get order or set status 3 to get order sale opprotunity</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "customerName",
+            "description": "<p>customer family (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "customerMobile",
+            "description": "<p>customer mobile number (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "startDate",
+            "description": "<p>get orders from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "endDate",
+            "description": "<p>get orders to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سفارشات با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         id: \"60b72a70e353f0385c2fe5af\",\n         products: [...{\n             _id: \"60b72a70e353f0385c2fe5af\",\n             name: \"لاته\",\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             createdAt: \"2021-06-01T06:54:01.691Z\"\n         },\n        createdAt: \"2021-06-01T06:54:01.691Z\",\n        updatedAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
           "type": "json"
         }
       ]

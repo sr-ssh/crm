@@ -293,11 +293,14 @@ router.put('/product', OrderController.editProductOrder.bind(OrderController));
 * {
 *      success: true,
 *      message: "یادداشت ها با موفقیت ارسال شد",
-*      data: [...{
-*          text: "خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت",
-*          writtenBy: "محمد جواد حیدری",
-*          createdAt: "2021-06-01T06:54:01.691Z"
-*      }]
+*      data: {    
+*         isPrivate : true,
+*         data:[...{
+*            text: "خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت",
+*            writtenBy: "محمد جواد حیدری",
+*            createdAt: "2021-06-01T06:54:01.691Z"
+*         }]
+*      }
 * }
 */
 router.get('/notes/:orderId', OrderController.getOrdersNotes.bind(OrderController));

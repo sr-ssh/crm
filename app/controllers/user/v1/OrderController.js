@@ -537,21 +537,26 @@ module.exports = new class OrderController extends Controller {
             let params;
             let data;
             data = notes.filter(item => item.private === false)
-            params = notes.filter(item => item.private === true && item.writtenBy._id == req.decodedData.user_id)
+            params = notes.filter(item => (item.private === true && item.writtenBy._id.toString() === req.decodedData.user_id))
 
-            if (params?.length > 0)
+            let isPrivate;
+            if (params?.length > 0) {
+                isPrivate = true;
                 params = params.reduce((result, item) => {
                     result = item;
                     data.push(result)
                 }, {});
+            } else {
+                isPrivate = false;
+            }
 
-            data.map(item => {
+            data?.map(item => {
                 item.writtenBy = item.writtenBy.family
                 return item
 
             })
 
-            res.json({ success: true, message: 'یادداشت ها با موفقیت ارسال شد', data: data })
+            res.json({ success: true, message: 'یادداشت ها با موفقیت ارسال شد', data: { isPrivate, data } })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
@@ -679,7 +684,7 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('status', 'please set status').notEmpty().isString();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+            let filter = { active: true, _id: req.body.orderId }
             let order = await this.model.Order.findOne(filter)
 
             if (!order)
@@ -694,10 +699,10 @@ module.exports = new class OrderController extends Controller {
 
 
             order.notes.map(notes => {
-                if (notes.writtenBy == req.decodedData.user_employer)
-                    notes.private = req.body.status
+                if (notes.writtenBy === req.decodedData.user_id)
+                    notes.private = status
             })
-            order.markModified('products')
+            order.markModified('notes')
 
             await order.save()
 
