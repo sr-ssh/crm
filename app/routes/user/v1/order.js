@@ -50,6 +50,7 @@ router.post('/', OrderController.addOrder.bind(OrderController));
  * @apiDescription add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is "1900-01-01T05:42:13.845Z".reminder flag and duration flag are -1.address flag is " ". for set order to sale opprotunity send status 3 otherwise don't send status.
  * @apiGroup order
  * @apiParam {Object[]} products array of product objects
+ * @apiParam {Object[]} notes array of notes objects
  * @apiParam {Object} customer customer information
  * @apiParam {int} reminder number of days for reminding
  * @apiParam {int} duration minutes to the order become ready
