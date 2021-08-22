@@ -219,7 +219,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('addOrder')
+                .method('addOrderV1')
                 .inputParams(req.body)
                 .call();
 
@@ -478,7 +478,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getOrders')
+                .method('getOrdersV1')
                 .inputParams(req.params)
                 .call();
 
@@ -562,7 +562,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('ordersNotes')
+                .method('getOrdersNotes')
                 .inputParams(req.body)
                 .call();
 
@@ -636,7 +636,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('editOrderPrice')
                 .inputParams(req.body)
                 .call();
 
@@ -669,7 +669,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('editOrderQuantity')
                 .inputParams(req.body)
                 .call();
 
@@ -712,7 +712,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('editStatusNotes')
                 .inputParams(req.body)
                 .call();
 
@@ -750,7 +750,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('deleteProdcutOrder')
                 .inputParams(req.body)
                 .call();
 
@@ -789,7 +789,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('editProductOrder')
                 .inputParams(req.body)
                 .call();
 
