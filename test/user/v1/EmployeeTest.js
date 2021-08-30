@@ -23,7 +23,7 @@ describe(`${sectionName}`, () => {
         deleteEmployee = appConfig.test.deleteEmployee;
         editApplicationByEmployer = appConfig.test.editApplicationByEmployer;
         editApplicationByEmployee = appConfig.test.editApplicationByEmployee;
-        axios.post(`http://192.168.1.127:4000/api/user/v1/login`, user)
+        axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
                 if (response.success) {

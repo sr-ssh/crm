@@ -31,11 +31,11 @@
             "family": "علی محمودی",
             "email": "a.mhm@gmail.com",
             "mobile": "09520321475",
-            "code": "1899",
+            "code": "7469",
             "position": 2,
             "companyName": "mhmnejad",
             "companyAddress": "راهنمایی 24222",
-            "employerMobile": "09532586598"
+            "employerMobile": "09105044033"
         },
         "userScope": "user",
         "customer": {
@@ -113,7 +113,7 @@
             "cost": "2000000"
         },
         "employee": {
-            "usernameOrMobile": "0996"
+            "usernameOrMobile": "09105044033"
         },
         "getOrderParams": {
             "customerName": " ",
