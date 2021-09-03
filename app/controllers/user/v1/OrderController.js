@@ -540,7 +540,7 @@ module.exports = new class OrderController extends Controller {
             params = notes.filter(item => (item.private === true && item.writtenBy._id.toString() === req.decodedData.user_id))
 
             let isPrivate;
-            if (params?.length > 0) {
+            if (params.length > 0) {
                 isPrivate = true;
                 params = params.reduce((result, item) => {
                     result = item;
@@ -550,7 +550,7 @@ module.exports = new class OrderController extends Controller {
                 isPrivate = false;
             }
 
-            data?.map(item => {
+            data.map(item => {
                 item.writtenBy = item.writtenBy.family
                 return item
 
