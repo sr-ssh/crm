@@ -161,7 +161,7 @@
             }
         },
         "deleteEmployee": {
-            "_id": "60d823a1f674e530e09fc6ce"
+            "_id": "60f523f57a68a84600beb524"
         },
         "editOrderStatus": {
             "orderId": "60e1b387cef3a81c70726ede",

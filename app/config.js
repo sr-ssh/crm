@@ -6,10 +6,10 @@ module.exports = {
     audience: "audience",
     algorithm: "HS256",
     issuer: "issuer",
-    accesssTokenExpire: "300 days" ,
+    accesssTokenExpire: "300 days",
     idTokenExpire: "250 days",
     userScope: "user",
-    permissionCount: "8",
+    permissionCount: "9",
     addOrderSms: "سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم",
     deliveryAcknowledgeSms: "سفارش شما به راننده تحویل داده شد",
     verificationCodeDuration: 30,
@@ -18,10 +18,10 @@ module.exports = {
     employee: 2,
     employer: 1,
     publicRoute: [
-        '/api/user/v1/login', 
-        '/api/user/v1/', 
+        '/api/user/v1/login',
+        '/api/user/v1/',
         '/api/user/v1/verificationcode'
-        ],
+    ],
     path: {
         controllers: {
             root: path.resolve('./app/controllers'),
@@ -35,4 +35,4 @@ module.exports = {
         mainController: path.resolve('./app/controllers/MainController'),
         instance: path.resolve('./app/instance')
     }
-} 
+}
