@@ -841,6 +841,83 @@ module.exports = new class OrderController extends Controller {
         }
     }
 
+
+    async orderDetails(req, res) {
+        try {
+            req.checkParams('orderId', 'please set order id').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active: true, _id: req.params.orderId }
+
+
+            let orders = await this.model.Order.find(filter);
+
+            let params = {};
+            for (let index = 0; index < orders.length; index++) {
+                params.id = orders[index]._id,
+                    params.active = orders[index].active,
+                    params.status = orders[index].status,
+                    params.products = orders[index].products,
+                    params.customer = orders[index].customer,
+                    params.address = orders[index].address,
+                    params.readyTime = orders[index].readyTime,
+                    params.createdAt = orders[index].createdAt,
+                    params.updatedAt = orders[index].updatedAt,
+                    params.employee = orders[index].employee,
+                    params.description = orders[index].description
+            }
+
+
+            filter = { _id: params.customer }
+            let customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+
+            let customerInfo = customers.find(user => user._id.toString() == params.customer)
+            params.customer = customerInfo;
+
+
+            filter = { _id: params.employee }
+            let employees = await this.model.User.find(filter, { _id: 1, family: 1 })
+
+            let employeeInfo = employees.find(user => user._id.toString() == params.employee)
+            params.employee = employeeInfo;
+
+
+            let products = []
+            for (let index = 0; index < 1; index++) {
+                for (let j = 0; j < params.products.length; j++) {
+                    products.push(params.products[j]._id)
+                }
+            }
+            filter = { _id: { $in: products } }
+            products = await this.model.Product.find(filter, { _id: 1, name: 1 })
+
+
+            for (let index = 0; index < 1; index++) {
+                let productInfo;
+                for (let j = 0; j < params.products.length; j++) {
+                    productInfo = products.find(product => product._id.toString() === params.products[j]._id.toString())
+                    if (productInfo)
+                        params.products[j].name = productInfo.name;
+                }
+            }
+
+
+            return res.json({ success: true, message: 'فاکتور سفارش با موفقیت ارسال شد', data: params })
+
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('orderDetails')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 }
 
 

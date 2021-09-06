@@ -225,6 +225,9 @@
         "editeStatusNotes":{
             "orderId":"6110d6f29e5663816cbdc616",
             "status": "0"
+        },
+        "getOrderDetails":{
+            "orderId":"60f2cd3b3aab183cc4823af8"
         }
     }
 }

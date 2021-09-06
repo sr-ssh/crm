@@ -382,6 +382,39 @@ router.post('/delivery/sms', OrderController.sendDeliverySms.bind(OrderControlle
 
 
 
+/**
+ * @api {get} /api/user/v1/order/details/id get orderDetails
+ * @apiVersion 1.0.0
+ * @apiName getOrderDetails
+ * @apiDescription get order details, 
+ * @apiGroup order
+ * @apiParam {varchar} orderId order id
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "فاکتور سفارش با موفقیت ارسال شد",
+ *      data: [...{
+ *          active: true,
+ *          id: "60b72a70e353f0385c2fe5af",
+ *          products: [...{
+ *              _id: "60b72a70e353f0385c2fe5af",
+ *              name: "لاته",
+ *              quantity: 2,
+ *              sellingPrice: "30000"
+ *          }],
+ *          customer: {
+ *              _id: "7465148754878",
+ *              family: "مصطفایی",
+ *              mobile: "09152631225",
+ *              createdAt: "2021-06-01T06:54:01.691Z"
+ *          },
+ *         createdAt: "2021-06-01T06:54:01.691Z",
+ *         updatedAt: "2021-06-01T06:54:01.691Z"
+ *      }]
+ * } 
+ */
+router.get('/details/:orderId', OrderController.orderDetails.bind(OrderController));
+
 
 
 module.exports = router;
