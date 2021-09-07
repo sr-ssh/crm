@@ -53,6 +53,17 @@ describe(`${sectionName}`, () => {
         });
 
 
+        it('check get excel products', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/excel`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+        });
+
+
     });
 
     describe('Check Post Apis', () => {
