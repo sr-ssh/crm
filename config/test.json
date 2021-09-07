@@ -26,6 +26,17 @@
             "code": "7386",
             "position": 1
         },
+        "userMJH": {
+            "password": "123456",
+            "family": "محمد جواد حیدری",
+            "email": "mohmadjavadheidari9@gmail.com",
+            "mobile": "09105044033",
+            "companyName": "محمد",
+            "companyAddress": "محمد",
+            "mobileOrEmail": "09105044033",
+            "code": "7386",
+            "position": 1
+        },
         "newUser": {
             "password": "123",
             "family": "علی محمودی",
@@ -134,7 +145,7 @@
             "createdAtFrom": "1900-01-01T05:42:13.845Z",
             "createdAtTo": "1900-01-01T05:42:13.845Z",
             "lastBuyFrom": "1900-01-01T05:42:13.845Z",
-            "lastBuyTo": "2021-07-06",
+            "lastBuyTo": "1900-01-01T05:42:13.845Z",
             "orderFrom": "0",
             "orderTo": "0",
             "totalFrom": "0",

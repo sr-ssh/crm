@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         customer = appConfig.test.customer;
         getCustomerParams = appConfig.test.getCustomerParams;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
@@ -46,6 +46,18 @@ describe(`${sectionName}`, () => {
             const res = await chai
                 .request(server)
                 .get(`${baseRoute}/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+        });
+
+
+
+        it('check get excel customers', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/excel/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
