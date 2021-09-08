@@ -383,7 +383,7 @@ router.post('/delivery/sms', OrderController.sendDeliverySms.bind(OrderControlle
 
 
 /**
- * @api {get} /api/user/v1/order/details/id get orderDetails
+ * @api {get} /api/user/v1/order/details/orderId get orderDetails
  * @apiVersion 1.0.0
  * @apiName getOrderDetails
  * @apiDescription get order details, 

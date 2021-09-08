@@ -328,7 +328,6 @@ module.exports = new class CustomerController extends Controller {
                 }
             });
 
-            // res.json({ success: true, message: 'اطلاعات مشتریان با موفقیت ارسال شد', data: params })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
