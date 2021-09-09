@@ -42,5 +42,21 @@ router.get('/order/sms', SettingsController.getSms.bind(SettingsController));
 
 
 
+/**
+ * @api {get} /api/user/v1/settings/order/share get time and unitTime
+ * @apiVersion 1.0.0
+ * @apiName getshare
+ * @apiDescription  get time and unitTime
+ * @apiGroup settings
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "با موفقیت انجام شد",
+ *      data: {}
+ * }
+ *     
+ */
+router.get('/order/share', SettingsController.getShare.bind(SettingsController));
+
 
 module.exports = router;

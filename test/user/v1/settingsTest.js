@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
         order = appConfig.test.order;
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         getOrderParams = appConfig.test.getOrderParams;
         editOrderStatus = appConfig.test.editOrderStatus;
         deliverySms = appConfig.test.deliverySms;
@@ -49,6 +49,16 @@ describe(`${sectionName}`, () => {
             const res = await chai
                 .request(server)
                 .get(`${baseRoute}/order/sms`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send()
+            res.should.have.status(200)
+        })
+
+        it('check get shareLink information', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/order/share`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send()

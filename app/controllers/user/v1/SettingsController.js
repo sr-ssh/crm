@@ -76,6 +76,28 @@ module.exports = new class SettingsController extends Controller {
     }
 
 
+
+    async getShare(req, res) {
+        try {
+
+            let filter = { _id: req.decodedData.user_id }
+            let user = await this.model.User.findOne(filter, 'setting.order.share')
+
+            res.json({ success: true, message: "با موفقیت انجام شد", data: user })
+
+        } catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('getShare')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
 }
 
 
