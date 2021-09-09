@@ -43,22 +43,4 @@ router.get('/order/sms', SettingsController.getSms.bind(SettingsController));
 
 
 
-/**
- * @api {get} /api/user/v1/settings/factor get factor setting
- * @apiVersion 1.0.0
- * @apiName getfactorsetting
- * @apiDescription get factor setting 
- * @apiGroup settings
- * @apiSuccessExample {json} Success-Response:
- * {
- *      success: true,
- *      message: "با موفقیت انجام شد",
- *      data: {}
- * }
- *     
- */
-router.get('/factor', SettingsController.getFactorSettting.bind(SettingsController));
-
-
-
 module.exports = router;
