@@ -198,6 +198,10 @@
             "text": " ",
             "status": true
         },
+        "editShare": {
+            "duration": 15,
+            "unitTime": "M"
+        },
         "editOrderPrice": {
             "orderId": "60f69fcac2ef642cfc2ce6b6",
             "productId": "60f2bff24ca7f01d68ad6da7",

@@ -83,7 +83,7 @@ module.exports = new class SettingsController extends Controller {
             let filter = { _id: req.decodedData.user_id }
             let user = await this.model.User.findOne(filter, 'setting.order.share')
 
-            res.json({ success: true, message: "با موفقیت انجام شد", data: user })
+            res.json({ success: true, message: "با موفقیت انجام شد", data: user.setting.order })
 
         } catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
@@ -98,6 +98,35 @@ module.exports = new class SettingsController extends Controller {
     }
 
 
+
+    async editShare(req, res) {
+        try {
+
+            req.checkBody('duration', 'please set the duration').notEmpty().isInt();
+            req.checkBody('unitTime', 'please set the unitTime').notEmpty().isAlpha(['en-US']);
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { active: true, _id: req.decodedData.user_employer }
+            let user = await this.model.User.findOne(filter)
+            user.setting.order.share.time = req.body.duration
+            user.setting.order.share.unitTime = req.body.unitTime
+
+            user.markModified('setting.order')
+            await user.save();
+
+            return res.json({ success: true, message: 'ویرایش با موفقیت انجام شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editShare')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
 }
 
 

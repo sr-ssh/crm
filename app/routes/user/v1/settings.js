@@ -59,4 +59,25 @@ router.get('/order/sms', SettingsController.getSms.bind(SettingsController));
 router.get('/order/share', SettingsController.getShare.bind(SettingsController));
 
 
+/**
+ * @api {put} /api/user/v1/settings/order/share edit shareLinh order settings
+ * @apiVersion 1.0.0
+ * @apiName editShare
+ * @apiDescription edit shareLinh order settings settings, unitTime "M" is minutes , unitTime "H" is hour , unitTime "D" is day. for e.g time is 2 and unitTime is "M" it means shareLink will expire after 2 minutes.
+ * @apiGroup settings
+ * @apiParam {int} duration the link will expire after that base on unittime 
+ * @apiParam {varchar} unitTime  "M" is minutes, "H" is hour, "D" is Day
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     duration : 5,
+ *     unitTime : "M"
+ *  } 
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "ویرایش با موفقیت انجام شد"
+ */
+router.put('/order/share', SettingsController.editShare.bind(SettingsController));
+
+
 module.exports = router;

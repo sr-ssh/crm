@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/settings';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, user, getOrderParams, editOrderStatus, deliverySms, editSms;
+let order, user, getOrderParams, editOrderStatus, deliverySms, editSms, editShare;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -22,6 +22,7 @@ describe(`${sectionName}`, () => {
         editOrderStatus = appConfig.test.editOrderStatus;
         deliverySms = appConfig.test.deliverySms;
         editSms = appConfig.test.editSms;
+        editShare = appConfig.test.editShare;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -78,6 +79,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editSms);
+            res.should.have.status(200);
+        });
+
+        it('check edit shareLink setting', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/order/share`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editShare);
             res.should.have.status(200);
         });
 
