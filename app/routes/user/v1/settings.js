@@ -20,7 +20,7 @@ const SettingsController = require(`${userController}/v1/SettingsController`)
  *      success: true,
  *      message: "ویرایش با موفقیت انجام شد"
  */
- router.put('/order/sms',SettingsController.editSms.bind(SettingsController));
+router.put('/order/sms', SettingsController.editSms.bind(SettingsController));
 
 
 
@@ -38,7 +38,27 @@ const SettingsController = require(`${userController}/v1/SettingsController`)
  * }
  *     
  */
- router.get('/order/sms',SettingsController.getSms.bind(SettingsController));
+router.get('/order/sms', SettingsController.getSms.bind(SettingsController));
 
 
- module.exports = router;
+
+
+/**
+ * @api {get} /api/user/v1/settings/factor get factor setting
+ * @apiVersion 1.0.0
+ * @apiName getfactorsetting
+ * @apiDescription get factor setting 
+ * @apiGroup settings
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "با موفقیت انجام شد",
+ *      data: {}
+ * }
+ *     
+ */
+router.get('/factor', SettingsController.getFactorSettting.bind(SettingsController));
+
+
+
+module.exports = router;

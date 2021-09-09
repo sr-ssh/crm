@@ -8,17 +8,17 @@ module.exports = new class SettingsController extends Controller {
         return res.json({ success: true, message: "Settings v1" });
     }
 
-    
+
     async getSms(req, res) {
         try {
-            
+
             let filter = { _id: req.decodedData.user_id }
             let user = await this.model.User.findOne(filter, 'setting')
 
-            res.json({ success: true, message: "با موفقیت انجام شد", data: user}) 
+            res.json({ success: true, message: "با موفقیت انجام شد", data: user })
 
         } catch (err) {
-                let handelError = new this.transforms.ErrorTransform(err)
+            let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('getSms')
@@ -32,12 +32,12 @@ module.exports = new class SettingsController extends Controller {
     async editSms(req, res) {
         try {
 
-            req.checkBody('type', 'please set the sms type').notEmpty().isInt({min: 1, max: 3});
+            req.checkBody('type', 'please set the sms type').notEmpty().isInt({ min: 1, max: 3 });
             req.checkBody('status', 'please set the sms status').notEmpty().isBoolean();
             req.checkBody('text', 'please set the sms text').exists().isString();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active : true, _id: req.decodedData.user_employer }
+            let filter = { active: true, _id: req.decodedData.user_employer }
             let user = await this.model.User.findOne(filter)
             let type = req.body.type
 
@@ -57,17 +57,38 @@ module.exports = new class SettingsController extends Controller {
                 default:
                     break;
             }
-        
+
             user.markModified('setting.order')
             await user.save();
 
-            return res.json({ success : true, message : 'ویرایش با موفقیت انجام شد'})
+            return res.json({ success: true, message: 'ویرایش با موفقیت انجام شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('editSms')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+    async getFactorSettting(req, res) {
+        try {
+
+            let filter = { _id: req.decodedData.user_id }
+            let user = await this.model.User.findOne(filter, 'factor')
+
+            res.json({ success: true, message: "با موفقیت انجام شد", data: user })
+
+        } catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('getFactorSettting')
                 .inputParams(req.body)
                 .call();
 
