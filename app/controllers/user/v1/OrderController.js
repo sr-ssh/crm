@@ -846,12 +846,17 @@ module.exports = new class OrderController extends Controller {
     async orderDetails(req, res) {
         try {
             req.checkParams('orderId', 'please set order id').notEmpty().isMongoId();
+            req.checkParams('keylink', 'please set keylink').notEmpty();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, _id: req.params.orderId }
-
+            let now = new Date().toISOString()
+            let filter = { active: true, _id: req.params.orderId, sharelink: { $elemMatch: { _id: req.params.keylink, expireTime: { $gt: now } } } }
 
             let orders = await this.model.Order.find(filter);
+
+            if (orders.length == 0)
+                return res.json({ success: false, message: "لینک منقضی شده است " })
+
 
             let params = {};
             for (let index = 0; index < orders.length; index++) {
@@ -923,7 +928,9 @@ module.exports = new class OrderController extends Controller {
 
     async createShareLink(req, res) {
         try {
-            req.checkParams('orderId', 'please set order id').notEmpty().isMongoId();
+
+            req.checkBody('orderId', 'please set order id').notEmpty().isMongoId();
+
             if (this.showValidationErrors(req, res)) return;
 
             const Minutes = 60000;
@@ -945,14 +952,14 @@ module.exports = new class OrderController extends Controller {
                 timeExpire = time * Day
             timeExpire = Date.now() + timeExpire;
             params.expireTime = new Date(timeExpire).toISOString();
-            filter = { _id: req.params.orderId }
+            filter = { _id: req.body.orderId }
             let order = await this.model.Order.findOne(filter)
 
             order.sharelink.push(params)
             order.markModified('sharelink')
             await order.save()
 
-            return res.json({ success: true, message: 'لینک اشتراک گذاری با موفقیت ارسال شد', data: { orderId: req.params.orderId, keyLink: params._id } })
+            return res.json({ success: true, message: 'لینک اشتراک گذاری با موفقیت ارسال شد', data: { orderId: req.body.orderId, keyLink: params._id } })
 
 
         }

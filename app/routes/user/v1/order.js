@@ -383,7 +383,7 @@ router.post('/delivery/sms', OrderController.sendDeliverySms.bind(OrderControlle
 
 
 /**
- * @api {get} /api/user/v1/order/details/orderId get orderDetails
+ * @api {get} /api/user/v1/order/details/orderId/keylink get orderDetails
  * @apiVersion 1.0.0
  * @apiName getOrderDetails
  * @apiDescription get order details, 
@@ -413,12 +413,12 @@ router.post('/delivery/sms', OrderController.sendDeliverySms.bind(OrderControlle
  *      }]
  * } 
  */
-router.get('/details/:orderId', OrderController.orderDetails.bind(OrderController));
+router.get('/details/:orderId/:keylink', OrderController.orderDetails.bind(OrderController));
 
 
 
 /**
-* @api {put} /api/user/v1/order/details/sharelink/orderId create share link
+* @api {post} /api/user/v1/order/details/sharelink/orderId create share link
 * @apiVersion 1.0.0
 * @apiName createShareLink
 * @apiDescription create share link for order.
@@ -436,10 +436,10 @@ router.get('/details/:orderId', OrderController.orderDetails.bind(OrderControlle
 * @apiErrorExample {json} Error-Response:
 * {
 *      success: false,
-*      message: "سفارش موجود نیست"
+*      message: "خطا در ایجاد لینک"
 * }
 */
-router.get('/details/sharelink/:orderId', OrderController.createShareLink.bind(OrderController));
+router.post('/details/sharelink', OrderController.createShareLink.bind(OrderController));
 
 
 

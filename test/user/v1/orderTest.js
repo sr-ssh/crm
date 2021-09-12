@@ -32,6 +32,7 @@ describe(`${sectionName}`, () => {
         addOrderNotes = appConfig.test.addOrderNotes;
         editeStatusNotes = appConfig.test.editeStatusNotes;
         createShareLinkOrder = appConfig.test.createShareLinkOrder;
+        getOrderDetails = appConfig.test.getOrderDetails
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -86,15 +87,18 @@ describe(`${sectionName}`, () => {
         });
 
 
+
+
         it('check get order details ', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/details/sharelink/${createShareLinkOrder.orderId}`)
+                .get(`${baseRoute}/details/${getOrderDetails.orderId}/${getOrderDetails.keylink}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
             res.should.have.status(200);
         });
+
 
 
     });
@@ -128,6 +132,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(deliverySms);
+            res.should.have.status(200);
+        });
+
+        it('check get order share link ', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/details/sharelink`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(createShareLinkOrder);
             res.should.have.status(200);
         });
 
