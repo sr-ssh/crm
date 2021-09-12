@@ -417,4 +417,30 @@ router.get('/details/:orderId', OrderController.orderDetails.bind(OrderControlle
 
 
 
+/**
+* @api {put} /api/user/v1/order/details/sharelink/orderId create share link
+* @apiVersion 1.0.0
+* @apiName createShareLink
+* @apiDescription create share link for order.
+* @apiGroup order
+* @apiParam {varchar} orderId  orderId
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "لینک اشتراک گذاری با موفقیت ارسال شد",
+*      data:{
+*          orderId:"5435435435865419685",
+*          keyLink:"KTH7527AIC8QB"    
+*          } 
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "سفارش موجود نیست"
+* }
+*/
+router.get('/details/sharelink/:orderId', OrderController.createShareLink.bind(OrderController));
+
+
+
 module.exports = router;

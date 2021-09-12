@@ -18,7 +18,7 @@ describe(`${sectionName}`, () => {
         console.log('Waiting to ensure database connection stablished ');
         order = appConfig.test.order;
         order_V1 = appConfig.test.order_V1;
-        user = appConfig.test.user;
+        user = appConfig.test.userMBH;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -31,7 +31,7 @@ describe(`${sectionName}`, () => {
         getNotes = appConfig.test.getNotes;
         addOrderNotes = appConfig.test.addOrderNotes;
         editeStatusNotes = appConfig.test.editeStatusNotes;
-        getOrderDetails = appConfig.test.getOrderDetails;
+        createShareLinkOrder = appConfig.test.createShareLinkOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -89,7 +89,7 @@ describe(`${sectionName}`, () => {
         it('check get order details ', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/details/${getOrderDetails.orderId}`)
+                .get(`${baseRoute}/details/sharelink/${createShareLinkOrder.orderId}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();

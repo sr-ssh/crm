@@ -37,6 +37,15 @@
             "code": "7386",
             "position": 1
         },
+        "userMBH": {
+            "password": "123456",
+            "family": "محمد رضا حیدری",
+            "email": "9amir9heidari9@gmail.com",
+            "mobile": "09218570513",
+            "mobileOrEmail": "09218570513",
+            "code": "7386",
+            "position":2
+        },
         "newUser": {
             "password": "123",
             "family": "علی محمودی",
@@ -241,7 +250,7 @@
             "orderId":"6110d6f29e5663816cbdc616",
             "status": "0"
         },
-        "getOrderDetails":{
+        "createShareLinkOrder":{
             "orderId":"60f2cd3b3aab183cc4823af8"
         }
     }

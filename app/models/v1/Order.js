@@ -19,6 +19,14 @@ let Order = new Schema({
             writtenBy: { type: Schema.Types.ObjectId, ref: 'User' }
         }]
     },
+    sharelink: {
+        type: Array, default: [{
+            _id: { type: String },
+            createdAt: { type: Date },
+            expireTime: { type: Date },
+            createdBy: { type: Schema.Types.ObjectId, ref: 'User' }
+        }]
+    },
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
     address: { type: String },
     readyTime: { type: Date },

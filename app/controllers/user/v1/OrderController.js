@@ -1,3 +1,4 @@
+const { param } = require("../../../routes");
 
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Order';
@@ -917,6 +918,56 @@ module.exports = new class OrderController extends Controller {
             if (!res.headersSent) return res.status(500).json(handelError);
         }
     }
+
+
+
+    async createShareLink(req, res) {
+        try {
+            req.checkParams('orderId', 'please set order id').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            const Minutes = 60000;
+            const Hour = 3600000;
+            const Day = 86400000;
+            const id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+            let params = { _id: id, createdAt: new Date().toISOString(), createdBy: req.decodedData.user_id };
+            let timeExpire;
+
+            let filter = { _id: req.decodedData.user_employer }
+            let employer = await this.model.User.findOne(filter, "setting.order")
+
+            let { time, unitTime } = employer.setting.order.share
+            if (unitTime == "M")
+                timeExpire = time * Minutes
+            if (unitTime == "H")
+                timeExpire = time * Hour
+            if (unitTime == "D")
+                timeExpire = time * Day
+            timeExpire = Date.now() + timeExpire;
+            params.expireTime = new Date(timeExpire).toISOString();
+            filter = { _id: req.params.orderId }
+            let order = await this.model.Order.findOne(filter)
+
+            order.sharelink.push(params)
+            order.markModified('sharelink')
+            await order.save()
+
+            return res.json({ success: true, message: 'لینک اشتراک گذاری با موفقیت ارسال شد', data: { orderId: req.params.orderId, keyLink: params._id } })
+
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('createShareLink')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 
 }
 
