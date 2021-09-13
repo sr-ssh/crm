@@ -142,7 +142,7 @@
             "endDate": "1900-01-01T05:42:13.845Z"
         },
         "getOrderParams_V1": {
-            "status": 3,
+            "status": " ",
             "customerName": " ",
             "customerMobile": "0",
             "startDate": "1900-01-01T05:42:13.845Z",

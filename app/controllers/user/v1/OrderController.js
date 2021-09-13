@@ -385,7 +385,7 @@ module.exports = new class OrderController extends Controller {
                 filter = { $nor: [{ status: 3 }], ...filter }
 
 
-            let orders = await this.model.Order.find(filter).sort({ createdAt: -1 });
+            let orders = await this.model.Order.find(filter).populate({ path: 'notes.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
 
             let params = [];
             for (let index = 0; index < orders.length; index++) {
@@ -394,6 +394,7 @@ module.exports = new class OrderController extends Controller {
                     active: orders[index].active,
                     status: orders[index].status,
                     products: orders[index].products,
+                    notes: orders[index].notes,
                     customer: orders[index].customer,
                     address: orders[index].address,
                     readyTime: orders[index].readyTime,
@@ -467,7 +468,33 @@ module.exports = new class OrderController extends Controller {
                         params[index].products[j].name = productInfo.name;
                 }
             }
+            let paramsNote;
+            let dataNote;
+            let isPrivate;
 
+            for (let noteIndex = 0; noteIndex < params.length; noteIndex++) {
+                if (params[noteIndex].notes.length > 0) {
+                    dataNote = params[noteIndex].notes.filter(item => item.private === false)
+                    paramsNote = params[noteIndex].notes.filter(item => (item.private === true && item.writtenBy._id.toString() === req.decodedData.user_id))
+
+                    if (paramsNote.length > 0) {
+                        isPrivate = true;
+                        paramsNote = paramsNote.reduce((result, item) => {
+                            result = item;
+                            dataNote.push(result)
+                        }, {});
+                    } else {
+                        isPrivate = false;
+                    }
+
+                    dataNote.map(item => {
+                        item.writtenBy = item.writtenBy?.family
+                        return item
+                    })
+                    params[noteIndex].notes = { Notes: dataNote, isPrivate: isPrivate };
+                }
+
+            }
 
 
 

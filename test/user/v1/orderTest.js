@@ -68,7 +68,7 @@ describe(`${sectionName}`, () => {
         it('check get orders V1', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams.customerName)}/09307580142/${getOrderParams.startDate}/${getOrderParams.endDate}`)
+                .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams_V1.customerName)}/${getOrderParams_V1.customerMobile}/${getOrderParams_V1.startDate}/${getOrderParams_V1.endDate}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
