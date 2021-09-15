@@ -84,6 +84,7 @@ module.exports = new class HomeController extends Controller {
                 params.address = req.body.companyAddress
                 params.setting = {
                     order: {
+                        share: { time: 1, unitTime: "D" },
                         preSms: { text: config.addOrderSms, status: false },
                         postDeliverySms: { text: "", status: false },
                         postCustomerSms: { text: config.deliveryAcknowledgeSms, status: false }
