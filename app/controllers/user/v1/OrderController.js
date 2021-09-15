@@ -909,7 +909,7 @@ module.exports = new class OrderController extends Controller {
 
 
             filter = { _id: params.employee }
-            let employees = await this.model.User.find(filter, { _id: 1, family: 1 })
+            let employees = await this.model.User.find(filter, { _id: 1, family: 1, address: 1 })
 
             let employeeInfo = employees.find(user => user._id.toString() == params.employee)
             params.employee = employeeInfo;
