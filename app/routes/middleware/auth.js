@@ -3,13 +3,13 @@ const authError = require("./authError")
 
 
 module.exports = (req, res, next) => {
-    
+
     let idToken = req.body.idToken || req.query.idToken || req.headers['idtoken']
     let accessToken = req.body.accessToken || req.query.accessToken || req.headers['authorization']
 
     // // check for public route
     let publicRoute = config.publicRoute;
-    if (publicRoute.includes(req.originalUrl))
+    if (publicRoute.includes(req.originalUrl) || publicRoute.includes(req.originalUrl.substr(0, 27)))
         return next();
 
 
@@ -20,51 +20,51 @@ module.exports = (req, res, next) => {
         });
     }
 
-    
-    let options = { 
+
+    let options = {
         algorithms: config.algorithm,
         issuer: config.issuer,
         audience: config.audience
     }
-    
+
 
     jwt.verify(accessToken, config.secret, options, function (err, decoded) {
-        if (err) 
+        if (err)
             throw {
-                name: 'UnauthorizedError', 
-                status: 403, 
+                name: 'UnauthorizedError',
+                status: 403,
                 massage: "token has expired"
             };
-        
+
         if (decoded == undefined)
             throw {
-                name: 'UnauthorizedError', 
-                status: 403, 
+                name: 'UnauthorizedError',
+                status: 403,
                 massage: "accessToken is not valid"
             };
-    
+
         let has_scopes = decoded.scope === config.userScope;
-        if (!has_scopes) 
+        if (!has_scopes)
             throw {
-                name: 'UnauthorizedError', 
-                status: 401, 
+                name: 'UnauthorizedError',
+                status: 401,
                 massage: "permission denied"
             };
     });
 
     jwt.verify(idToken, config.secret, options, function (err, decoded) {
-        if (err) 
+        if (err)
             throw {
-                name: 'UnauthorizedError', 
-                status: 403, 
+                name: 'UnauthorizedError',
+                status: 403,
                 massage: "token has expired"
             };
-    
-        
+
+
         if (decoded == undefined)
             throw {
-                name: 'UnauthorizedError', 
-                status: 403, 
+                name: 'UnauthorizedError',
+                status: 403,
                 massage: "idToken is not valid"
             };
 

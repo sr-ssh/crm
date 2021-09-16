@@ -93,8 +93,6 @@ describe(`${sectionName}`, () => {
             const res = await chai
                 .request(server)
                 .get(`${baseRoute}/details/${getOrderDetails.orderId}/${getOrderDetails.keylink}`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
                 .send();
             res.should.have.status(200);
         });
