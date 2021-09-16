@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
     // // check for public route
     let publicRoute = config.publicRoute;
-    if (publicRoute.includes(req.originalUrl) || publicRoute.includes(req.originalUrl.substr(0, 27)))
+    if (publicRoute.includes(req.originalUrl) || (publicRoute.includes(req.originalUrl.substr(0, 27)) && req.method == "GET"))
         return next();
 
 
