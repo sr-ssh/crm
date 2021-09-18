@@ -301,6 +301,7 @@ module.exports = new class CustomerController extends Controller {
 
             let workbook = new ExcelJS.Workbook();
             let worksheet = workbook.addWorksheet("ReportsOfCustomers");
+            worksheet.views = [{ rightToLeft: true }]
             let name = 'ExcelCustomers.xlsx'
 
             worksheet.columns = [

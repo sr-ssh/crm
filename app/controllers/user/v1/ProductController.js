@@ -93,6 +93,8 @@ module.exports = new class ProductController extends Controller {
 
             let workbook = new ExcelJS.Workbook();
             let worksheet = workbook.addWorksheet("ReportsOfProducts");
+            worksheet.views = [{ rightToLeft: true }]
+
             let name = 'ExcelProducts.xlsx'
 
             worksheet.columns = [
