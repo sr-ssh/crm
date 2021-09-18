@@ -402,7 +402,9 @@ module.exports = new class EmployeeController extends Controller {
                         finance: false,
                         getCustomers: true,
                         getEmployees: false,
-                        getDiscounts: false
+                        getDiscounts: false,
+                        excelProduct: false,
+                        excelCustomer: false
                     }
                 }
                 await this.model.User.findOneAndUpdate(filter, update)
