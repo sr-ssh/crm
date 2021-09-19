@@ -354,6 +354,8 @@ module.exports = new class OrderController extends Controller {
 
     async getOrdersV1(req, res) {
         try {
+
+            req.checkParams('status', 'please set status').exists();
             req.checkParams('customerName', 'please set customerName').notEmpty();
             req.checkParams('customerMobile', 'please set customerMobile').notEmpty();
             req.checkParams('startDate', 'please set startDate').notEmpty().isISO8601();
