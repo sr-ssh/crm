@@ -518,7 +518,7 @@ module.exports = new class OrderController extends Controller {
         try {
 
             req.checkBody('orderId', 'please set order id').notEmpty();
-            req.checkBody('status', 'please set order status').notEmpty().isInt({ min: 0, max: 2 });
+            req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1, 2, 4];
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
