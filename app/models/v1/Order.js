@@ -27,6 +27,14 @@ let Order = new Schema({
             createdBy: { type: Schema.Types.ObjectId, ref: 'User' }
         }]
     },
+    financialApproval: {
+        type: Object,
+        default: {
+            status: { type: Boolean, default: false },
+            acceptedAt: { type: Date },
+            acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
+        }
+    },
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
     address: { type: String },
     readyTime: { type: Date },
