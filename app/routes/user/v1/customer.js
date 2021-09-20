@@ -39,7 +39,7 @@ const CustomerController = require(`${userController}/v1/CustomerController`)
 *       }]
 * }
 */
-router.get('/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo', CustomerController.getCustomers.bind(CustomerController));
+router.get('/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo/:orderStatus', CustomerController.getCustomers.bind(CustomerController));
 
 /**
 * @api {get} /api/user/v1/customer/excel get excel customers 

@@ -25,7 +25,8 @@ module.exports = new class CustomerController extends Controller {
             req.checkParams('lastBuyFrom', 'please enter lastBuyFrom').notEmpty().isISO8601();
             req.checkParams('lastBuyTo', 'please enter lastBuyTo').notEmpty().isISO8601();
             req.checkParams('orderFrom', 'please enter orderFrom').notEmpty().isInt({ min: 0 });
-            req.checkParams('orderTo', 'please enter orderTo').notEmpty().isInt().isInt({ min: 0 });
+            req.checkParams('orderTo', 'please enter orderTo').notEmpty().isInt({ min: 0 });
+            req.checkParams('orderStatus', 'please enter order status').notEmpty().isInt({ min: 0, max: 2 });//0 -> fail, 1 -> success, 2 -> undefined
             if (this.showValidationErrors(req, res)) return;
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
@@ -53,7 +54,6 @@ module.exports = new class CustomerController extends Controller {
 
             }
 
-
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtFrom !== TIME_FLAG)
                 filter = { active: true, user: req.decodedData.user_employer, mobile: req.params.mobile, createdAt: { $gt: req.params.createdAtFrom } }
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtTo !== TIME_FLAG)
@@ -65,6 +65,11 @@ module.exports = new class CustomerController extends Controller {
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtFrom !== TIME_FLAG && req.params.createdAtTo !== TIME_FLAG)
                 filter = { $and: [{ active: true }, { user: req.decodedData.user_employer }, { mobile: req.params.mobile }, { createdAt: { $gt: req.params.createdAtFrom } }, { createdAt: { $lt: req.params.createdAtTo } }] }
 
+            if(req.params.orderStatus === "0")
+                filter.failOrders = {$gt: 0}
+            else if(req.params.orderStatus === "1")
+                filter.successfullOrders = {$gt: 0}
+
             let customers = await this.model.Customer.find(filter).sort({ createdAt: -1 });;
 
             let params = [];
@@ -75,6 +80,8 @@ module.exports = new class CustomerController extends Controller {
                     mobile: customers[index].mobile,
                     birthday: customers[index].birthday,
                     createdAt: customers[index].createdAt,
+                    failOrders: customers[index].failOrders,
+                    successfullOrders: customers[index].successfullOrders,
                     lastBuy: '',
                     total: 0
                 }
@@ -146,6 +153,7 @@ module.exports = new class CustomerController extends Controller {
                 })
 
             res.json({ success: true, message: 'اطلاعات مشتریان با موفقیت ارسال شد', data: params })
+
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)

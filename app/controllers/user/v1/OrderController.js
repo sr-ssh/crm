@@ -1,3 +1,4 @@
+const { filterSeries } = require("async");
 const { param } = require("../../../routes");
 
 const Controller = require(`${config.path.controllers.user}/Controller`);
@@ -201,6 +202,8 @@ module.exports = new class OrderController extends Controller {
 
             // add order to customer
             await customer.order.push(order._id)
+            if(req.body.status !== 3)
+                customer.successfullOrders = customer.successfullOrders + 1;
             await customer.save()
 
             res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
@@ -521,6 +524,7 @@ module.exports = new class OrderController extends Controller {
 
             req.checkBody('orderId', 'please set order id').notEmpty();
             req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1, 2, 4];
+            // 0 -> successfull order, 4 -> fail sale opprtunity, 2 -> cancel order 
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
@@ -531,6 +535,26 @@ module.exports = new class OrderController extends Controller {
 
             order.status = req.body.status
             await order.save()
+
+            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer}
+            let customer = await this.model.Customer.findOne(filter)
+
+            switch (order.status) {
+                case 0:
+                    customer.successfullOrders = customer.successfullOrders + 1 ; 
+                    break;
+                case 4:
+                    customer.failOrders = customer.failOrders + 1 ; 
+                    break;
+                case 2:
+                    customer.failOrders = customer.failOrders + 1 ; 
+                    customer.successfullOrders = customer.successfullOrders - 1; 
+                break;
+                default:
+                    break;
+            }  
+
+            await customer.save()
 
             res.json({ success: true, message: 'وضعیت سفارش با موفقیت ویرایش شد' })
         }

@@ -10,6 +10,8 @@ let Customer = new Schema({
     birthday: { type: Date },
     company: { type: String },
     order: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Order' }] },
+    failOrders : { type: Number, default: 0 },
+    successfullOrders : { type: Number, default: 0 },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     reminder: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] }
 });
