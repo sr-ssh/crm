@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/order';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, order_V1, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder;
+let order, order_V1, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder, financialConfirmation;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -33,6 +33,7 @@ describe(`${sectionName}`, () => {
         editeStatusNotes = appConfig.test.editeStatusNotes;
         createShareLinkOrder = appConfig.test.createShareLinkOrder;
         getOrderDetails = appConfig.test.getOrderDetails
+        financialConfirmation = appConfig.test.financialConfirmation
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -215,6 +216,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editeStatusNotes);
+            res.should.have.status(200);
+        });
+
+        it('check confirm financial ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/financial/confirm`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(financialConfirmation);
             res.should.have.status(200);
         });
 

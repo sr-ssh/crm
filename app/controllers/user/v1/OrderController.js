@@ -202,7 +202,7 @@ module.exports = new class OrderController extends Controller {
 
             // add order to customer
             await customer.order.push(order._id)
-            if(req.body.status !== 3)
+            if (req.body.status !== 3)
                 customer.successfullOrders = customer.successfullOrders + 1;
             await customer.save()
 
@@ -536,23 +536,23 @@ module.exports = new class OrderController extends Controller {
             order.status = req.body.status
             await order.save()
 
-            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer}
+            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer }
             let customer = await this.model.Customer.findOne(filter)
 
             switch (order.status) {
                 case 0:
-                    customer.successfullOrders = customer.successfullOrders + 1 ; 
+                    customer.successfullOrders = customer.successfullOrders + 1;
                     break;
                 case 4:
-                    customer.failOrders = customer.failOrders + 1 ; 
+                    customer.failOrders = customer.failOrders + 1;
                     break;
                 case 2:
-                    customer.failOrders = customer.failOrders + 1 ; 
-                    customer.successfullOrders = customer.successfullOrders - 1; 
-                break;
+                    customer.failOrders = customer.failOrders + 1;
+                    customer.successfullOrders = customer.successfullOrders - 1;
+                    break;
                 default:
                     break;
-            }  
+            }
 
             await customer.save()
 
@@ -1021,6 +1021,47 @@ module.exports = new class OrderController extends Controller {
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('createShareLink')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+    async confirmFinancial(req, res) {
+        try {
+
+            req.checkBody('orderId', 'please set order id').notEmpty().isMongoId();
+
+            if (this.showValidationErrors(req, res)) return;
+
+            let params = { status: true, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
+
+            let filter = { active: true, _id: req.body.orderId }
+
+            let order = await this.model.Order.findOne(filter)
+
+            if (!order)
+                return res.json({ success: false, message: 'سفارش موجود نیست' })
+            if (order.financialApproval.status != false)
+                return res.json({ success: false, message: 'تایید مالی سفارش قابل ویرایش نیست' })
+
+            order.financialApproval = params
+            order.markModified('financialApproval')
+            await order.save()
+
+
+            return res.json({ success: true, message: 'سفارش مورد تایید مالی قرار گرفت' })
+
+
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('confirmFinancial')
                 .inputParams(req.body)
                 .call();
 

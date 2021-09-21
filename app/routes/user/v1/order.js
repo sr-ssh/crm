@@ -443,4 +443,24 @@ router.post('/details/sharelink', OrderController.createShareLink.bind(OrderCont
 
 
 
+/**
+* @api {post} /api/user/v1/order/financial/confirm  confirmation Financial 
+* @apiVersion 1.0.0
+* @apiName financialApproval
+* @apiDescription Financial confirmation of the order
+* @apiGroup order
+* @apiParam {varchar} orderId  orderId
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سفارش مورد تایید مالی قرار گرفت",
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "خطا در تایید مالی سفارش"
+* }
+*/
+router.put('/financial/confirm', OrderController.confirmFinancial.bind(OrderController));
+
 module.exports = router;
