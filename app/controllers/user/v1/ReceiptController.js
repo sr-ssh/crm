@@ -17,11 +17,11 @@ module.exports = new class ReceiptController extends Controller {
             req.checkBody('supplier', 'please enter supplier').notEmpty();
             req.checkBody('supplier.family', 'please enter supplier family').notEmpty().isString();
             req.checkBody('supplier.mobile', 'please enter supplier mobile').notEmpty().isNumeric();
-            req.checkBody('supplier.company', 'please enter supplier company').notEmpty().isString();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('note', 'please enter receipt note').notEmpty();
-            req.checkBody('note.text', 'please enter receipt note text').notEmpty().isString();
-            req.checkBody('note.createdAt', 'please enter receipt note createdAt').notEmpty().isString();
+            req.checkBody('supplier.company', 'please enter supplier company').optional().isString();
+            req.checkBody('address', 'please enter address').optional().isString();
+            req.checkBody('note', 'please enter receipt note').optional();
+            req.checkBody('note.text', 'please enter receipt note text').optional().isString();
+            req.checkBody('note.createdAt', 'please enter receipt note createdAt').optional().isString();
             if (this.showValidationErrors(req, res)) return;
 
             // add supplier
