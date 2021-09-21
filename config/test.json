@@ -256,6 +256,38 @@
         "getOrderDetails":{
             "orderId":"6140d0c97fd74e816c127f0a",
             "keylink":"KTLD6WQR9RPSD"
+        },
+        "stock": {
+            "name": "شیر",
+            "description": "شیر کیلویی"
+        },
+        "stockEdited": {
+            "_id": "61496c4aae54f6336075f4e1",
+            "name": "قهوه",
+            "active": true,
+            "description": "کلمبیا"
+        },
+        "receipt": {
+            "stock": [
+                {
+                    "_id": "61496c4aae54f6336075f4e1",
+                    "quantity": 3,
+                    "price": "30000"
+                }
+            ],
+            "note": {
+                "text": "مشتری از قیمت کالا ناراضی بود",
+                "createdAt":"1900-01-01T05:42:13.845Z"
+            },
+            "supplier": {
+                "family": "ریحانه شکوهی",
+                "mobile": "09307580142",
+                "company":"تیم ایکس"
+            },
+            "address": "معلم 24"
+        },
+        "supplier": {
+            "mobile": "09307580142"
         }
     }
 }

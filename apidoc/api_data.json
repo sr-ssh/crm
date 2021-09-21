@@ -214,6 +214,93 @@
     "groupTitle": "customer"
   },
   {
+    "type": "get",
+    "url": "/api/user/v1/customer/excel",
+    "title": "get excel customers",
+    "version": "1.0.0",
+    "name": "getExcelCustomers",
+    "description": "<p>get Excel customers . respnse description: by &quot;order&quot; field we meant order length, &quot;lastBuy&quot; is the date of the customer last buy,and &quot;total&quot; is the total price of all customer orders. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry</p>",
+    "group": "customer",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "family",
+            "description": "<p>customer family (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>customer mobile (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtFrom",
+            "description": "<p>customer membership from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtTo",
+            "description": "<p>customer membership until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyFrom",
+            "description": "<p>customer last buy from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyTo",
+            "description": "<p>customer last buy until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "orderFrom",
+            "description": "<p>minimum number of orders (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "orderTo",
+            "description": "<p>maximum number of orders (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "totalFrom",
+            "description": "<p>minimum total price of all orders of customer (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "totalTo",
+            "description": "<p>maximum total price of all orders of customer (&quot;0&quot;)</p>"
+          }
+        ]
+      }
+    },
+    "filename": "app/routes/user/v1/customer.js",
+    "groupTitle": "customer"
+  },
+  {
     "type": "post",
     "url": "/api/user/v1/discount/",
     "title": "add discount",
@@ -972,6 +1059,13 @@
           },
           {
             "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "notes",
+            "description": "<p>array of notes objects</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "Object",
             "optional": false,
             "field": "customer",
@@ -1081,6 +1175,48 @@
         {
           "title": "Success-Response:",
           "content": "{\n     success: true,\n     message: \"سفارش شما با موفقیت ثبت شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/order/details/sharelink/orderId",
+    "title": "create share link",
+    "version": "1.0.0",
+    "name": "createShareLink",
+    "description": "<p>create share link for order.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"لینک اشتراک گذاری با موفقیت ارسال شد\",\n     data:{\n         orderId:\"5435435435865419685\",\n         keyLink:\"KTH7527AIC8QB\"    \n         } \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"خطا در ایجاد لینک\"\n}",
           "type": "json"
         }
       ]
@@ -1450,6 +1586,39 @@
   },
   {
     "type": "get",
+    "url": "/api/user/v1/order/details/orderId/keylink",
+    "title": "get orderDetails",
+    "version": "1.0.0",
+    "name": "getOrderDetails",
+    "description": "<p>get order details,</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فاکتور سفارش با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         id: \"60b72a70e353f0385c2fe5af\",\n         products: [...{\n             _id: \"60b72a70e353f0385c2fe5af\",\n             name: \"لاته\",\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             createdAt: \"2021-06-01T06:54:01.691Z\"\n         },\n        createdAt: \"2021-06-01T06:54:01.691Z\",\n        updatedAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "get",
     "url": "/api/user/v1/order/v1",
     "title": "get orders",
     "version": "1.1.0",
@@ -1730,6 +1899,116 @@
     "groupTitle": "product"
   },
   {
+    "type": "put",
+    "url": "/api/user/v1/product/",
+    "title": "edit product",
+    "version": "1.0.0",
+    "name": "editProduct",
+    "description": "<p>edit product: all params must be sent even if they don't have any changes.all params are necessary and in case of no entry , there is a flag in parantheses for each optional param.if that flag entered it asumed as no entry</p>",
+    "group": "product",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>product id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "active",
+            "description": "<p>product activity status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "name",
+            "description": "<p>product name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "sellingPrice",
+            "description": "<p>product selling price</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varachar",
+            "optional": false,
+            "field": "description",
+            "description": "<p>description of product (&quot; &quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"محصول شما با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : false, \n     message : \"محصول وارد شده، موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/stock.js",
+    "groupTitle": "product"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/product/excel",
+    "title": "get excel products",
+    "version": "1.0.0",
+    "name": "getExcelProducts",
+    "description": "<p>get excel of all products</p>",
+    "group": "product",
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : false, \n     message : \"متاسفانه فایل ایجاد نشد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/product.js",
+    "groupTitle": "product"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/product/excel",
+    "title": "get excel products",
+    "version": "1.0.0",
+    "name": "getExcelProducts",
+    "description": "<p>get excel of all products</p>",
+    "group": "product",
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : false, \n     message : \"متاسفانه فایل ایجاد نشد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/stock.js",
+    "groupTitle": "product"
+  },
+  {
     "type": "get",
     "url": "/api/user/v1/product/",
     "title": "get products",
@@ -1768,6 +2047,53 @@
     },
     "filename": "app/routes/user/v1/reminder.js",
     "groupTitle": "reminder"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/settings/order/share",
+    "title": "edit shareLinh order settings",
+    "version": "1.0.0",
+    "name": "editShare",
+    "description": "<p>edit shareLinh order settings settings, unitTime &quot;M&quot; is minutes , unitTime &quot;H&quot; is hour , unitTime &quot;D&quot; is day. for e.g time is 2 and unitTime is &quot;M&quot; it means shareLink will expire after 2 minutes.</p>",
+    "group": "settings",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>the link will expire after that base on unittime</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "unitTime",
+            "description": "<p>&quot;M&quot; is minutes, &quot;H&quot; is hour, &quot;D&quot; is Day</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   duration : 5,\n   unitTime : \"M\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"ویرایش با موفقیت انجام شد\"",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/settings.js",
+    "groupTitle": "settings"
   },
   {
     "type": "put",
@@ -1835,5 +2161,94 @@
     },
     "filename": "app/routes/user/v1/settings.js",
     "groupTitle": "settings"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/settings/order/share",
+    "title": "get time and unitTime",
+    "version": "1.0.0",
+    "name": "getshare",
+    "description": "<p>get time and unitTime</p>",
+    "group": "settings",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"با موفقیت انجام شد\",\n     data: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/settings.js",
+    "groupTitle": "settings"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/stock",
+    "title": "add stock",
+    "version": "1.0.0",
+    "name": "addStock",
+    "description": "<p>add stock.</p>",
+    "group": "stock",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "name",
+            "description": "<p>stock name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varachar",
+            "optional": true,
+            "field": "description",
+            "description": "<p>description of stock</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"ماده شما با موفقیت ثبت شد\",\n     data: { \n         status: true \n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : true, \n     message : \"ماده وارد شده، موجود است\",\n     data: { \n         status: false \n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/stock.js",
+    "groupTitle": "stock"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/stock",
+    "title": "get stock",
+    "version": "1.0.0",
+    "name": "getStock",
+    "description": "<p>get stock</p>",
+    "group": "stock",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"مواد خام با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         name: \"روغن\" ,\n         description: \"خریداری شده از شرکت روغن سازان مشهد\"\n         createdAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/stock.js",
+    "groupTitle": "stock"
   }
 ]

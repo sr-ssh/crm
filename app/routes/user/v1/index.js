@@ -11,6 +11,9 @@ const reminder = require('./reminder');
 const discount = require('./discount');
 const account = require('./account');
 const settings = require('./settings');
+const stock = require('./stock');
+const receipt = require('./receipt');
+const supplier = require('./supplier');
 
 
 
@@ -24,6 +27,9 @@ router.use('/reminder', reminder)
 router.use('/discount', discount)
 router.use('/account', account)
 router.use('/settings', settings)
+router.use('/stock', stock)
+router.use('/receipt', receipt)
+router.use('/supplier', supplier)
 
 
 
