@@ -16,16 +16,14 @@ module.exports = new class SupplierController extends Controller {
     async getSuppliers(req, res) {
         try {
 
-            req.checkParams('family', 'please enter family').optional().isString();
-            req.checkParams('mobile', 'please enter mobile').optional().isNumeric();
-            req.checkParams('createdAtFrom', 'please enter createdAtFrom').optional().isISO8601();
-            req.checkParams('createdAtTo', 'please enter createdAtTo').optional().isISO8601();
-            req.checkParams('totalFrom', 'please enter totalFrom').optional().isFloat({ min: 0 });
-            req.checkParams('totalTo', 'please enter totalTo').optional().isFloat({ min: 0 });
-            req.checkParams('lastBuyFrom', 'please enter lastBuyFrom').optional().isISO8601();
-            req.checkParams('lastBuyTo', 'please enter lastBuyTo').optional().isISO8601();
-            req.checkParams('orderFrom', 'please enter orderFrom').optional().isInt({ min: 0 });
-            req.checkParams('orderTo', 'please enter orderTo').optional().isInt({ min: 0 });
+            req.checkParams('family', 'please enter family').notEmpty().isString();
+            req.checkParams('mobile', 'please enter mobile').notEmpty().isNumeric();
+            req.checkParams('createdAtFrom', 'please enter createdAtFrom').notEmpty().isISO8601();
+            req.checkParams('createdAtTo', 'please enter createdAtTo').notEmpty().isISO8601();
+            req.checkParams('lastBuyFrom', 'please enter lastBuyFrom').notEmpty().isISO8601();
+            req.checkParams('lastBuyTo', 'please enter lastBuyTo').notEmpty().isISO8601();
+            req.checkParams('receiptFrom', 'please enter receiptFrom').notEmpty().isInt({ min: 0 });
+            req.checkParams('receiptTo', 'please enter receiptTo').notEmpty().isInt({ min: 0 });
             if (this.showValidationErrors(req, res)) return;
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
@@ -50,7 +48,6 @@ module.exports = new class SupplierController extends Controller {
                 filter = { active: true, user: req.decodedData.user_employer, createdAt: { $gt: req.params.createdAtFrom } }
             if (req.params.createdAtTo !== TIME_FLAG) {
                 filter = { active: true, user: req.decodedData.user_employer, createdAt: { $lt: req.params.createdAtTo } }
-
             }
 
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtFrom !== TIME_FLAG)
@@ -64,101 +61,50 @@ module.exports = new class SupplierController extends Controller {
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtFrom !== TIME_FLAG && req.params.createdAtTo !== TIME_FLAG)
                 filter = { $and: [{ active: true }, { user: req.decodedData.user_employer }, { mobile: req.params.mobile }, { createdAt: { $gt: req.params.createdAtFrom } }, { createdAt: { $lt: req.params.createdAtTo } }] }
 
-            if(req.params.orderStatus === "0")
-                filter.failOrders = {$gt: 0}
-            else if(req.params.orderStatus === "1")
-                filter.successfullOrders = {$gt: 0}
 
-            let customers = await this.model.Customer.find(filter).sort({ createdAt: -1 });;
+            let suppliers = await this.model.Supplier.find(filter, { family: 1, createdAt: 1, mobile: 1, company: 1}).populate('receipts').sort({ createdAt: -1 }).lean();
+            if(!suppliers)
+                return res.json({ success: true, message: 'اطلاعات تامین کننده ها با موفقیت ارسال شد', data: suppliers })
 
-            let params = [];
-            for (let index = 0; index < customers.length; index++) {
-                let param = {
-                    active: true,
-                    family: customers[index].family,
-                    mobile: customers[index].mobile,
-                    birthday: customers[index].birthday,
-                    createdAt: customers[index].createdAt,
-                    failOrders: customers[index].failOrders,
-                    successfullOrders: customers[index].successfullOrders,
-                    lastBuy: '',
-                    total: 0
-                }
-                params.push(param)
-            }
-
-            let orders = []
-            for (let index = 0; index < customers.length; index++) {
-                for (let j = 1; j < customers[index].order.length; j++) {
-                    orders.push(customers[index].order[j])
-                }
-            }
-
-            filter = { _id: { $in: orders } }
-            orders = await this.model.Order.find(filter, { _id: 1, updatedAt: 1, products: 1 })
-
-            orders = orders.map(order => {
-                order.products = order.products.map(product => product.sellingPrice * product.quantity)
-                return order
+            suppliers.map(supplier => {
+                supplier.lastBuy = supplier.receipts[supplier.receipts.length - 1].updatedAt
+                supplier.receipts = supplier.receipts.length
             })
 
-
-            let orderInfo = [];
-            for (let index = 0; index < customers.length; index++) {
-                orderInfo = orders.filter(order => customers[index].order.includes(order._id))
-                if (orderInfo.length) {
-                    params[index].lastBuy = orderInfo[orderInfo.length - 1].updatedAt
-                    params[index].order = orderInfo.length;
-                    let totalOrders = orderInfo.map(order => order.products.reduce((a, b) => parseInt(a) + parseInt(b), 0))
-                    params[index].total = totalOrders.reduce((a, b) => parseInt(a) + parseInt(b), 0)
-                }
-            }
             //filtering family, totalFrom and totalTo
             if (req.params.family !== STRING_FLAG)
-                params = params.filter(param => {
+                suppliers = suppliers.filter(param => {
                     let re = new RegExp(req.params.family, "i");
                     let find = param.family.search(re);
                     return find !== -1;
                 })
 
-            if (req.params.totalFrom !== NUMBER_FLAG)
-                params = params.filter(param => {
-                    if (param.total)
-                        return param.total >= req.params.totalFrom
-                })
-
-            if (req.params.totalTo !== NUMBER_FLAG)
-                params = params.filter(param => {
-                    if (param.total)
-                        return param.total <= req.params.totalTo
-                })
-
             //filtering lastBuy from, lastBuyTo, orderFrom, and orderTo
             if (req.params.lastBuyFrom !== TIME_FLAG)
-                params = params.filter(param => {
+                suppliers = suppliers.filter(param => {
                     return (param.lastBuy.toISOString() >= req.params.lastBuyFrom)
                 })
             if (req.params.lastBuyTo !== TIME_FLAG)
-                params = params.filter(param => {
+                suppliers = suppliers.filter(param => {
                     return param.lastBuy.toISOString() <= req.params.lastBuyTo.toISOString()
                 })
-            if (req.params.orderFrom !== NUMBER_FLAG)
-                params = params.filter(param => {
-                    return param.order >= req.params.orderFrom
+            if (req.params.receiptFrom !== NUMBER_FLAG)
+                suppliers = suppliers.filter(param => {
+                    return param.receipts >= req.params.receiptFrom
                 })
-            if (req.params.orderTo !== NUMBER_FLAG)
-                params = params.filter(param => {
-                    return param.order <= req.params.orderTo
+            if (req.params.receiptTo !== NUMBER_FLAG)
+                suppliers = suppliers.filter(param => {
+                    return param.receipts <= req.params.receiptTo
                 })
 
-            res.json({ success: true, message: 'اطلاعات مشتریان با موفقیت ارسال شد', data: params })
+            res.json({ success: true, message: 'اطلاعات تامین کننده ها با موفقیت ارسال شد', data: suppliers })
 
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getCustomers')
+                .method('getSuppliers')
                 .inputParams(req.body)
                 .call();
 
