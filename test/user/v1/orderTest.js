@@ -18,7 +18,7 @@ describe(`${sectionName}`, () => {
         console.log('Waiting to ensure database connection stablished ');
         order = appConfig.test.order;
         order_V1 = appConfig.test.order_V1;
-        user = appConfig.test.userMBH;
+        user = appConfig.test.userMJH;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;

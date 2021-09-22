@@ -164,7 +164,7 @@ module.exports = new class OrderController extends Controller {
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
                 employee: req.decodedData.user_id,
-                description: req.body.description
+                financialApproval: { status: false }
             }
 
             if (req.body.address != STRING_FLAG)
@@ -406,7 +406,7 @@ module.exports = new class OrderController extends Controller {
                     createdAt: orders[index].createdAt,
                     updatedAt: orders[index].updatedAt,
                     employee: orders[index].employee,
-                    description: orders[index].description
+                    financialApproval: orders[index].financialApproval
                 }
                 params.push(param)
             }
@@ -441,6 +441,10 @@ module.exports = new class OrderController extends Controller {
             }
 
 
+
+
+
+
             if (req.params.customerMobile !== "0")
                 params = params.filter(param => param.customer.mobile === req.params.customerMobile)
 
@@ -471,6 +475,26 @@ module.exports = new class OrderController extends Controller {
                     productInfo = products.find(product => product._id.toString() === params[index].products[j]._id.toString())
                     if (productInfo)
                         params[index].products[j].name = productInfo.name;
+                }
+            }
+
+            let financialApproval = []
+            for (let index = 0; index < params.length; index++) {
+                if (params[index].financialApproval.status == true)
+                    financialApproval.push(params[index].financialApproval.acceptedBy)
+                else
+                    financialApproval.push(null)
+
+            }
+            filter = { _id: { $in: financialApproval } }
+            financialApproval = await this.model.User.find(filter, { _id: 1, family: 1 })
+
+            for (let index = 0; index < params.length; index++) {
+                let financialApprovalInfo;
+                if (params[index].financialApproval.status === true) {
+                    financialApprovalInfo = financialApproval[index]._id.toString() === params[index].financialApproval.acceptedBy
+                    if (financialApprovalInfo)
+                        params[index].financialApproval.acceptedBy = financialApproval[index].family
                 }
             }
             let paramsNote;
