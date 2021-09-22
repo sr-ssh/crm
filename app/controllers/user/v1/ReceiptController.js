@@ -1,4 +1,5 @@
 const { filterSeries } = require("async");
+const { param } = require("express-validator/check");
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Receipt';
 
@@ -26,20 +27,19 @@ module.exports = new class ReceiptController extends Controller {
 
             // add supplier
             let filter = { mobile: req.body.supplier.mobile, user: req.decodedData.user_employer }
-            let supplier = await this.model.Supplier.findOne(filter)
-
             let params = {
                 family: req.body.supplier.family,
                 mobile: req.body.supplier.mobile,
                 user: req.decodedData.user_employer,
                 company: req.body.supplier.company
             }
+            
+            let supplier = await this.model.Supplier.findOneAndUpdate(filter, params, { upsert: true, new: true })
 
-            if (!supplier)
-                supplier = await this.model.Supplier.create(params)
-
-            req.body.note.writtenBy = req.decodedData.user_id
-            req.body.note.private = false
+            if(req.body.note) {
+                req.body.note.writtenBy = req.decodedData.user_id
+                req.body.note.private = false
+            }
 
             // add receipt
             params = {
