@@ -8,7 +8,7 @@ let Supplier = new Schema({
     username: { type: String, required: true, sparse: true },
     mobile: { type: String, required: true, sparse: true },
     company: { type: String },
-    receipts: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Receipt' }] },
+    receipts: [{ type: Schema.Types.ObjectId, ref: 'Receipt' }],
     failOrders : { type: Number, default: 0 },
     successfullOrders : { type: Number, default: 0 },
     user: { type: Schema.Types.ObjectId, ref: 'User' },

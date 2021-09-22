@@ -311,6 +311,16 @@
         },
         "shopConfirmation":{
             "receiptId":"614ae85dda5b283cc466045b"
+        },
+        "getSuppliersParams": {
+            "family": " ",
+            "mobile": "0",
+            "createdAtFrom": "1900-01-01T05:42:13.845Z",
+            "createdAtTo": "1900-01-01T05:42:13.845Z",
+            "lastBuyFrom": "1900-01-01T05:42:13.845Z",
+            "lastBuyTo": "1900-01-01T05:42:13.845Z",
+            "receiptFrom": "0",
+            "receiptTo": "2"
         }
     }
 }
