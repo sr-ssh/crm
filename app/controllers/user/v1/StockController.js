@@ -49,7 +49,7 @@ module.exports = new class StockController extends Controller {
         try {
             let filter = { user: req.decodedData.user_employer }
             let stock = await this.model.Stock.find(filter, {name: 1, description: 1, active: 1, createdAt: 1}).sort({ createdAt: -1 }).lean();
-            console.log(filter, stock)
+            
             res.json({ success: true, message: 'مواد خام با موفقیت ارسال شد', data: stock })
         }
         catch (err) {

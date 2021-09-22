@@ -16,17 +16,16 @@ module.exports = new class SupplierController extends Controller {
     async getSuppliers(req, res) {
         try {
 
-            req.checkParams('family', 'please enter family').notEmpty().isString();
-            req.checkParams('mobile', 'please enter mobile').notEmpty().isNumeric();
-            req.checkParams('createdAtFrom', 'please enter createdAtFrom').notEmpty().isISO8601();
-            req.checkParams('createdAtTo', 'please enter createdAtTo').notEmpty().isISO8601();
-            req.checkParams('totalFrom', 'please enter totalFrom').notEmpty().isFloat({ min: 0 });
-            req.checkParams('totalTo', 'please enter totalTo').notEmpty().isFloat({ min: 0 });
-            req.checkParams('lastBuyFrom', 'please enter lastBuyFrom').notEmpty().isISO8601();
-            req.checkParams('lastBuyTo', 'please enter lastBuyTo').notEmpty().isISO8601();
-            req.checkParams('orderFrom', 'please enter orderFrom').notEmpty().isInt({ min: 0 });
-            req.checkParams('orderTo', 'please enter orderTo').notEmpty().isInt({ min: 0 });
-            req.checkParams('orderStatus', 'please enter order status').notEmpty().isInt({ min: 0, max: 2 });//0 -> fail, 1 -> success, 2 -> undefined
+            req.checkParams('family', 'please enter family').optional().isString();
+            req.checkParams('mobile', 'please enter mobile').optional().isNumeric();
+            req.checkParams('createdAtFrom', 'please enter createdAtFrom').optional().isISO8601();
+            req.checkParams('createdAtTo', 'please enter createdAtTo').optional().isISO8601();
+            req.checkParams('totalFrom', 'please enter totalFrom').optional().isFloat({ min: 0 });
+            req.checkParams('totalTo', 'please enter totalTo').optional().isFloat({ min: 0 });
+            req.checkParams('lastBuyFrom', 'please enter lastBuyFrom').optional().isISO8601();
+            req.checkParams('lastBuyTo', 'please enter lastBuyTo').optional().isISO8601();
+            req.checkParams('orderFrom', 'please enter orderFrom').optional().isInt({ min: 0 });
+            req.checkParams('orderTo', 'please enter orderTo').optional().isInt({ min: 0 });
             if (this.showValidationErrors(req, res)) return;
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";

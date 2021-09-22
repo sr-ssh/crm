@@ -46,6 +46,33 @@ router.post('/', ReceiptController.addReceipt.bind(ReceiptController));
 
 
 
+/**
+* @api {post} /api/user/v1/order/confirm/shop confirmation shop 
+* @apiVersion 1.0.0
+* @apiName confirmShop
+* @apiDescription shop confirmation of the receipt
+* @apiGroup receipt
+* @apiParam {varchar} receiptId receiptId
+* @apiSuccessExample {json} Success-Response:
+* {
+*       success: true,
+*       message: "فاکتور تایید خرید شد",
+        data: {
+            status: true
+        }
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*       success: true,
+*       message: "خطا در تایید خرید فاکتور",
+        data: {
+            status: false
+        }
+* }
+*/
+router.post('/confirm/shop', ReceiptController.confirmShop.bind(ReceiptController));
+
+
 
 /**
 * @api {get} /api/user/v1/receipt  get receipts

@@ -308,6 +308,9 @@
                 "supplierMobile": "0",
                 "startDate": "1900-01-01T05:42:13.845Z",
                 "endDate": "1900-01-01T05:42:13.845Z"
+        },
+        "shopConfirmation":{
+            "receiptId":"614ae85dda5b283cc466045b"
         }
     }
 }

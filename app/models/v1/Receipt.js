@@ -11,7 +11,26 @@ let Receipt = new Schema({
             price: { type: String, required: true }
         }]
     },
+<<<<<<< HEAD
     note: { type: Object },
+=======
+    note: {
+        type: Object, default: {
+            text: { type: String },
+            private: { type: Boolean, default: false },
+            createdAt: { type: Date },
+            writtenBy: { type: Schema.Types.ObjectId, ref: 'User' }
+        }
+    },
+    shopApproval: {
+        type: Object,
+        default: {
+            status: { type: Boolean, default: false },
+            acceptedAt: { type: Date },
+            acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
+        }
+    },
+>>>>>>> 73524209cefbcb1bed21f0160ff1973f3666656f
     supplier: { type: Schema.Types.ObjectId, ref: 'Supplier' },
     address: { type: String },
     status: { type: Number, default: 0 },

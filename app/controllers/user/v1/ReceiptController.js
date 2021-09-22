@@ -1,4 +1,5 @@
 const { filterSeries } = require("async");
+const { param } = require("express-validator/check");
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Receipt';
 
@@ -17,29 +18,28 @@ module.exports = new class ReceiptController extends Controller {
             req.checkBody('supplier', 'please enter supplier').notEmpty();
             req.checkBody('supplier.family', 'please enter supplier family').notEmpty().isString();
             req.checkBody('supplier.mobile', 'please enter supplier mobile').notEmpty().isNumeric();
-            req.checkBody('supplier.company', 'please enter supplier company').notEmpty().isString();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('note', 'please enter receipt note').notEmpty();
-            req.checkBody('note.text', 'please enter receipt note text').notEmpty().isString();
-            req.checkBody('note.createdAt', 'please enter receipt note createdAt').notEmpty().isString();
+            req.checkBody('supplier.company', 'please enter supplier company').optional().isString();
+            req.checkBody('address', 'please enter address').optional().isString();
+            req.checkBody('note', 'please enter receipt note').optional();
+            req.checkBody('note.text', 'please enter receipt note text').optional().isString();
+            req.checkBody('note.createdAt', 'please enter receipt note createdAt').optional().isString();
             if (this.showValidationErrors(req, res)) return;
 
             // add supplier
             let filter = { mobile: req.body.supplier.mobile, user: req.decodedData.user_employer }
-            let supplier = await this.model.Supplier.findOne(filter)
-
             let params = {
                 family: req.body.supplier.family,
                 mobile: req.body.supplier.mobile,
                 user: req.decodedData.user_employer,
                 company: req.body.supplier.company
             }
+            
+            let supplier = await this.model.Supplier.findOneAndUpdate(filter, params, { upsert: true, new: true })
 
-            if (!supplier)
-                supplier = await this.model.Supplier.create(params)
-
-            req.body.note.writtenBy = req.decodedData.user_id
-            req.body.note.private = false
+            if(req.body.note) {
+                req.body.note.writtenBy = req.decodedData.user_id
+                req.body.note.private = false
+            }
 
             // add receipt
             params = {
@@ -332,6 +332,43 @@ module.exports = new class ReceiptController extends Controller {
             if (!res.headersSent) return res.status(500).json(handelError);
         }
     }
+
+    async confirmShop(req, res) {
+        try {
+
+            req.checkBody('receiptId', 'please set receipt id').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            let params = { status: true, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
+
+            let filter = { active: true, _id: req.body.receiptId }
+
+            let receipt = await this.model.Receipt.findOne(filter)
+
+            if (!receipt)
+                return res.json({ success: true, message: 'فاکتور موجود نیست', data: { status: false } })
+            if (receipt.shopApproval.status === true)
+                return res.json({ success: true, message: 'تایید خرید فاکتور قابل ویرایش نیست', data: { status: false } })
+
+            receipt.shopApproval = params
+            receipt.markModified('shopApproval')
+            await receipt.save()
+
+
+            return res.json({ success: true, message: 'فاکتور تایید خرید شد', data: { status: true } })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('confirmShop')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 
 
     async addOrdersNotes(req, res) {
