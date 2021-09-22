@@ -291,6 +291,9 @@
         },
         "financialConfirmation":{
             "orderId":"61488bcb24ec22ca50e6684f"
+        },
+        "shopConfirmation":{
+            "receiptId":"614ae85dda5b283cc466045b"
         }
     }
 }

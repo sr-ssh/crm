@@ -19,6 +19,14 @@ let Receipt = new Schema({
             writtenBy: { type: Schema.Types.ObjectId, ref: 'User' }
         }
     },
+    shopApproval: {
+        type: Object,
+        default: {
+            status: { type: Boolean, default: false },
+            acceptedAt: { type: Date },
+            acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
+        }
+    },
     supplier: { type: Schema.Types.ObjectId, ref: 'Supplier' },
     address: { type: String },
     status: { type: Number, default: 0 },

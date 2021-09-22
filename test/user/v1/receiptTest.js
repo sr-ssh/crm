@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/receipt';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let receipt, user;
+let receipt, user, shopConfirmation;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -17,6 +17,7 @@ describe(`${sectionName}`, () => {
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
         receipt = appConfig.test.receipt;
+        shopConfirmation = appConfig.test.shopConfirmation;
         user = appConfig.test.user;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
@@ -61,7 +62,6 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-
         it('check get order details ', async () => {
             const res = await chai
                 .request(server)
@@ -83,6 +83,17 @@ describe(`${sectionName}`, () => {
                 .send(receipt);
             res.should.have.status(200);
         });
+
+        it('check receipt confirm shop', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/confirm/shop`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(shopConfirmation);
+            res.should.have.status(200);
+        });
+
 
         it('check send delivery sms', async () => {
             const res = await chai

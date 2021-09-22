@@ -310,6 +310,43 @@ module.exports = new class ReceiptController extends Controller {
         }
     }
 
+    async confirmShop(req, res) {
+        try {
+
+            req.checkBody('receiptId', 'please set receipt id').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            let params = { status: true, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
+
+            let filter = { active: true, _id: req.body.receiptId }
+
+            let receipt = await this.model.Receipt.findOne(filter)
+
+            if (!receipt)
+                return res.json({ success: true, message: 'فاکتور موجود نیست', data: { status: false } })
+            if (receipt.shopApproval.status === true)
+                return res.json({ success: true, message: 'تایید خرید فاکتور قابل ویرایش نیست', data: { status: false } })
+
+            receipt.shopApproval = params
+            receipt.markModified('shopApproval')
+            await receipt.save()
+
+
+            return res.json({ success: true, message: 'فاکتور تایید خرید شد', data: { status: true } })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('confirmShop')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
 
     async addOrdersNotes(req, res) {
         try {
