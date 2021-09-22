@@ -46,6 +46,17 @@
             "code": "7386",
             "position":2
         },
+        "userMohsen": {
+            "password": "474210",
+            "family": "محسن",
+            "email": "",
+            "mobile": "09376148583",
+            "companyName": "تیم ایکس",
+            "companyAddress": "کلاهدوز",
+            "mobileOrEmail": "09376148583",
+            "code": "7386",
+            "position": 1
+        },
         "newUser": {
             "password": "123",
             "family": "علی محمودی",
@@ -291,6 +302,12 @@
         },
         "financialConfirmation":{
             "orderId":"61488bcb24ec22ca50e6684f"
+        },
+        "getReceipts":{
+                "supplierName": " ",
+                "supplierMobile": "0",
+                "startDate": "1900-01-01T05:42:13.845Z",
+                "endDate": "1900-01-01T05:42:13.845Z"
         }
     }
 }

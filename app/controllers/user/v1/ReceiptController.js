@@ -84,8 +84,8 @@ module.exports = new class ReceiptController extends Controller {
 
     async getReceipts(req, res) {
         try {
-            req.checkParams('customerName', 'please set customerName').notEmpty();
-            req.checkParams('customerMobile', 'please set customerMobile').notEmpty();
+            req.checkParams('supplierName', 'please set supplierName').notEmpty();
+            req.checkParams('supplierMobile', 'please set supplierMobile').notEmpty();
             req.checkParams('startDate', 'please set startDate').notEmpty().isISO8601();
             req.checkParams('endDate', 'please set endDate').notEmpty().isISO8601();
 
@@ -108,96 +108,119 @@ module.exports = new class ReceiptController extends Controller {
             if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
                 filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
 
-            let orders = await this.model.Order.find(filter).sort({ createdAt: -1 });
+            let receipts = await this.model.Receipt.find(filter).populate({ path: 'note.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
 
             let params = [];
-            for (let index = 0; index < orders.length; index++) {
+            for (let index = 0; index < receipts.length; index++) {
                 let param = {
-                    id: orders[index]._id,
-                    active: orders[index].active,
-                    status: orders[index].status,
-                    products: orders[index].products,
-                    customer: orders[index].customer,
-                    address: orders[index].address,
-                    readyTime: orders[index].readyTime,
-                    createdAt: orders[index].createdAt,
-                    updatedAt: orders[index].updatedAt,
-                    employee: orders[index].employee,
-                    description: orders[index].description
+                    id: receipts[index]._id,
+                    active: receipts[index].active,
+                    status: receipts[index].status,
+                    stock: receipts[index].stock,
+                    note: receipts[index].note,
+                    supplier: receipts[index].supplier,
+                    address: receipts[index].address,
+                    createdAt: receipts[index].createdAt,
+                    updatedAt: receipts[index].updatedAt,
+                    employee: receipts[index].employee,
                 }
                 params.push(param)
             }
 
-            let customers = []
-            for (let index = 0; index < orders.length; index++) {
-                customers.push(orders[index].customer)
+            let suppliers = []
+            for (let index = 0; index < receipts.length; index++) {
+                suppliers.push(receipts[index].supplier)
             }
 
-            filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+            filter = { _id: { $in: suppliers } }
+            suppliers = await this.model.Supplier.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
 
-            let customerInfo;
-            for (let index = 0; index < orders.length; index++) {
-                customerInfo = customers.find(user => user._id.toString() == orders[index].customer)
-                params[index].customer = customerInfo;
+            let suppliersInfo;
+            for (let index = 0; index < receipts.length; index++) {
+                suppliersInfo = suppliers.find(user => user._id.toString() == receipts[index].supplier)
+                params[index].supplier = suppliersInfo;
             }
 
 
             let employees = []
-            for (let index = 0; index < orders.length; index++) {
-                employees.push(orders[index].employee)
+            for (let index = 0; index < receipts.length; index++) {
+                employees.push(receipts[index].employee)
             }
 
             filter = { _id: { $in: employees } }
             employees = await this.model.User.find(filter, { _id: 1, family: 1 })
 
             let employeeInfo;
-            for (let index = 0; index < orders.length; index++) {
-                employeeInfo = employees.find(user => user._id.toString() == orders[index].employee)
+            for (let index = 0; index < receipts.length; index++) {
+                employeeInfo = employees.find(user => user._id.toString() == receipts[index].employee)
                 params[index].employee = employeeInfo;
             }
 
 
-            if (req.params.customerMobile !== "0")
-                params = params.filter(param => param.customer.mobile === req.params.customerMobile)
+            if (req.params.supplierMobile !== "0")
+                params = params.filter(param => param.supplier.mobile === req.params.supplierMobile)
 
-            if (req.params.customerName !== " ")
+            if (req.params.supplierName !== " ")
                 params = params.filter(param => {
-                    if (param.customer) {
-                        let re = new RegExp(req.params.customerName, "i");
-                        let find = param.customer.family.search(re);
+                    if (param.supplier) {
+                        let re = new RegExp(req.params.supplierName, "i");
+                        let find = param.supplier.family.search(re);
                         return find !== -1;
                     }
                 })
 
-            let products = []
+            let stock = []
             for (let index = 0; index < params.length; index++) {
-                for (let j = 0; j < params[index].products.length; j++) {
-                    products.push(params[index].products[j]._id)
+                for (let j = 0; j < params[index].stock.length; j++) {
+                    stock.push(params[index].stock[j]._id)
                 }
             }
-            filter = { _id: { $in: products } }
-            products = await this.model.Product.find(filter, { _id: 1, name: 1 })
+            filter = { _id: { $in: stock } }
+            stock = await this.model.Stock.find(filter, { _id: 1, name: 1 })
 
 
             for (let index = 0; index < params.length; index++) {
-                let productInfo;
-                for (let j = 0; j < params[index].products.length; j++) {
-                    productInfo = products.find(product => product._id.toString() === params[index].products[j]._id.toString())
-                    if (productInfo)
-                        params[index].products[j].name = productInfo.name;
+                let stockInfo;
+                for (let j = 0; j < params[index].stock.length; j++) {
+                    stockInfo = stock.find(stock => stock._id.toString() === params[index].stock[j]._id.toString())
+                    if (stockInfo)
+                        params[index].stock[j].name = stockInfo.name;
+                }
+            }
+
+
+            let dataNote;
+            let isPrivate;
+
+            for (let noteIndex = 0; noteIndex < params.length; noteIndex++) {
+
+                dataNote = params[noteIndex].note;
+                if (dataNote.text && dataNote.writtenBy) {
+
+
+                    if (dataNote.private === true) {
+                        if (dataNote.writtenBy._id.toString() !== req.decodedData.user_id) {
+                            dataNote = {}
+                            isPrivate = false;
+                        } else
+                            isPrivate = true;
+                    } else {
+                        isPrivate = false;
+                    }
+                    dataNote.writtenBy = dataNote.writtenBy.family
+                    params[noteIndex].note = { Note: dataNote, isPrivate: isPrivate };
                 }
             }
 
 
 
-            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: params })
+            return res.json({ success: true, message: 'فاکتور ها با موفقیت ارسال شد', data: params })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getOrders')
+                .method('getReceipts')
                 .inputParams(req.params)
                 .call();
 
@@ -222,23 +245,23 @@ module.exports = new class ReceiptController extends Controller {
             order.status = req.body.status
             await order.save()
 
-            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer}
+            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer }
             let customer = await this.model.Customer.findOne(filter)
 
             switch (order.status) {
                 case 0:
-                    customer.successfullOrders = customer.successfullOrders + 1 ; 
+                    customer.successfullOrders = customer.successfullOrders + 1;
                     break;
                 case 4:
-                    customer.failOrders = customer.failOrders + 1 ; 
+                    customer.failOrders = customer.failOrders + 1;
                     break;
                 case 2:
-                    customer.failOrders = customer.failOrders + 1 ; 
-                    customer.successfullOrders = customer.successfullOrders - 1; 
-                break;
+                    customer.failOrders = customer.failOrders + 1;
+                    customer.successfullOrders = customer.successfullOrders - 1;
+                    break;
                 default:
                     break;
-            }  
+            }
 
             await customer.save()
 

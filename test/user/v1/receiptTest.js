@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/receipt';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let receipt, user;
+let receipt, user, getReceipts;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -17,7 +17,9 @@ describe(`${sectionName}`, () => {
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
         receipt = appConfig.test.receipt;
-        user = appConfig.test.user;
+        user = appConfig.test.userMohsen;
+        getReceipts = appConfig.test.getReceipts;
+
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -40,10 +42,10 @@ describe(`${sectionName}`, () => {
 
     describe('Check get Apis', () => {
 
-        it('check get orders V1', async () => {
+        it('check get receipts', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams_V1.customerName)}/${getOrderParams_V1.customerMobile}/${getOrderParams_V1.startDate}/${getOrderParams_V1.endDate}`)
+                .get(`${baseRoute}/${getReceipts.supplierName}/${encodeURI(getReceipts.supplierMobile)}/${getReceipts.startDate}/${getReceipts.endDate}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
