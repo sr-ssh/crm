@@ -107,7 +107,7 @@ module.exports = new class ReceiptController extends Controller {
                 filter = { provider: req.decodedData.user_employer }
             if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
                 filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
-
+            filter = { status: 0, ...filter }
             let receipts = await this.model.Receipt.find(filter).populate({ path: 'note.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
 
             let params = [];
