@@ -193,22 +193,22 @@ module.exports = new class ReceiptController extends Controller {
             let isPrivate;
 
             for (let noteIndex = 0; noteIndex < params.length; noteIndex++) {
+                if (params[noteIndex].note != undefined) {
+                    dataNote = params[noteIndex].note;
+                    if (dataNote.text && dataNote.writtenBy) {
 
-                dataNote = params[noteIndex].note;
-                if (dataNote.text && dataNote.writtenBy) {
-
-
-                    if (dataNote.private === true) {
-                        if (dataNote.writtenBy._id.toString() !== req.decodedData.user_id) {
-                            dataNote = {}
+                        if (dataNote.private === true) {
+                            if (dataNote.writtenBy._id.toString() !== req.decodedData.user_id) {
+                                dataNote = {}
+                                isPrivate = false;
+                            } else
+                                isPrivate = true;
+                        } else {
                             isPrivate = false;
-                        } else
-                            isPrivate = true;
-                    } else {
-                        isPrivate = false;
+                        }
+                        dataNote.writtenBy = dataNote.writtenBy.family
+                        params[noteIndex].note = { Note: dataNote, isPrivate: isPrivate };
                     }
-                    dataNote.writtenBy = dataNote.writtenBy.family
-                    params[noteIndex].note = { Note: dataNote, isPrivate: isPrivate };
                 }
             }
 
