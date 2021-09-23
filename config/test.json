@@ -325,6 +325,17 @@
         "editReceiptStatus":{
             "receiptId":"61498eae80f72304a00c0cfe",
             "status":1
+        },
+        "editReceipt":{
+            "receiptId": "61498eae80f72304a00c0cfe",
+            "stocks" : [
+                {
+                    "_id": "61496c4aae54f6336075f4e1",
+                    "quantity": 50,
+                    "price": "15000000"
+                }
+            ],
+            "address": "کلاهدوز 4 اولین کوچه پلاک 50"
         }
     }
 }

@@ -166,6 +166,37 @@ router.get('/:supplierName/:supplierMobile/:startDate/:endDate', ReceiptControll
 */
 router.put('/status', ReceiptController.editReceiptStatus.bind(ReceiptController));
 
+/**
+* @api {put} /api/user/v1/receipt/edit edit receipt 
+* @apiVersion 1.0.0
+* @apiName editReceipt 
+* @apiDescription edit receipt  
+* @apiGroup receipt
+* @apiParam {varchar} receiptId receipt id
+* @apiParam {Object[]} stocks array of stocks objects 
+* @apiParam {varchar} address supplier address receipt
+* @apiParamExample {json} Request-Example:
+*  {
+*    receiptId : "60f2c37d4ca7f01d68ad6daf",
+*      stocks: [...{
+*          _id: "60b72a70e353f0385c2fe5af",
+*          quantity: 2,
+*          price: "30000"
+*      }],
+*      address: "معلم 24"
+*  }
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "فاکتور با موفقیت ویرایش شد"
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: false,
+*      message: "فاکتور موجود نیست"
+* }
+*/
+router.put('/edit', ReceiptController.editReceipt.bind(ReceiptController));
 
 
 // /**
@@ -235,38 +266,7 @@ router.put('/status', ReceiptController.editReceiptStatus.bind(ReceiptController
 // */
 // router.delete('/product', ReceiptController.deleteProdcutOrder.bind(ReceiptController));
 
-// /**
-// * @api {put} /api/user/v1/order/ edit product order 
-// * @apiVersion 1.0.0
-// * @apiName editeProductOrder
-// * @apiDescription edit product order 
-// * @apiGroup order
-// * @apiParam {varchar} orderId order id
-// * @apiParam {varchar} productId product id
-// * @apiParam {Object[]} products array of product objects 
-// * @apiParam {varchar} address user address order
-// * @apiParamExample {json} Request-Example:
-// *  {
-// *    orderId : "60f2c37d4ca7f01d68ad6daf",
-// *      products: [...{
-// *          _id: "60b72a70e353f0385c2fe5af",
-// *          quantity: 2,
-// *          sellingPrice: "30000"
-// *      }],
-// *      address: "معلم 24"
-// *  }
-// * @apiSuccessExample {json} Success-Response:
-// * {
-// *      success: true,
-// *      message: "سفارش با موفقیت ویرایش شد"
-// * }
-// * @apiErrorExample {json} Error-Response:
-// * {
-// *      success: false,
-// *      message: "سفارش موجود نیست"
-// * }
-// */
-// router.put('/product', ReceiptController.editProductOrder.bind(ReceiptController));
+
 
 
 // /**

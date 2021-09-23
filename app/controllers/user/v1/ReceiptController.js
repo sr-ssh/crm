@@ -559,37 +559,38 @@ module.exports = new class ReceiptController extends Controller {
     }
 
 
-    async editProductOrder(req, res) {
+    async editReceipt(req, res) {
         try {
-            req.checkBody('orderId', 'please set order id').notEmpty();
+            req.checkBody('receiptId', 'please set receipt Id').notEmpty();
             req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('products', 'please enter products').notEmpty();
-            req.checkBody('products.*._id', 'please enter product id').notEmpty();
-            req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
-            req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            req.checkBody('stocks', 'please enter stocks').notEmpty();
+            req.checkBody('stocks.*._id', 'please enter stocks id').notEmpty();
+            req.checkBody('stocks.*.quantity', 'please enter stocks quantity').notEmpty();
+            req.checkBody('stocks.*.price', 'please enter stocks price').notEmpty();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
-            let order = await this.model.Order.findOne(filter)
+            let filter = { active: true, _id: req.body.receiptId, provider: req.decodedData.user_employer }
+            let receipt = await this.model.Receipt.findOne(filter)
 
-            if (!order)
-                return res.json({ success: false, message: 'کالا موجود نیست' })
+            if (!receipt)
+                return res.json({ success: false, message: "فاکتور موجود نیست" })
 
-            order.products = req.body.products
+            receipt.stock = req.body.stocks
 
             if (req.body.address)
-                order.address = req.body.address;
+                receipt.address = req.body.address;
 
-            order.markModified('products')
-            await order.save()
 
-            res.json({ success: true, message: 'سفارش با موفقیت ویرایش شد' })
+            receipt.markModified('stock')
+            await receipt.save()
+
+            res.json({ success: true, message: 'فاکتور با موفقیت ویرایش شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editProductOrder')
+                .method('editReceipt')
                 .inputParams(req.body)
                 .call();
 

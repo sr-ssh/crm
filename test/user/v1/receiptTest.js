@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/receipt';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let receipt, user, getReceipts, shopConfirmation, editReceiptStatus;
+let receipt, user, getReceipts, shopConfirmation, editReceiptStatus, editReceipt;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -21,6 +21,7 @@ describe(`${sectionName}`, () => {
         user = appConfig.test.user;
         getReceipts = appConfig.test.getReceipts;
         editReceiptStatus = appConfig.test.editReceiptStatus
+        editReceipt = appConfig.test.editReceipt
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -162,13 +163,13 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-        it('check edit product order ', async () => {
+        it('check edit receipt   ', async () => {
             const res = await chai
                 .request(server)
-                .put(`${baseRoute}/product`)
+                .put(`${baseRoute}/edit`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
-                .send(editProductOrder);
+                .send(editReceipt);
             res.should.have.status(200);
         });
 
