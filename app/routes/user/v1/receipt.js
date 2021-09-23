@@ -150,21 +150,21 @@ router.get('/:supplierName/:supplierMobile/:startDate/:endDate', ReceiptControll
 
 
 
-// /**
-// * @api {put} /api/user/v1/order/status edit order status
-// * @apiVersion 1.0.0
-// * @apiName editOrderStatus
-// * @apiDescription edit order status, in status : send 0 for normal order , send 2 to cancele the order
-// * @apiGroup order
-// * @apiParam {int} status order status
-// * @apiParam {varchar} orderId order id
-// * @apiSuccessExample {json} Success-Response:
-// * {
-// *      success: true,
-// *      message: "وضعیت سفارش با موفقیت ویرایش شد"
-// * }
-// */
-// router.put('/status', ReceiptController.editOrderStatus.bind(ReceiptController));
+/**
+* @api {put} /api/user/v1/receipt/status edit receipt status
+* @apiVersion 1.0.0
+* @apiName editReceiptStatus
+* @apiDescription edit receipt status, in status : send 0 for normal receipt , send 2 to cancele the receipt
+* @apiGroup receipt
+* @apiParam {int} status receipt status
+* @apiParam {varchar} receiptId receipt id
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "وضعیت فاکتور با موفقیت ویرایش شد"
+* }
+*/
+router.put('/status', ReceiptController.editReceiptStatus.bind(ReceiptController));
 
 
 

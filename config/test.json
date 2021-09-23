@@ -321,6 +321,10 @@
             "lastBuyTo": "1900-01-01T05:42:13.845Z",
             "receiptFrom": "0",
             "receiptTo": "2"
+        },
+        "editReceiptStatus":{
+            "receiptId":"61498eae80f72304a00c0cfe",
+            "status":1
         }
     }
 }

@@ -33,10 +33,10 @@ module.exports = new class ReceiptController extends Controller {
                 user: req.decodedData.user_employer,
                 company: req.body.supplier.company
             }
-            
+
             let supplier = await this.model.Supplier.findOneAndUpdate(filter, params, { upsert: true, new: true })
 
-            if(req.body.note) {
+            if (req.body.note) {
                 req.body.note.writtenBy = req.decodedData.user_id
                 req.body.note.private = false
             }
@@ -231,47 +231,47 @@ module.exports = new class ReceiptController extends Controller {
     async editReceiptStatus(req, res) {
         try {
 
-            req.checkBody('orderId', 'please set order id').notEmpty();
-            req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1, 2, 4];
-            // 0 -> successfull order, 4 -> fail sale opprtunity, 2 -> cancel order 
+            req.checkBody('receiptId', 'please set receipt id').notEmpty();
+            req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1];
+            // 0 -> successfull receipt ,1 -> cancel receipt
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
-            let order = await this.model.Order.findOne(filter)
+            let filter = { active: true, _id: req.body.receiptId, provider: req.decodedData.user_employer }
+            let receipt = await this.model.Receipt.findOne(filter)
 
-            if (!order)
-                return res.json({ success: false, message: 'سفارش موجود نیست' })
+            if (!receipt)
+                return res.json({ success: false, message: 'فاکتور موجود نیست' })
 
-            order.status = req.body.status
-            await order.save()
+            receipt.status = req.body.status
+            await receipt.save()
 
-            filter = { active: true, _id: order.customer, user: req.decodedData.user_employer }
-            let customer = await this.model.Customer.findOne(filter)
+            // filter = { active: true, _id: order.customer, user: req.decodedData.user_employer }
+            // let customer = await this.model.Customer.findOne(filter)
 
-            switch (order.status) {
-                case 0:
-                    customer.successfullOrders = customer.successfullOrders + 1;
-                    break;
-                case 4:
-                    customer.failOrders = customer.failOrders + 1;
-                    break;
-                case 2:
-                    customer.failOrders = customer.failOrders + 1;
-                    customer.successfullOrders = customer.successfullOrders - 1;
-                    break;
-                default:
-                    break;
-            }
+            // switch (order.status) {
+            //     case 0:
+            //         customer.successfullOrders = customer.successfullOrders + 1;
+            //         break;
+            //     case 4:
+            //         customer.failOrders = customer.failOrders + 1;
+            //         break;
+            //     case 2:
+            //         customer.failOrders = customer.failOrders + 1;
+            //         customer.successfullOrders = customer.successfullOrders - 1;
+            //         break;
+            //     default:
+            //         break;
+            // }
 
-            await customer.save()
+            // await customer.save()
 
-            res.json({ success: true, message: 'وضعیت سفارش با موفقیت ویرایش شد' })
+            res.json({ success: true, message: 'وضعیت فاکتور با موفقیت ویرایش شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('editOrderStatus')
+                .method('editReceiptStatus')
                 .inputParams(req.body)
                 .call();
 

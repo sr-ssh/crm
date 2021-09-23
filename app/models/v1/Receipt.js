@@ -22,7 +22,7 @@ let Receipt = new Schema({
     },
     supplier: { type: Schema.Types.ObjectId, ref: 'Supplier' },
     address: { type: String },
-    status: { type: Number, default: 0 },
+    status: { type: Number, default: 0 },   // 0 -> successfull receipt ,1 -> cancel receipt
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Schema.Types.ObjectId, ref: 'User' }
 });
