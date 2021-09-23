@@ -39,24 +39,22 @@ const SupplierController = require(`${userController}/v1/SupplierController`)
 */
 router.get('/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:receiptFrom/:receiptTo', SupplierController.getSuppliers.bind(SupplierController));
 
-// /**
-// * @api {get} /api/user/v1/customer/excel get excel customers 
-// * @apiVersion 1.0.0
-// * @apiName getExcelCustomers
-// * @apiDescription get Excel customers . respnse description: by "order" field we meant order length, "lastBuy" is the date of the customer last buy,and "total" is the total price of all customer orders. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry
-// * @apiGroup customer
-// * @apiParam {varchar} family customer family (" ")
-// * @apiParam {varchar} mobile customer mobile ("0")
-// * @apiParam {varchar} createdAtFrom customer membership from this date ("1900-01-01T05:42:13.845Z")
-// * @apiParam {varchar} createdAtTo customer membership until this date ("1900-01-01T05:42:13.845Z")
-// * @apiParam {varchar} lastBuyFrom customer last buy from this date ("1900-01-01T05:42:13.845Z")
-// * @apiParam {varchar} lastBuyTo customer last buy until this date ("1900-01-01T05:42:13.845Z")
-// * @apiParam {int} orderFrom minimum number of orders ("0")
-// * @apiParam {int} orderTo maximum number of orders ("0")
-// * @apiParam {varchar} totalFrom minimum total price of all orders of customer ("0")
-// * @apiParam {varchar} totalTo maximum total price of all orders of customer ("0")
-// */
-// router.get('/excel/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo', SupplierController.getExcelCustomers.bind(SupplierController));
+/**
+* @api {get} /api/user/v1/supplier/excel get excel Suppliers 
+* @apiVersion 1.0.0
+* @apiName getExcelSuppliers
+* @apiDescription get Excel Suppliers . respnse description: by "receipts" field we meant order length, "lastBuy" is the date of the customer last buy. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry
+* @apiGroup supplier
+* @apiParam {varchar} family supplier family (" ")
+* @apiParam {varchar} mobile supplier mobile ("0")
+* @apiParam {varchar} createdAtFrom supplier membership from this date ("1900-01-01T05:42:13.845Z")
+* @apiParam {varchar} createdAtTo supplier membership until this date ("1900-01-01T05:42:13.845Z")
+* @apiParam {varchar} lastBuyFrom supplier last buy from this date ("1900-01-01T05:42:13.845Z")
+* @apiParam {varchar} lastBuyTo supplier last buy until this date ("1900-01-01T05:42:13.845Z")
+* @apiParam {int} receiptFrom minimum number of receipts ("0")
+* @apiParam {int} receiptTo maximum number of receipts ("0")
+*/
+router.get('/excel/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:receiptFrom/:receiptTo', SupplierController.getExcelSuppliers.bind(SupplierController));
 
 /**
  * @api {get} /api/user/v1/supplier get supplier
