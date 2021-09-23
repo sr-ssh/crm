@@ -52,17 +52,15 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-
-
-        // it('check get excel suppliers', async () => {
-        //     const res = await chai
-        //         .request(server)
-        //         .get(`${baseRoute}/excel/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
-        //         .set('Authorization', accessToken)
-        //         .set('idToken', idToken)
-        //         .send();
-        //     res.should.have.status(200);
-        // });
+        it('check get excel suppliers', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/excel/${encodeURI(getSuppliersParams.family)}/${encodeURI(getSuppliersParams.mobile)}/${encodeURI(getSuppliersParams.createdAtFrom)}/${encodeURI(getSuppliersParams.createdAtTo)}/${encodeURI(getSuppliersParams.lastBuyFrom)}/${encodeURI(getSuppliersParams.lastBuyTo)}/${encodeURI(getSuppliersParams.receiptFrom)}/${encodeURI(getSuppliersParams.receiptTo)}`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+        });
 
         it('check get supplier by mobile', async () => {
             const res = await chai
