@@ -237,15 +237,16 @@
             "productId": "60f2d919b2357e24ec08e9cd"
         },
         "editProductOrder": {
-            "orderId": "60f2cd3b3aab183cc4823af8",
+            "orderId": "614d9525472d8a24dcaa8404",
             "products" : [
                 {
-                    "_id": "60f2bff24ca7f01d68ad6da7",
-                    "quantity": 3,
-                    "sellingPrice": "30000"
+                    "_id": "614b4f2a6a33e815f539bf14",
+                    "quantity": 50,
+                    "sellingPrice": "10"
                 }
             ],
-            "address": "کلاهدوز 4 اولین کوچه پلاک 50"
+            "address": "اولین کوچه پلاک 50",
+            "companyName": "MJH99"
         },
         "getNotes":"6110d6f29e5663816cbdc616",
         "addOrderNotes":{

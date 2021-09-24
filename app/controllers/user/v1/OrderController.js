@@ -417,7 +417,7 @@ module.exports = new class OrderController extends Controller {
             }
 
             filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, company: 1, createdAt: 1 })
 
             let customerInfo;
             for (let index = 0; index < orders.length; index++) {
@@ -439,10 +439,6 @@ module.exports = new class OrderController extends Controller {
                 employeeInfo = employees.find(user => user._id.toString() == orders[index].employee)
                 params[index].employee = employeeInfo;
             }
-
-
-
-
 
 
             if (req.params.customerMobile !== "0")
@@ -840,7 +836,7 @@ module.exports = new class OrderController extends Controller {
     async editProductOrder(req, res) {
         try {
             req.checkBody('orderId', 'please set order id').notEmpty();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('address', 'please enter address').exists().isString();
             req.checkBody('products', 'please enter products').notEmpty();
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
@@ -858,8 +854,20 @@ module.exports = new class OrderController extends Controller {
             if (req.body.address)
                 order.address = req.body.address;
 
+
             order.markModified('products')
             await order.save()
+
+            if (req.body.companyName) {
+
+                filter = { _id: order.customer }
+                let customer = await this.model.Customer.findOne(filter)
+
+                customer.company = req.body.companyName;
+
+                customer.markModified('company')
+                await customer.save()
+            }
 
             res.json({ success: true, message: 'سفارش با موفقیت ویرایش شد' })
         }

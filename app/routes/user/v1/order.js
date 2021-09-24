@@ -250,13 +250,12 @@ router.put('/product/quantity', OrderController.editOrderQuantity.bind(OrderCont
 router.delete('/product', OrderController.deleteProdcutOrder.bind(OrderController));
 
 /**
-* @api {put} /api/user/v1/order/ edit product order 
+* @api {put} /api/user/v1/order/product edit product order 
 * @apiVersion 1.0.0
 * @apiName editeProductOrder
 * @apiDescription edit product order 
 * @apiGroup order
 * @apiParam {varchar} orderId order id
-* @apiParam {varchar} productId product id
 * @apiParam {Object[]} products array of product objects 
 * @apiParam {varchar} address user address order
 * @apiParamExample {json} Request-Example:
