@@ -263,7 +263,8 @@
             "status": "0"
         },
         "createShareLinkOrder":{
-            "orderId":"60f2cd3b3aab183cc4823af8"
+            "orderId":"614d9f0984b0cd2d747afce7",
+            "type":0
         },
         "getOrderDetails":{
             "orderId":"6140d0c97fd74e816c127f0a",

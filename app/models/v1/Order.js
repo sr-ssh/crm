@@ -22,6 +22,7 @@ let Order = new Schema({
     sharelink: {
         type: Array, default: [{
             _id: { type: String },
+            type: { type: Number },  // 0 -> formal , 1 -> informal
             createdAt: { type: Date },
             expireTime: { type: Date },
             createdBy: { type: Schema.Types.ObjectId, ref: 'User' }

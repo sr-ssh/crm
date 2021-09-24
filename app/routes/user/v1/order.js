@@ -417,12 +417,13 @@ router.get('/details/:orderId/:keylink', OrderController.orderDetails.bind(Order
 
 
 /**
-* @api {post} /api/user/v1/order/details/sharelink/orderId create share link
+* @api {post} /api/user/v1/order/details/sharelink create share link
 * @apiVersion 1.0.0
 * @apiName createShareLink
 * @apiDescription create share link for order.
 * @apiGroup order
 * @apiParam {varchar} orderId  orderId
+* @apiParam {Int} type  invoice type. 0 -> formal , 1 -> informal
 * @apiSuccessExample {json} Success-Response:
 * {
 *      success: true,

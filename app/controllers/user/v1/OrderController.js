@@ -1015,6 +1015,7 @@ module.exports = new class OrderController extends Controller {
         try {
 
             req.checkBody('orderId', 'please set order id').notEmpty().isMongoId();
+            req.checkBody('type', 'please set type').notEmpty().isInt({ min: 0, max: 1 });
 
             if (this.showValidationErrors(req, res)) return;
 
@@ -1022,7 +1023,8 @@ module.exports = new class OrderController extends Controller {
             const Hour = 3600000;
             const Day = 86400000;
             const id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
-            let params = { _id: id, createdAt: new Date().toISOString(), createdBy: req.decodedData.user_id };
+            let type = req.body.type == 0 ? 0 : req.body.type == 1 ? 1 : null;
+            let params = { _id: id, type: type, createdAt: new Date().toISOString(), createdBy: req.decodedData.user_id };
             let timeExpire;
 
             let filter = { _id: req.decodedData.user_employer }
@@ -1039,6 +1041,10 @@ module.exports = new class OrderController extends Controller {
             params.expireTime = new Date(timeExpire).toISOString();
             filter = { _id: req.body.orderId }
             let order = await this.model.Order.findOne(filter)
+
+            if (!order)
+                return res.json({ success: false, message: 'سفارش موجود نیست' })
+
 
             order.sharelink.push(params)
             order.markModified('sharelink')
