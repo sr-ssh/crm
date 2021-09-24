@@ -142,7 +142,7 @@ module.exports = new class OrderController extends Controller {
                 family: req.body.customer.family,
                 mobile: req.body.customer.mobile,
                 user: req.decodedData.user_employer,
-                company: req.body.customer.companyName
+                company: req.body.customer.company
             }
 
             if (req.body.customer.birthday != TIME_FLAG)
