@@ -954,7 +954,7 @@ module.exports = new class OrderController extends Controller {
                     params.readyTime = orders[index].readyTime,
                     params.createdAt = orders[index].createdAt,
                     params.updatedAt = orders[index].updatedAt,
-                    params.employee = orders[index].employee,
+                    params.provider = orders[index].provider,
                     params.description = orders[index].description
             }
 
@@ -966,11 +966,11 @@ module.exports = new class OrderController extends Controller {
             params.customer = customerInfo;
 
 
-            filter = { _id: params.employee }
-            let employees = await this.model.User.find(filter, { _id: 1, family: 1, address: 1 })
+            filter = { _id: params.provider }
+            let provider = await this.model.User.find(filter, { _id: 1, family: 1, address: 1 })
 
-            let employeeInfo = employees.find(user => user._id.toString() == params.employee)
-            params.employee = employeeInfo;
+            let providerInfo = provider.find(user => user._id.toString() == params.provider)
+            params.provider = providerInfo;
 
 
             let products = []
@@ -991,6 +991,15 @@ module.exports = new class OrderController extends Controller {
                         params.products[j].name = productInfo.name;
                 }
             }
+
+            orders.map((item, index) => {
+                if (item._id.toString() === req.params.orderId) {
+                    item.sharelink.map(item => {
+                        if (item._id === req.params.keylink)
+                            params.invoiceType = item.type
+                    })
+                }
+            })
 
 
             return res.json({ success: true, message: 'فاکتور سفارش با موفقیت ارسال شد', data: params })
