@@ -173,6 +173,28 @@ module.exports = new class ProductController extends Controller {
         }
     }
 
+    async uploadExcel(req, res) {
+        try {
+
+            let pathExcelFile = path.resolve(`./user${req.decodedData.user_employer}${path.extname(req.file.originalname)}`)
+
+            var workbook = new Excel.Workbook();
+            console.log(pathExcelFile)
+
+            res.json({ success: true, message: 'محصولات با موفقیت ویرایش شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('uploadExcel')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 }
 
 

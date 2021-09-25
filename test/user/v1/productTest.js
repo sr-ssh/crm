@@ -8,7 +8,7 @@ let server = require('../../../server');
 let appConfig = require('config');
 let product, user, editedProduct;
 const axios = require('axios').default;
-
+const path = require('path')
 
 chai.use(chaiHttp);
 
@@ -75,6 +75,17 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(product);
+            res.should.have.status(200);
+        });
+
+        it('check upload excel', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/uploadExcel`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .attach('excel', `${path.resolve('./user614b4dfe98729e8e544edaab.xlsx')}`)
+                .send();
             res.should.have.status(200);
         });
 
