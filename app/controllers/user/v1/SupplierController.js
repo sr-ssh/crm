@@ -252,7 +252,7 @@ module.exports = new class SupplierController extends Controller {
     async getSupplier(req, res) {
         try {
 
-            req.checkParams('mobile', 'please enter customer mobile').notEmpty().isNumeric();
+            req.checkParams('mobile', 'please enter supplier mobile').notEmpty().isNumeric();
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, user: req.decodedData.user_employer, mobile: req.params.mobile };
