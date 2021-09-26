@@ -1117,6 +1117,32 @@ module.exports = new class OrderController extends Controller {
     }
 
 
+    
+    async uploadDocuments(req, res) {
+        try {
+            req.checkBody('fileName', 'please set your fileName').notEmpty().isString();
+            req.checkBody('orderId', 'please set your orderId').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { _id: req.body.orderId }
+            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key }}}
+
+            await this.model.Order.update(filter, update)
+
+            return res.json({ success: true, message: 'مدرک اضافه شد' })
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('uploadDocuments')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
 }
 
 
