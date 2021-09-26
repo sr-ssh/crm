@@ -1,10 +1,14 @@
 const express = require('express');
+const upload = require('../../middleware/upload');
 const router = express.Router();
-
+ 
 // controllers 
 const { user: userController } = config.path.controllers;
 
 const OrderController = require(`${userController}/v1/OrderController`)
+
+//middlewares
+const uploadMiddleware = require('../../middleware/upload')
 
 
 /**
@@ -462,5 +466,27 @@ router.post('/details/sharelink', OrderController.createShareLink.bind(OrderCont
 * }
 */
 router.put('/financial/confirm', OrderController.confirmFinancial.bind(OrderController));
+
+
+
+/**
+* @api {post} /api/user/v1/order/upload/doc upload documents
+* @apiVersion 1.0.0
+* @apiName uploadDocuments
+* @apiDescription upload documents
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiParam {varchar} fileName file name
+* @apiParam {varchar} file document file
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "مدرک اضافه شد",
+* }
+*/
+router.post('/upload/doc', upload.single('file'), OrderController.uploadDocuments.bind(OrderController));
+
+
+
 
 module.exports = router;
