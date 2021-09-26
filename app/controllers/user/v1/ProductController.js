@@ -182,7 +182,7 @@ module.exports = new class ProductController extends Controller {
             let productsUser = []
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(pathExcelFile);
-            let worksheet = workbook.getWorksheet("ReportsOfProducts");
+            let worksheet = workbook.getWorksheet(1);
 
             worksheet.eachRow({ includeEmpty: true }, async (row, rowNumber) => {
 

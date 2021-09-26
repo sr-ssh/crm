@@ -101,7 +101,7 @@ router.put('/', ProductController.editProduct.bind(ProductController));
 * @apiName uplaodExcelProduct
 * @apiDescription upload file excel that contains your list of product 
 * @apiGroup product
-* @apiParam {varchar} _id product id
+* @apiParam {excel} excel excel file 
 * @apiSuccessExample {json} Success-Response:
 * {
 *      success: true,
