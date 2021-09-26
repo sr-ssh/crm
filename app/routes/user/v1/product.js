@@ -1,10 +1,11 @@
 const express = require('express');
+const { reset } = require('nodemon');
 const router = express.Router();
-
 // controllers 
 const { user: userController } = config.path.controllers;
 
 const ProductController = require(`${userController}/v1/ProductController`)
+const uploadFile = require('../../middleware/storeExcelConfig');
 
 
 /**
@@ -93,6 +94,26 @@ router.get('/', ProductController.getProducts.bind(ProductController));
 */
 router.put('/', ProductController.editProduct.bind(ProductController));
 
+
+/**
+* @api {put} /api/user/v1/product/uploadExcel upload excel product  
+* @apiVersion 1.0.0
+* @apiName uplaodExcelProduct
+* @apiDescription upload file excel that contains your list of product 
+* @apiGroup product
+* @apiParam {excel} excel excel file 
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "محصولات با موفقیت ویرایش شد"
+* }
+* @apiErrorExample {json} Error-Response:
+* { 
+*      success : false, 
+*      message : "خطا در پردازش فایل"
+* }
+*/
+router.post('/uploadExcel', uploadFile, ProductController.uploadExcel.bind(ProductController));
 
 
 module.exports = router;

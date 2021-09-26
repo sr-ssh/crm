@@ -8,7 +8,7 @@ let server = require('../../../server');
 let appConfig = require('config');
 let product, user, editedProduct;
 const axios = require('axios').default;
-
+const path = require('path')
 
 chai.use(chaiHttp);
 
@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         product = appConfig.test.product;
         editedProduct = appConfig.test.editedProduct;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
@@ -75,6 +75,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(product);
+            res.should.have.status(200);
+        });
+
+        it('check upload excel', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/uploadExcel`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .attach('excel', `${path.resolve('./ExcelProduct.xlsx')}`)
             res.should.have.status(200);
         });
 

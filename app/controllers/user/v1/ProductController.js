@@ -3,6 +3,7 @@ const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Product';
 const ExcelJS = require('exceljs');
 var path = require('path');
+const fs = require('fs')
 
 module.exports = new class ProductController extends Controller {
 
@@ -166,6 +167,72 @@ module.exports = new class ProductController extends Controller {
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('editProduct')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+    async uploadExcel(req, res) {
+        try {
+
+            let pathExcelFile = path.resolve(`./tmp/user${req.decodedData.user_employer}${path.extname(req.file.originalname)}`)
+
+            let productsUser = []
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.readFile(pathExcelFile);
+            let worksheet = workbook.getWorksheet(1);
+
+            worksheet.eachRow({ includeEmpty: true }, async (row, rowNumber) => {
+
+                if (rowNumber == 1)
+                    return
+
+                let params = {
+                    name: row.values[1],
+                    active: row.values[2] == 'فعال' ? true : false,
+                    sellingPrice: row.values[3],
+                    user: req.decodedData.user_employer
+                }
+                if (row.values[5])
+                    params.description = row.values[5]
+                productsUser.push(params)
+
+            })
+            fs.unlinkSync(pathExcelFile)
+
+            let filter = { user: req.decodedData.user_employer }
+            let products = await this.model.Product.find(filter).sort({ createdAt: -1 });
+
+            for (let index = 0; index < productsUser.length; index++) {
+
+                let find = products.find(item => item.name.trim() == productsUser[index].name.trim())
+                if (find !== undefined) {
+
+                    let param = {
+                        active: productsUser[index].active,
+                        name: find.name,
+                        sellingPrice: productsUser[index].sellingPrice
+                    }
+
+                    if (productsUser[index].description)
+                        param.description = productsUser[index].description
+
+                    let filter = { _id: find._id }
+                    await this.model.Product.findOneAndUpdate(filter, param)
+                } else {
+                    await this.model.Product.create(productsUser[index])
+                }
+            }
+
+            res.json({ success: true, message: 'محصولات با موفقیت ویرایش شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('uploadExcel')
                 .inputParams(req.body)
                 .call();
 
