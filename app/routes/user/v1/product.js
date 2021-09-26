@@ -5,7 +5,7 @@ const router = express.Router();
 const { user: userController } = config.path.controllers;
 
 const ProductController = require(`${userController}/v1/ProductController`)
-const uploadFile = require('../../middleware/UploadExcelConfig');
+const uploadFile = require('../../middleware/storeExcelConfig');
 
 
 /**
