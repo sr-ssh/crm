@@ -387,7 +387,7 @@ module.exports = new class OrderController extends Controller {
             if (req.params.status == 3)
                 filter = { status: 3, ...filter };
             else
-                filter = { $nor: [{ status: 3 }], ...filter }
+                filter = { status: 0, ...filter };
 
 
             let orders = await this.model.Order.find(filter).populate({ path: 'notes.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
@@ -1117,7 +1117,7 @@ module.exports = new class OrderController extends Controller {
     }
 
 
-    
+
     async uploadDocuments(req, res) {
         try {
             req.checkBody('fileName', 'please set your fileName').notEmpty().isString();
@@ -1125,7 +1125,7 @@ module.exports = new class OrderController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { _id: req.body.orderId }
-            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key, location: req.file.location, size: req.file.size }}}
+            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key, location: req.file.location, size: req.file.size } } }
 
             await this.model.Order.update(filter, update)
 
@@ -1149,7 +1149,7 @@ module.exports = new class OrderController extends Controller {
             req.checkParams('orderId', 'please set your orderId').notEmpty().isMongoId();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { _id: req.params.orderId,  }
+            let filter = { _id: req.params.orderId, }
             let documents = await this.model.Order.findOne(filter)
 
             return res.json({ success: true, message: 'مدارک سفارش با موفقیت فرستاده شد', data: documents.documents })
