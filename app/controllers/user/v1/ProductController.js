@@ -177,37 +177,47 @@ module.exports = new class ProductController extends Controller {
     async uploadExcel(req, res) {
         try {
 
+            // get path File that was uploaded by user
             let pathExcelFile = path.resolve(`./tmp/user${req.decodedData.user_employer}${path.extname(req.file.originalname)}`)
 
             let productsUser = []
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(pathExcelFile);
             let worksheet = workbook.getWorksheet(1);
-
+            // read Excel file
             worksheet.eachRow({ includeEmpty: true }, async (row, rowNumber) => {
 
                 if (rowNumber == 1)
                     return
 
+                const pattOnlyNum = /^[0-9]+$/;
+                const pattAlphanumeric = /^[آ-یa-zA-Z 0-9\s]+[آ-یa-zA-Z 0-9\s]+$(\.0-9+)?/;
+
                 let params = {
-                    name: row.values[1],
-                    active: row.values[2] == 'فعال' ? true : false,
-                    sellingPrice: row.values[3],
+                    name: pattAlphanumeric.test(row.values[1]) ? row.values[1] : null,
+                    active: row.values[2].trim() == 'فعال' ? true : false,
+                    sellingPrice: pattOnlyNum.test(row.values[3]) ? row.values[3] : null,
                     user: req.decodedData.user_employer
                 }
                 if (row.values[5])
                     params.description = row.values[5]
-                productsUser.push(params)
+                if (params.name != null && params.sellingPrice != null)
+                    productsUser.push(params)
 
             })
+            // Delete Excel file that was sent to upload
             fs.unlinkSync(pathExcelFile)
 
+            // find User products
             let filter = { user: req.decodedData.user_employer }
             let products = await this.model.Product.find(filter).sort({ createdAt: -1 });
+
 
             for (let index = 0; index < productsUser.length; index++) {
 
                 let find = products.find(item => item.name.trim() == productsUser[index].name.trim())
+
+                // if Product existed it'll be updated if not it will create new one
                 if (find !== undefined) {
 
                     let param = {
