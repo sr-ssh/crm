@@ -1125,7 +1125,7 @@ module.exports = new class OrderController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { _id: req.body.orderId }
-            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key }}}
+            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key, location: req.file.location, size: req.file.size }}}
 
             await this.model.Order.update(filter, update)
 
@@ -1138,6 +1138,29 @@ module.exports = new class OrderController extends Controller {
                 .class(TAG)
                 .method('uploadDocuments')
                 .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+    async showDocuments(req, res) {
+        try {
+            req.checkParams('orderId', 'please set your orderId').notEmpty().isMongoId();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { _id: req.params.orderId,  }
+            let documents = await this.model.Order.findOne(filter)
+
+            return res.json({ success: true, message: 'مدارک سفارش با موفقیت فرستاده شد', data: documents.documents })
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('showDocuments')
+                .inputParams(req.params)
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);

@@ -484,9 +484,30 @@ router.put('/financial/confirm', OrderController.confirmFinancial.bind(OrderCont
 *      message: "مدرک اضافه شد",
 * }
 */
-router.post('/upload/doc', upload.single('file'), OrderController.uploadDocuments.bind(OrderController));
+router.post('/doc', upload.single('file'), OrderController.uploadDocuments.bind(OrderController));
 
 
+
+/**
+* @api {get} /api/user/v1/order/doc show documents
+* @apiVersion 1.0.0
+* @apiName showDocuments
+* @apiDescription show documents
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiSuccessExample {json} Success-Response:
+* {
+*       success: true,
+*       message: "مدارک سفارش با موفقیت فرستاده شد", 
+        data: [...{
+            name: چک 2, 
+            key: , 
+            location: , 
+            size: 1120
+        }]
+* }
+*/
+router.get('/doc/:orderId', upload.single('file'), OrderController.showDocuments.bind(OrderController));
 
 
 module.exports = router;

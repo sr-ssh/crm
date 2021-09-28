@@ -39,7 +39,7 @@ let Order = new Schema({
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
     address: { type: String },
     readyTime: { type: Date },
-    documents: [{ _id: false, name: String, key: { type: String, unique: true } }], 
+    documents: [{ _id: false, name: String, key: { type: String, unique: true }, location: String, size: Number }], 
     status: { type: Number, default: 0 },
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Schema.Types.ObjectId, ref: 'User' },
