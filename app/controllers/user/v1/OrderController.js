@@ -488,9 +488,11 @@ module.exports = new class OrderController extends Controller {
             for (let index = 0; index < params.length; index++) {
                 let financialApprovalInfo;
                 if (params[index].financialApproval.status === true) {
-                    financialApprovalInfo = financialApproval[index]._id.toString() === params[index].financialApproval.acceptedBy
+                    let data = financialApproval.filter(item => item._id.toString() === params[index].financialApproval.acceptedBy)
+                    if (data.length > 0)
+                        financialApprovalInfo = data[0]
                     if (financialApprovalInfo)
-                        params[index].financialApproval.acceptedBy = financialApproval[index].family
+                        params[index].financialApproval.acceptedBy = financialApprovalInfo.family
                 }
             }
             let paramsNote;
