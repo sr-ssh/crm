@@ -118,6 +118,10 @@ module.exports = new class ProductController extends Controller {
                     res.setHeader('Content-Transfer-Encoding', 'binary');
                     res.setHeader('Content-Type', 'application/octet-stream');
                     res.sendFile(filePath)
+
+                    setTimeout(() => {
+                        fs.unlinkSync(filePath)
+                    }, 1500);
                 }
             });
         }

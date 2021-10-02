@@ -65,10 +65,10 @@ module.exports = new class CustomerController extends Controller {
             if (req.params.mobile !== NUMBER_FLAG && req.params.createdAtFrom !== TIME_FLAG && req.params.createdAtTo !== TIME_FLAG)
                 filter = { $and: [{ active: true }, { user: req.decodedData.user_employer }, { mobile: req.params.mobile }, { createdAt: { $gt: req.params.createdAtFrom } }, { createdAt: { $lt: req.params.createdAtTo } }] }
 
-            if(req.params.orderStatus === "0")
-                filter.failOrders = {$gt: 0}
-            else if(req.params.orderStatus === "1")
-                filter.successfullOrders = {$gt: 0}
+            if (req.params.orderStatus === "0")
+                filter.failOrders = { $gt: 0 }
+            else if (req.params.orderStatus === "1")
+                filter.successfullOrders = { $gt: 0 }
 
             let customers = await this.model.Customer.find(filter).sort({ createdAt: -1 });;
 
@@ -334,6 +334,10 @@ module.exports = new class CustomerController extends Controller {
                     res.setHeader('Content-Transfer-Encoding', 'binary');
                     res.setHeader('Content-Type', 'application/octet-stream');
                     res.sendFile(filePath)
+
+                    setTimeout(() => {
+                        fs.unlinkSync(filePath)
+                    }, 1500);
                 }
             });
 
