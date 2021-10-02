@@ -49,6 +49,7 @@ module.exports = new class ReceiptController extends Controller {
                 address: req.body.address,
                 provider: req.decodedData.user_employer,
                 employee: req.decodedData.user_id,
+                shopApproval: { status: false }
             }
             let receipt = await this.model.Receipt.create(params)
 
