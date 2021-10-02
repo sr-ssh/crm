@@ -62,12 +62,12 @@ module.exports = new class SupplierController extends Controller {
                 filter = { $and: [{ active: true }, { user: req.decodedData.user_employer }, { mobile: req.params.mobile }, { createdAt: { $gt: req.params.createdAtFrom } }, { createdAt: { $lt: req.params.createdAtTo } }] }
 
 
-            let suppliers = await this.model.Supplier.find(filter, { family: 1, createdAt: 1, mobile: 1, company: 1}).populate('receipts').sort({ createdAt: -1 }).lean();
-            if(!suppliers)
+            let suppliers = await this.model.Supplier.find(filter, { family: 1, createdAt: 1, mobile: 1, company: 1 }).populate('receipts').sort({ createdAt: -1 }).lean();
+            if (!suppliers)
                 return res.json({ success: true, message: 'تامین کننده ای وجود ندارد', data: suppliers })
 
             suppliers.map(supplier => {
-                supplier.lastBuy = supplier.receipts[supplier.receipts.length - 1].updatedAt
+                supplier.lastBuy = supplier.receipts[supplier.receipts.length - 1]?.updatedAt
                 supplier.receipts = supplier.receipts.length
             })
 
@@ -125,7 +125,7 @@ module.exports = new class SupplierController extends Controller {
             req.checkParams('receiptTo', 'please enter receiptTo').notEmpty().isInt({ min: 0 });
             if (this.showValidationErrors(req, res)) return;
 
-            
+
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
             const STRING_FLAG = " ";
             const NUMBER_FLAG = "0";
@@ -162,8 +162,8 @@ module.exports = new class SupplierController extends Controller {
                 filter = { $and: [{ active: true }, { user: req.decodedData.user_employer }, { mobile: req.params.mobile }, { createdAt: { $gt: req.params.createdAtFrom } }, { createdAt: { $lt: req.params.createdAtTo } }] }
 
 
-            let suppliers = await this.model.Supplier.find(filter, { family: 1, createdAt: 1, mobile: 1, company: 1}).populate('receipts').sort({ createdAt: -1 }).lean();
-            if(!suppliers)
+            let suppliers = await this.model.Supplier.find(filter, { family: 1, createdAt: 1, mobile: 1, company: 1 }).populate('receipts').sort({ createdAt: -1 }).lean();
+            if (!suppliers)
                 return res.json({ success: true, message: 'تامین کننده ای وجود ندارد', data: suppliers })
 
             suppliers.map(supplier => {
