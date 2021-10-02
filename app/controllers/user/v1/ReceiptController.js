@@ -124,6 +124,7 @@ module.exports = new class ReceiptController extends Controller {
                     createdAt: receipts[index].createdAt,
                     updatedAt: receipts[index].updatedAt,
                     employee: receipts[index].employee,
+                    shopApproval: receipts[index].shopApproval,
                 }
                 params.push(param)
             }
@@ -189,6 +190,29 @@ module.exports = new class ReceiptController extends Controller {
                 }
             }
 
+
+
+            let shopApproval = []
+            for (let index = 0; index < params.length; index++) {
+                if (params[index].shopApproval.status == true)
+                    shopApproval.push(params[index].shopApproval.acceptedBy)
+                else
+                    shopApproval.push(null)
+
+            }
+            filter = { _id: { $in: shopApproval } }
+            shopApproval = await this.model.User.find(filter, { _id: 1, family: 1 })
+
+            for (let index = 0; index < params.length; index++) {
+                let shopApprovalInfo;
+                if (params[index].shopApproval.status === true) {
+                    let data = shopApproval.filter(item => item._id.toString() === params[index].shopApproval.acceptedBy)
+                    if (data.length > 0)
+                        shopApprovalInfo = data[0]
+                    if (shopApprovalInfo)
+                        params[index].shopApproval.acceptedBy = shopApprovalInfo.family
+                }
+            }
 
             let dataNote;
             let isPrivate;
