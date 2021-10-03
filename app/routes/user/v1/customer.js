@@ -8,7 +8,7 @@ const CustomerController = require(`${userController}/v1/CustomerController`)
 
 
 /**
-* @api {get} /api/user/v1/customer/ get customers 
+* @api {get} /api/user/v1/customer/list get customers 
 * @apiVersion 1.0.0
 * @apiName getCustomers
 * @apiDescription get customers . respnse description: by "order" field we meant order length, "lastBuy" is the date of the customer last buy,and "total" is the total price of all customer orders. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry
@@ -39,7 +39,7 @@ const CustomerController = require(`${userController}/v1/CustomerController`)
 *       }]
 * }
 */
-router.get('/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo/:orderStatus', CustomerController.getCustomers.bind(CustomerController));
+router.get('/list/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo/:orderStatus', CustomerController.getCustomers.bind(CustomerController));
 
 /**
 * @api {get} /api/user/v1/customer/excel get excel customers 

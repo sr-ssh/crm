@@ -45,7 +45,7 @@ describe(`${sectionName}`, () => {
         it('check get customers', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
+                .get(`${baseRoute}/list/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
@@ -57,7 +57,7 @@ describe(`${sectionName}`, () => {
         it('check get excel customers', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/excel/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
+                .get(`${baseRoute}/excel/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURIComponent(getCustomerParams.createdAtFrom)}/${encodeURIComponent(getCustomerParams.createdAtTo)}/${encodeURIComponent(getCustomerParams.lastBuyFrom)}/${encodeURIComponent(getCustomerParams.lastBuyTo)}/${encodeURIComponent(getCustomerParams.orderFrom)}/${encodeURIComponent(getCustomerParams.orderTo)}/${encodeURIComponent(getCustomerParams.totalFrom)}/${encodeURIComponent(getCustomerParams.totalTo)}`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
