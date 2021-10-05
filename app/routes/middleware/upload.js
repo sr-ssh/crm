@@ -15,6 +15,7 @@ var upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'crm-doc',
+    acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});
     },
