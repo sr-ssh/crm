@@ -23,7 +23,9 @@ module.exports = new class AccountController extends Controller {
                 email: user.email,
                 mobile: user.mobile,
                 address: user.address,
-                type: user.type
+                type: user.type,
+                nationalIDCode: user.nationalIDCode,
+                financialCode: user.financialCode
             }
 
             if(user.type == config.employer)
@@ -50,11 +52,15 @@ module.exports = new class AccountController extends Controller {
     async editUserAccount(req, res) {
         try {
             if(req.body.family)
-                req.checkBody('family', 'please enter product id').notEmpty();
+                req.checkBody('family', 'please enter family').notEmpty();
             else if(req.body.company)
-                req.checkBody('company', 'please enter product id').notEmpty();
+                req.checkBody('company', 'please enter company').notEmpty();
             else if(req.body.address)
-                req.checkBody('address', 'please enter product id').notEmpty();
+                req.checkBody('address', 'please enter address').notEmpty();
+            else if(req.body.nationalIDCode)
+                req.checkBody('nationalIDCode', 'please enter nationalIDCode').notEmpty().isNumeric();
+            else if(req.body.financialCode)
+                req.checkBody('financialCode', 'please enter financialCode').notEmpty().isNumeric();
             else
                 return res.json({ success : false, message : 'اطلاعات وارد شده صحیح نمی باشد' })
 
@@ -68,6 +74,10 @@ module.exports = new class AccountController extends Controller {
                 user.address = req.body.address
             else if(user.type == config.employer && req.body.company)
                 user.company = req.body.company
+            else if(req.body.nationalIDCode)
+                user.nationalIDCode = req.body.nationalIDCode
+            else if(req.body.financialCode)
+                user.financialCode = req.body.financialCode
 
             await user.save()
 

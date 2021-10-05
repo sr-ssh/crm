@@ -14,6 +14,8 @@ let User = new Schema({
     mobile: { type: String, required: true, unique: true },
     company: String,
     address: String,
+    nationalIDCode: Number,
+    financialCode: Number,
     employer: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'User' }] },
     permission: {
