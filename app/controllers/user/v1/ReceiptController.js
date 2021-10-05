@@ -194,7 +194,7 @@ module.exports = new class ReceiptController extends Controller {
 
             let shopApproval = []
             for (let index = 0; index < params.length; index++) {
-                if (params[index].shopApproval.status == true)
+                if (params[index].shopApproval.status !== 0)
                     shopApproval.push(params[index].shopApproval.acceptedBy)
                 else
                     shopApproval.push(null)
@@ -205,7 +205,7 @@ module.exports = new class ReceiptController extends Controller {
 
             for (let index = 0; index < params.length; index++) {
                 let shopApprovalInfo;
-                if (params[index].shopApproval.status === true) {
+                if (params[index].shopApproval.status !== 0) {
                     let data = shopApproval.filter(item => item._id.toString() === params[index].shopApproval.acceptedBy)
                     if (data.length > 0)
                         shopApprovalInfo = data[0]
@@ -362,9 +362,10 @@ module.exports = new class ReceiptController extends Controller {
         try {
 
             req.checkBody('receiptId', 'please set receipt id').notEmpty().isMongoId();
+            req.checkBody('status', 'please set receipt id').notEmpty().isIn[1, 2];
             if (this.showValidationErrors(req, res)) return;
 
-            let params = { status: true, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
+            let params = { status: req.body.status, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
 
             let filter = { active: true, _id: req.body.receiptId }
 
@@ -372,8 +373,6 @@ module.exports = new class ReceiptController extends Controller {
 
             if (!receipt)
                 return res.json({ success: true, message: 'فاکتور موجود نیست', data: { status: false } })
-            if (receipt.shopApproval.status === true)
-                return res.json({ success: true, message: 'تایید خرید فاکتور قابل ویرایش نیست', data: { status: false } })
 
             receipt.shopApproval = params
             receipt.markModified('shopApproval')

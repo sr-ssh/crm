@@ -50,9 +50,10 @@ router.post('/', ReceiptController.addReceipt.bind(ReceiptController));
 * @api {post} /api/user/v1/order/confirm/shop confirmation shop 
 * @apiVersion 1.0.0
 * @apiName confirmShop
-* @apiDescription shop confirmation of the receipt
+* @apiDescription shop confirmation of the receipt. for 'status' enter 1 for approving and 2 for dening
 * @apiGroup receipt
 * @apiParam {varchar} receiptId receiptId
+* @apiParam {varchar} status receipt status [1, 2]
 * @apiSuccessExample {json} Success-Response:
 * {
 *       success: true,

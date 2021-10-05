@@ -2257,7 +2257,7 @@
     "title": "confirmation shop",
     "version": "1.0.0",
     "name": "confirmShop",
-    "description": "<p>shop confirmation of the receipt</p>",
+    "description": "<p>shop confirmation of the receipt. for 'status' enter 1 for approving and 2 for dening</p>",
     "group": "receipt",
     "parameter": {
       "fields": {
@@ -2268,6 +2268,13 @@
             "optional": false,
             "field": "receiptId",
             "description": "<p>receiptId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "status",
+            "description": "<p>receipt status [1, 2]</p>"
           }
         ]
       }

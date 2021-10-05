@@ -15,7 +15,7 @@ let Receipt = new Schema({
     shopApproval: {
         type: Object,
         default: {
-            status: { type: Boolean, default: false },
+            status: { type: Number, default: 0 }, // 0->no info, 1-> approved, 2->failed
             acceptedAt: { type: Date },
             acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
         }
