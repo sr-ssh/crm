@@ -1618,7 +1618,7 @@ define({ "api": [
     "title": "confirmation Financial",
     "version": "1.0.0",
     "name": "financialApproval",
-    "description": "<p>Financial confirmation of the order</p>",
+    "description": "<p>Financial confirmation of the order.for 'status' enter 1 for approving and 2 for dening</p>",
     "group": "order",
     "parameter": {
       "fields": {
@@ -1628,7 +1628,14 @@ define({ "api": [
             "type": "varchar",
             "optional": false,
             "field": "orderId",
-            "description": "<p>orderId</p>"
+            "description": "<p>order id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "status",
+            "description": "<p>order confirm financial status [1, 2]</p>"
           }
         ]
       }
@@ -1637,7 +1644,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"سفارش مورد تایید مالی قرار گرفت\",\n}",
+          "content": "{\n     success: true,\n     message: \"سفارش مورد تایید مالی قرار گرفت\", \n    data: { status: true } \n}",
           "type": "json"
         }
       ]
@@ -1646,7 +1653,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n     success: false,\n     message: \"خطا در تایید مالی سفارش\"\n}",
+          "content": "{\n     success: true,\n     message: \"خطا در تایید مالی سفارش\",\n    data: { status: false } \n}",
           "type": "json"
         }
       ]

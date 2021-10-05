@@ -476,7 +476,7 @@ module.exports = new class OrderController extends Controller {
 
             let financialApproval = []
             for (let index = 0; index < params.length; index++) {
-                if (params[index].financialApproval.status == true)
+                if (params[index].financialApproval.status !== 0)
                     financialApproval.push(params[index].financialApproval.acceptedBy)
                 else
                     financialApproval.push(null)
@@ -487,7 +487,7 @@ module.exports = new class OrderController extends Controller {
 
             for (let index = 0; index < params.length; index++) {
                 let financialApprovalInfo;
-                if (params[index].financialApproval.status === true) {
+                if (params[index].financialApproval.status !== 0) {
                     let data = financialApproval.filter(item => item._id.toString() === params[index].financialApproval.acceptedBy)
                     if (data.length > 0)
                         financialApprovalInfo = data[0]
@@ -1082,28 +1082,24 @@ module.exports = new class OrderController extends Controller {
         try {
 
             req.checkBody('orderId', 'please set order id').notEmpty().isMongoId();
-
+            req.checkBody('status', 'please set order id').notEmpty().isIn[1, 2];
             if (this.showValidationErrors(req, res)) return;
 
-            let params = { status: true, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
+            let params = { status: req.body.status, acceptedAt: new Date().toISOString(), acceptedBy: req.decodedData.user_id };
 
             let filter = { active: true, _id: req.body.orderId }
 
             let order = await this.model.Order.findOne(filter)
 
             if (!order)
-                return res.json({ success: false, message: 'سفارش موجود نیست' })
-            if (order.financialApproval.status != false)
-                return res.json({ success: false, message: 'تایید مالی سفارش قابل ویرایش نیست' })
+                return res.json({ success: true, message: 'سفارش موجود نیست', data: { status: false } })
 
             order.financialApproval = params
             order.markModified('financialApproval')
             await order.save()
 
 
-            return res.json({ success: true, message: 'سفارش مورد تایید مالی قرار گرفت' })
-
-
+            return res.json({ success: true, message: 'وضعیت مالی سفارش ثبت شد', data: { status: true } })
 
         }
         catch (err) {
