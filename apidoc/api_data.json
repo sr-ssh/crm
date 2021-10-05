@@ -76,6 +76,67 @@
     "groupTitle": "account"
   },
   {
+    "type": "post",
+    "url": "/api/user/v1/customer/formalinfo",
+    "title": "add customer formalInfo",
+    "version": "1.0.0",
+    "name": "addCustomerformalInfo",
+    "description": "<p>add customer formalInfo</p>",
+    "group": "customer",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "customerId",
+            "optional": false,
+            "field": "customerId",
+            "description": "<p>customer id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "nationalCard",
+            "optional": false,
+            "field": "nationalCard",
+            "description": "<p>customer national ID card number</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "financialCode",
+            "optional": false,
+            "field": "financialCode",
+            "description": "<p>customer financial code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "postalCode",
+            "optional": false,
+            "field": "postalCode",
+            "description": "<p>customer postal code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "registerNo",
+            "optional": false,
+            "field": "registerNo",
+            "description": "<p>customer register number</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"اطلاعات مشتری با موفقیت ثبت شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/customer.js",
+    "groupTitle": "customer"
+  },
+  {
     "type": "get",
     "url": "/api/user/v1/customer/",
     "title": "get customer",
@@ -119,7 +180,7 @@
   },
   {
     "type": "get",
-    "url": "/api/user/v1/customer/",
+    "url": "/api/user/v1/customer/list",
     "title": "get customers",
     "version": "1.0.0",
     "name": "getCustomers",
@@ -1184,7 +1245,7 @@
   },
   {
     "type": "post",
-    "url": "/api/user/v1/order/details/sharelink/orderId",
+    "url": "/api/user/v1/order/details/sharelink",
     "title": "create share link",
     "version": "1.0.0",
     "name": "createShareLink",
@@ -1199,6 +1260,13 @@
             "optional": false,
             "field": "orderId",
             "description": "<p>orderId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "type",
+            "description": "<p>invoice type. 0 -&gt; formal , 1 -&gt; informal</p>"
           }
         ]
       }
@@ -1427,7 +1495,7 @@
   },
   {
     "type": "put",
-    "url": "/api/user/v1/order/",
+    "url": "/api/user/v1/order/product",
     "title": "edit product order",
     "version": "1.0.0",
     "name": "editeProductOrder",
@@ -1442,13 +1510,6 @@
             "optional": false,
             "field": "orderId",
             "description": "<p>order id</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "productId",
-            "description": "<p>product id</p>"
           },
           {
             "group": "Parameter",
@@ -1544,6 +1605,48 @@
         {
           "title": "Error-Response:",
           "content": "{\n     success: false,\n     message: \"یادداشت موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/order/financial/confirm",
+    "title": "confirmation Financial",
+    "version": "1.0.0",
+    "name": "financialApproval",
+    "description": "<p>Financial confirmation of the order</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سفارش مورد تایید مالی قرار گرفت\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"خطا در تایید مالی سفارش\"\n}",
           "type": "json"
         }
       ]
@@ -1773,6 +1876,86 @@
     "groupTitle": "order"
   },
   {
+    "type": "get",
+    "url": "/api/user/v1/order/doc",
+    "title": "show documents",
+    "version": "1.0.0",
+    "name": "showDocuments",
+    "description": "<p>show documents</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      success: true,\n      message: \"مدارک سفارش با موفقیت فرستاده شد\", \n        data: [...{\n            name: چک 2, \n            key: , \n            location: , \n            size: 1120\n        }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/order/upload/doc",
+    "title": "upload documents",
+    "version": "1.0.0",
+    "name": "uploadDocuments",
+    "description": "<p>upload documents</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "fileName",
+            "description": "<p>file name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "file",
+            "description": "<p>document file</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"مدرک اضافه شد\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
     "type": "post",
     "url": "/api/user/v1/product/",
     "title": "add product",
@@ -1899,76 +2082,6 @@
     "groupTitle": "product"
   },
   {
-    "type": "put",
-    "url": "/api/user/v1/product/",
-    "title": "edit product",
-    "version": "1.0.0",
-    "name": "editProduct",
-    "description": "<p>edit product: all params must be sent even if they don't have any changes.all params are necessary and in case of no entry , there is a flag in parantheses for each optional param.if that flag entered it asumed as no entry</p>",
-    "group": "product",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "_id",
-            "description": "<p>product id</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "active",
-            "description": "<p>product activity status</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "name",
-            "description": "<p>product name</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "sellingPrice",
-            "description": "<p>product selling price</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varachar",
-            "optional": false,
-            "field": "description",
-            "description": "<p>description of product (&quot; &quot;)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"محصول شما با موفقیت ویرایش شد\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "{ \n     success : false, \n     message : \"محصول وارد شده، موجود نیست\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/stock.js",
-    "groupTitle": "product"
-  },
-  {
     "type": "post",
     "url": "/api/user/v1/product/excel",
     "title": "get excel products",
@@ -2027,6 +2140,308 @@
     },
     "filename": "app/routes/user/v1/product.js",
     "groupTitle": "product"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/product/uploadExcel",
+    "title": "upload excel product",
+    "version": "1.0.0",
+    "name": "uplaodExcelProduct",
+    "description": "<p>upload file excel that contains your list of product</p>",
+    "group": "product",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "excel",
+            "optional": false,
+            "field": "excel",
+            "description": "<p>excel file</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"محصولات با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : false, \n     message : \"خطا در پردازش فایل\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/product.js",
+    "groupTitle": "product"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/receipt",
+    "title": "add receipt",
+    "version": "1.1.0",
+    "name": "addReceipt",
+    "description": "<p>add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;. for set order to sale opprotunity send status 3 otherwise don't send status.</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "stock",
+            "description": "<p>supplier stock</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "note",
+            "description": "<p>receipt note</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "supplier",
+            "description": "<p>supplier information</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "address",
+            "description": "<p>receipt address</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   stock: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\"\n    }],\n   notes: {\n        text: \"شکر هفته دیگه شارژ میشه\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   },\n   supplier: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        company: \"تیم ایکس\"\n    },\n    address: \"معلم 24\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فاکتور شما با موفقیت ثبت شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/order/confirm/shop",
+    "title": "confirmation shop",
+    "version": "1.0.0",
+    "name": "confirmShop",
+    "description": "<p>shop confirmation of the receipt</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "receiptId",
+            "description": "<p>receiptId</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      success: true,\n      message: \"فاکتور تایید خرید شد\",\n        data: {\n            status: true\n        }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      success: true,\n      message: \"خطا در تایید خرید فاکتور\",\n        data: {\n            status: false\n        }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/receipt/edit",
+    "title": "edit receipt",
+    "version": "1.0.0",
+    "name": "editReceipt",
+    "description": "<p>edit receipt</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "receiptId",
+            "description": "<p>receipt id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "stocks",
+            "description": "<p>array of stocks objects</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "address",
+            "description": "<p>supplier address receipt</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  receiptId : \"60f2c37d4ca7f01d68ad6daf\",\n    stocks: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        price: \"30000\"\n    }],\n    address: \"معلم 24\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فاکتور با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"فاکتور موجود نیست\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/receipt/status",
+    "title": "edit receipt status",
+    "version": "1.0.0",
+    "name": "editReceiptStatus",
+    "description": "<p>edit receipt status, in status : send 0 for normal receipt , send 2 to cancele the receipt</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "status",
+            "description": "<p>receipt status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "receiptId",
+            "description": "<p>receipt id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"وضعیت فاکتور با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/receipt",
+    "title": "get receipts",
+    "version": "1.0.0",
+    "name": "getReceipts",
+    "description": "<p>get receipts : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "supplierName",
+            "description": "<p>supplier family (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "supplierMobile",
+            "description": "<p>supplier mobile number (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "startDate",
+            "description": "<p>get receipt from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "endDate",
+            "description": "<p>get receipt to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فاکتور ها با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         id: \"60b72a70e353f0385c2fe5af\",\n         products: [...{\n             _id: \"60b72a70e353f0385c2fe5af\",\n             name: \"لاته\",\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             createdAt: \"2021-06-01T06:54:01.691Z\"\n         },\n        createdAt: \"2021-06-01T06:54:01.691Z\",\n        updatedAt: \"2021-06-01T06:54:01.691Z\"\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
   },
   {
     "type": "get",
@@ -2232,6 +2647,69 @@
     "groupTitle": "stock"
   },
   {
+    "type": "put",
+    "url": "/api/user/v1/stock",
+    "title": "edit stock",
+    "version": "1.0.0",
+    "name": "editStock",
+    "description": "<p>edit stock</p>",
+    "group": "stock",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>stock id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "active",
+            "description": "<p>stock activity status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "name",
+            "description": "<p>stock name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varachar",
+            "optional": true,
+            "field": "description",
+            "description": "<p>description of stock</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      success: true,\n      message: \"ماده شما با موفقیت ویرایش شد\", \n        data: { \n            status: true \n        }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n      success : true, \n      message : \"ماده وارد شده، موجود نیست', \n        data: { \n            status: false \n        }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/stock.js",
+    "groupTitle": "stock"
+  },
+  {
     "type": "get",
     "url": "/api/user/v1/stock",
     "title": "get stock",
@@ -2250,5 +2728,202 @@
     },
     "filename": "app/routes/user/v1/stock.js",
     "groupTitle": "stock"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/supplier/excel",
+    "title": "get excel Suppliers",
+    "version": "1.0.0",
+    "name": "getExcelSuppliers",
+    "description": "<p>get Excel Suppliers . respnse description: by &quot;receipts&quot; field we meant order length, &quot;lastBuy&quot; is the date of the customer last buy. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry</p>",
+    "group": "supplier",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "family",
+            "description": "<p>supplier family (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>supplier mobile (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtFrom",
+            "description": "<p>supplier membership from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtTo",
+            "description": "<p>supplier membership until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyFrom",
+            "description": "<p>supplier last buy from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyTo",
+            "description": "<p>supplier last buy until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "receiptFrom",
+            "description": "<p>minimum number of receipts (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "receiptTo",
+            "description": "<p>maximum number of receipts (&quot;0&quot;)</p>"
+          }
+        ]
+      }
+    },
+    "filename": "app/routes/user/v1/supplier.js",
+    "groupTitle": "supplier"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/supplier",
+    "title": "get supplier",
+    "version": "1.0.0",
+    "name": "getSupplier",
+    "description": "<p>get supplier .It gives you the supplier information of the mobile you sent , if there is no supplier with that mobile number when sends false</p>",
+    "group": "supplier",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>supplier mobile</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"اطلاعات تامین کننده با موفقیت ارسال شد\",\n     data: {\n         family: \"مصطفایی\",\n         mobile: \"09625846122\",\n         company: \"تیم ایکس\"\n      }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: true,\n     message: \"تامین کننده موجود نیست\",\n     data: { \n         status: false \n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/supplier.js",
+    "groupTitle": "supplier"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/supplier",
+    "title": "get suppliers",
+    "version": "1.0.0",
+    "name": "getSuppliers",
+    "description": "<p>get suppliers . respnse description: by &quot;receipts&quot; field we meant receipts length, &quot;lastBuy&quot; is the date of the customer last buy,and &quot;total&quot; is the total price of all customer orders. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry</p>",
+    "group": "supplier",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "family",
+            "description": "<p>customer family (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>customer mobile (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtFrom",
+            "description": "<p>customer membership from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "createdAtTo",
+            "description": "<p>customer membership until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyFrom",
+            "description": "<p>customer last buy from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "lastBuyTo",
+            "description": "<p>customer last buy until this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "orderFrom",
+            "description": "<p>minimum number of orders (&quot;0&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "orderTo",
+            "description": "<p>maximum number of orders (&quot;0&quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"اطلاعات مشتریان با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         family: \"مصطفایی\",\n         mobile: \"09625846122\",\n         birthday: \"1990-12-18T23:59:00.798Z\",\n         createdAt: \"2010-12-18T23:59:00.798Z\",\n         order: 4,\n         lastBy: \"2021-12-18T23:59:00.798Z\",\n         total: 270000\n      }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/supplier.js",
+    "groupTitle": "supplier"
   }
 ]

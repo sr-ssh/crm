@@ -13,7 +13,11 @@ let Customer = new Schema({
     failOrders : { type: Number, default: 0 },
     successfullOrders : { type: Number, default: 0 },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    reminder: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] }
+    reminder: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] },
+    nationalCard: Number,
+    financialCode: Number,
+    postalCode: Number,
+    registerNo: Number
 });
 
 Customer.pre('validate', function (next) {
