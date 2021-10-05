@@ -417,7 +417,7 @@ module.exports = new class OrderController extends Controller {
             }
 
             filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, company: 1, createdAt: 1 })
+            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, company: 1, nationalCard: 1, financialCode: 1, postalCode: 1, registerNo: 1, createdAt: 1 })
 
             let customerInfo;
             for (let index = 0; index < orders.length; index++) {

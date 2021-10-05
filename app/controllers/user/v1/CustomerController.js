@@ -1,7 +1,7 @@
 const { param } = require("express-validator/check");
 const ExcelJS = require('exceljs');
 var path = require('path');
-
+const fs = require('fs');
 
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Customer';
@@ -316,7 +316,7 @@ module.exports = new class CustomerController extends Controller {
                 { key: "family", header: "نام مشتری", width: 15, style: { alignment: { vertical: 'center', horizontal: 'center' } } },
                 { key: "createdAt", header: "تاریخ عضویت", width: 15, style: { numFmt: '[$-fa-IR,16]dd/mm/yyyy;@', alignment: { vertical: 'center', horizontal: 'center' } } },
                 { key: "mobile", header: "موبایل", width: 15, style: { alignment: { vertical: 'center', horizontal: 'center' } } },
-                { key: "birthday", header: "تاریخ تولد", width: 15, style: { numFmt: '[$-fa-IR,16]dd/mm/yyyy;@', alignment: { vertical: 'center', horizontal: 'center' } } },
+                // { key: "birthday", header: "تاریخ تولد", width: 15, style: { numFmt: '[$-fa-IR,16]dd/mm/yyyy;@', alignment: { vertical: 'center', horizontal: 'center' } } },
                 { key: "order", header: "تعداد سفارش", width: 15, style: { alignment: { vertical: 'center', horizontal: 'center' } } },
                 { key: "lastBuy", header: "آخرین خرید", width: 15, style: { numFmt: '[$-fa-IR,16]dd/mm/yyyy;@', alignment: { vertical: 'center', horizontal: 'center' } } },
                 { key: "total", header: "جمع خرید", width: 15, style: { alignment: { vertical: 'center', horizontal: 'center' } } }
