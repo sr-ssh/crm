@@ -4,7 +4,7 @@ define({ "api": [
     "url": "/api/user/v1/account",
     "title": "edit user account",
     "version": "1.0.0",
-    "name": "editUserAccount",
+    "name": "editEmployerAccount",
     "description": "<p>edit user account: only send one of the params, company param is for employers</p>",
     "group": "account",
     "parameter": {
@@ -1891,7 +1891,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/api/user/v1/order/upload/doc",
+    "url": "/api/user/v1/order/doc",
     "title": "upload documents",
     "version": "1.0.0",
     "name": "uploadDocuments",

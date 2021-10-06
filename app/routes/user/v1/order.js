@@ -478,7 +478,7 @@ router.put('/financial/confirm', OrderController.confirmFinancial.bind(OrderCont
 
 
 /**
-* @api {post} /api/user/v1/order/upload/doc upload documents
+* @api {post} /api/user/v1/order/doc upload documents
 * @apiVersion 1.0.0
 * @apiName uploadDocuments
 * @apiDescription upload documents
