@@ -8,6 +8,7 @@ let server = require('../../../server');
 let appConfig = require('config');
 let order, order_V1, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder, financialConfirmation;
 const axios = require('axios').default;
+const path = require('path')
 
 chai.use(chaiHttp);
 
@@ -143,6 +144,20 @@ describe(`${sectionName}`, () => {
                 .send(createShareLinkOrder);
             res.should.have.status(200);
         });
+
+
+        it('check upload doc ', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/doc`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .field('fileName', 'mjh99')
+                .field('orderId', '615c27fb8f031c53fc44ec8f')
+                .attach('file', `${path.resolve('./ExcelProduct.xlsx')}`)
+            res.should.have.status(200);
+        });
+
 
     });
 
