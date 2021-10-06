@@ -58,6 +58,14 @@ module.exports = new class ReceiptController extends Controller {
             // customer.successfullOrders = customer.successfullOrders + 1;
             await supplier.save()
 
+            //save stock amount
+            // [{_id: ---, quantity: ---}...]
+            filter = { _id: { $in: params.stock.map(s => s._id)}}
+            await this.model.Stock.update(filter, 
+                { $inc: { amount: params.stock.$[element].quantity} }, 
+                {arrayFilters: [{ element: $}]}
+            )
+
             res.json({ success: true, message: 'فاکتور شما با موفقیت ثبت شد' })
 
             // let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')

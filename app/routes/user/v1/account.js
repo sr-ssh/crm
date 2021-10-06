@@ -37,7 +37,7 @@ const AccountController = require(`${userController}/v1/AccountController`)
  /**
  * @api {put} /api/user/v1/account edit user account
  * @apiVersion 1.0.0
- * @apiName editUserAccount
+ * @apiName editEmployerAccount
  * @apiDescription edit user account: only send one of the params, company param is for employers
  * @apiGroup account
  * @apiParam {varchar} family user family
@@ -54,7 +54,7 @@ const AccountController = require(`${userController}/v1/AccountController`)
  *     message: "اطلاعات وارد شده صحیح نمی باشد"
  * }
  */
- router.put('/',AccountController.editUserAccount.bind(AccountController)); 
+ router.put('/',AccountController.editEmployerAccount.bind(AccountController)); 
 
 
 

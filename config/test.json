@@ -1,7 +1,7 @@
 {
     "appPort": 4000,
     "mongo": {
-        "host": "mongodb://172.16.2.215/crm"
+        "host": "mongodb://crm-x.ir:2714/crm"
     },
     "sms": {
         "negin": {

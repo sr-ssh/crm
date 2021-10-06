@@ -16,6 +16,9 @@ let User = new Schema({
     address: String,
     nationalIDCode: Number,
     financialCode: Number,
+    nationalCode: Number,
+    registerNo: Number,
+    postalCode: Number,
     employer: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'User' }] },
     permission: {
