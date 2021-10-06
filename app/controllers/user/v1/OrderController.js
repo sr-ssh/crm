@@ -283,7 +283,8 @@ module.exports = new class OrderController extends Controller {
             }
 
             filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1, nationalCard: 1, financialCode: 1, postalCode: 1, registerNo: 1 })
+
 
             let customerInfo;
             for (let index = 0; index < orders.length; index++) {
@@ -839,10 +840,14 @@ module.exports = new class OrderController extends Controller {
         try {
             req.checkBody('orderId', 'please set order id').notEmpty();
             req.checkBody('address', 'please enter address').exists().isString();
-            req.checkBody('products', 'please enter products').notEmpty();
+            req.checkBody('companyName', 'please enter companyName').optional({nullable: true,checkFalsy: true}).isString();
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
             req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            req.checkBody('nationalCard', 'please enter customer nationalCard').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('financialCode', 'please enter customer financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('postalCode', 'please enter customer postalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('registerNo', 'please enter customer registerNumber').optional({nullable: true,checkFalsy: true}).isNumeric();
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
@@ -860,16 +865,21 @@ module.exports = new class OrderController extends Controller {
             order.markModified('products')
             await order.save()
 
-            if (req.body.companyName) {
 
                 filter = { _id: order.customer }
-                let customer = await this.model.Customer.findOne(filter)
+                let update = { 
+                    nationalCard: req.body.nationalCard,
+                    financialCode: req.body.financialCode,
+                    postalCode: req.body.postalCode,
+                    registerNo: req.body.registerNo,
+                    company : req.body.companyName
+                }
+    
+                await this.model.Customer.update(filter, update);
+                // let customer = await this.model.Customer.findOne(filter)
 
-                customer.company = req.body.companyName;
-
-                customer.markModified('company')
-                await customer.save()
-            }
+                // customer.markModified('company')
+                // await customer.save()
 
             res.json({ success: true, message: 'سفارش با موفقیت ویرایش شد' })
         }

@@ -262,6 +262,11 @@ router.delete('/product', OrderController.deleteProdcutOrder.bind(OrderControlle
 * @apiParam {varchar} orderId order id
 * @apiParam {Object[]} products array of product objects 
 * @apiParam {varchar} address user address order
+* @apiParam {varchar} companyName order company name
+* @apiParam {Number} [nationalCard] customer national ID card number 
+* @apiParam {Number} [financialCode] customer financial code
+* @apiParam {Number} [postalCode] customer postal code 
+* @apiParam {Number} [registerNo] customer register number  
 * @apiParamExample {json} Request-Example:
 *  {
 *    orderId : "60f2c37d4ca7f01d68ad6daf",

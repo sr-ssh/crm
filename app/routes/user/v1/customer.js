@@ -7,26 +7,6 @@ const { user: userController } = config.path.controllers;
 const CustomerController = require(`${userController}/v1/CustomerController`)
 
 
-/**
- * @api {post} /api/user/v1/customer/formalinfo add customer formalInfo
- * @apiVersion 1.0.0
- * @apiName addCustomerformalInfo
- * @apiDescription add customer formalInfo
- * @apiGroup customer
- * @apiParam {customerId} customerId customer id
- * @apiParam {nationalCard} nationalCard customer national ID card number 
- * @apiParam {financialCode} financialCode customer financial code
- * @apiParam {postalCode} postalCode customer postal code 
- * @apiParam {registerNo} registerNo customer register number  
- * @apiSuccessExample {json} Success-Response:
- * {
- *      success: true,
- *      message: "اطلاعات مشتری با موفقیت ثبت شد"
- * }
- */
- router.post('/formalinfo', CustomerController.addCustomerformalInfo.bind(CustomerController));
-
-
 
 /**
 * @api {get} /api/user/v1/customer/list get customers 

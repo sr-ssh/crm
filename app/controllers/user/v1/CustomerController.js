@@ -379,41 +379,5 @@ module.exports = new class CustomerController extends Controller {
             if (!res.headersSent) return res.status(500).json(handelError);
         }
     }
-
-    async addCustomerformalInfo(req, res) {
-        try {
-
-            req.checkBody('customerId', 'please enter customer customerId').notEmpty().isMongoId();
-            req.checkBody('nationalCard', 'please enter customer nationalCard').notEmpty().isNumeric();
-            req.checkBody('financialCode', 'please enter customer financialCode').notEmpty().isNumeric();
-            req.checkBody('postalCode', 'please enter customer postalCode').notEmpty().isNumeric();
-            req.checkBody('registerNo', 'please enter customer registerNumber').notEmpty().isNumeric();
-            if (this.showValidationErrors(req, res)) return;
-
-            let filter = { _id: req.body.customerId };
-            let update = { 
-                nationalCard: req.body.nationalCard,
-                financialCode: req.body.financialCode,
-                postalCode: req.body.postalCode,
-                registerNo: req.body.registerNo
-            }
-
-            await this.model.Customer.update(filter, update);
-
-            return res.json({ success: true, message: 'اطلاعات مشتری با موفقیت ثبت شد'})
-        }
-        catch (err) {
-            let handelError = new this.transforms.ErrorTransform(err)
-                .parent(this.controllerTag)
-                .class(TAG)
-                .method('addCustomerformalInfo')
-                .inputParams(req.body)
-                .call();
-
-            if (!res.headersSent) return res.status(500).json(handelError);
-        }
-    }
-
 }
-
 
