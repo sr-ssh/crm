@@ -14,23 +14,34 @@ module.exports = new class ProductController extends Controller {
     async addProduct(req, res) {
         try {
             req.checkBody('name', 'please enter name').notEmpty().isString();
+            req.checkBody('checkWareHouse', 'please enter checkWareHouse').notEmpty().isBoolean();
+            req.checkBody('direct', 'please enter direct').notEmpty().isBoolean();
             req.checkBody('sellingPrice', 'please enter sellingPrice').notEmpty().isFloat({ min: 0 });
-            req.checkBody('description', 'please enter description').notEmpty().isString();
+            req.checkBody('description', 'please enter description').optional().isString();
             if (this.showValidationErrors(req, res)) return;
-
-            const STRING_FLAG = " ";
-            const NUMBER_FLAG = "0";
 
             let params = {
                 name: req.body.name,
-                sellingPrice: req.body.sellingPrice,
-                user: req.decodedData.user_employer
+                user: req.decodedData.user_employer,
+                description: req.body.description || ""
             }
 
-            if (req.body.description !== STRING_FLAG)
-                params.description = req.body.description
+            let filter = { name: params.name, user: params.user }
+            let stock;
 
-            let filter = { name: params.name, sellingPrice: params.sellingPrice, user: params.user }
+            if(req.body.direct){
+                stock = await this.model.Stock.findOne(filter)
+    
+                if (stock)
+                    return res.json({ success: true, message: 'محصول وارد شده،در مواد خام موجود است', data: { status: false } })
+    
+                stock = await this.model.Stock.create(params)
+                params.ingredients = [{ stock: stock._id, amount: 1}]
+            }
+            
+            params.checkWareHouse = req.body.checkWareHouse,
+            params.sellingPrice = req.body.sellingPrice
+
             let product = await this.model.Product.findOne(filter)
 
             if (product)

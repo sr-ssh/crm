@@ -22,7 +22,6 @@ module.exports = new class StockController extends Controller {
                 user: req.decodedData.user_employer
             }
 
-
             let filter = { name: params.name, user: params.user }
             let stock = await this.model.Stock.findOne(filter)
 
