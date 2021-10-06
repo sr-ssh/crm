@@ -1,6 +1,6 @@
 const { filterSeries } = require("async");
 const { param } = require("../../../routes");
-
+const path = require('path')
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Order';
 
@@ -840,14 +840,14 @@ module.exports = new class OrderController extends Controller {
         try {
             req.checkBody('orderId', 'please set order id').notEmpty();
             req.checkBody('address', 'please enter address').exists().isString();
-            req.checkBody('companyName', 'please enter companyName').optional({nullable: true,checkFalsy: true}).isString();
+            req.checkBody('companyName', 'please enter companyName').optional({ nullable: true, checkFalsy: true }).isString();
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
             req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
-            req.checkBody('nationalCard', 'please enter customer nationalCard').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('financialCode', 'please enter customer financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('postalCode', 'please enter customer postalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('registerNo', 'please enter customer registerNumber').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('nationalCard', 'please enter customer nationalCard').optional({ nullable: true, checkFalsy: true }).isNumeric();
+            req.checkBody('financialCode', 'please enter customer financialCode').optional({ nullable: true, checkFalsy: true }).isNumeric();
+            req.checkBody('postalCode', 'please enter customer postalCode').optional({ nullable: true, checkFalsy: true }).isNumeric();
+            req.checkBody('registerNo', 'please enter customer registerNumber').optional({ nullable: true, checkFalsy: true }).isNumeric();
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
@@ -866,20 +866,20 @@ module.exports = new class OrderController extends Controller {
             await order.save()
 
 
-                filter = { _id: order.customer }
-                let update = { 
-                    nationalCard: req.body.nationalCard,
-                    financialCode: req.body.financialCode,
-                    postalCode: req.body.postalCode,
-                    registerNo: req.body.registerNo,
-                    company : req.body.companyName
-                }
-    
-                await this.model.Customer.update(filter, update);
-                // let customer = await this.model.Customer.findOne(filter)
+            filter = { _id: order.customer }
+            let update = {
+                nationalCard: req.body.nationalCard,
+                financialCode: req.body.financialCode,
+                postalCode: req.body.postalCode,
+                registerNo: req.body.registerNo,
+                company: req.body.companyName
+            }
 
-                // customer.markModified('company')
-                // await customer.save()
+            await this.model.Customer.update(filter, update);
+            // let customer = await this.model.Customer.findOne(filter)
+
+            // customer.markModified('company')
+            // await customer.save()
 
             res.json({ success: true, message: 'سفارش با موفقیت ویرایش شد' })
         }
@@ -1133,7 +1133,9 @@ module.exports = new class OrderController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { _id: req.body.orderId }
-            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key, location: req.file.location, size: req.file.size } } }
+            let extname = path.extname(req.file.originalname).toLowerCase()
+
+            let update = { $push: { documents: { name: req.body.fileName, key: req.file.key, location: req.file.location, size: req.file.size, fileType: extname.substr(1) } } }
 
             await this.model.Order.update(filter, update)
 
