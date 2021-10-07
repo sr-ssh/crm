@@ -59,12 +59,15 @@ module.exports = new class ReceiptController extends Controller {
             await supplier.save()
 
             //save stock amount
-            // [{_id: ---, quantity: ---}...]
-            filter = { _id: { $in: params.stock.map(s => s._id)}}
-            await this.model.Stock.update(filter, 
-                { $inc: { amount: params.stock.$[element].quantity} }, 
-                {arrayFilters: [{ element: $}]}
-            )
+            let query = req.body.stock.map(stock => {
+                return {
+                    updateOne : {
+                        filter : { _id : stock._id },
+                        update : { $inc : {  amount : stock.quantity } } 
+                    } 
+                }  
+            })
+            await this.model.Stock.bulkWrite(query)
 
             res.json({ success: true, message: 'فاکتور شما با موفقیت ثبت شد' })
 
