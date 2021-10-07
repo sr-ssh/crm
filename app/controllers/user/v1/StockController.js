@@ -47,7 +47,7 @@ module.exports = new class StockController extends Controller {
     async getStock(req, res) {
         try {
             let filter = { user: req.decodedData.user_employer }
-            let stock = await this.model.Stock.find(filter, {name: 1, description: 1, active: 1, updatedAt: 1}).sort({ createdAt: -1 }).lean();
+            let stock = await this.model.Stock.find(filter, {name: 1, description: 1, active: 1, updatedAt: 1, amount: 1}).sort({ createdAt: -1 }).lean();
             
             res.json({ success: true, message: 'مواد خام با موفقیت ارسال شد', data: stock })
         }
