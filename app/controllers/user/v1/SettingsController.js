@@ -21,8 +21,8 @@ module.exports = new class SettingsController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getSms')
-                .inputParams(req.body)
+                .method('getOrderSetting')
+                .inputParams()
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);
