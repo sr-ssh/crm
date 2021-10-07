@@ -15,7 +15,7 @@ module.exports = new class SettingsController extends Controller {
             let filter = { _id: req.decodedData.user_id }
             let user = await this.model.User.findOne(filter, 'setting')
 
-            res.json({ success: true, message: "با موفقیت انجام شد", data: user })
+            res.json({ success: true, message: "تنظیمات با موفقیت ارسال شد", data: user })
 
         } catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
