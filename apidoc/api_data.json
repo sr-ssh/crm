@@ -1,10 +1,92 @@
 [
   {
     "type": "put",
+    "url": "/api/user/v1/account/employer",
+    "title": "edit employer account",
+    "version": "1.0.0",
+    "name": "editEmployerAccount",
+    "description": "<p>edit employer account</p>",
+    "group": "account",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "family",
+            "description": "<p>user family</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "nationalIDCode",
+            "description": "<p>user national ID code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "company",
+            "description": "<p>user company</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "address",
+            "description": "<p>user address</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "nationalCode",
+            "description": "<p>user company national code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "financialCode",
+            "description": "<p>user company financial code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "registerNo",
+            "description": "<p>user company register number</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": true,
+            "field": "postalCode",
+            "description": "<p>user company postal code</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    success: true,\n    message: \"اطلاعات کاربر با موفقیت ویرایش شد\", \n    data: { status: true }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/account.js",
+    "groupTitle": "account"
+  },
+  {
+    "type": "put",
     "url": "/api/user/v1/account",
     "title": "edit user account",
     "version": "1.0.0",
-    "name": "editEmployerAccount",
+    "name": "editUserAccount",
     "description": "<p>edit user account: only send one of the params, company param is for employers</p>",
     "group": "account",
     "parameter": {
