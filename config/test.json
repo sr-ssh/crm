@@ -1,7 +1,7 @@
 {
     "appPort": 4000,
     "mongo": {
-        "host": "mongodb:/172.16.2.215/crm"
+        "host": "mongodb://172.16.2.215/crm"
     },
     "sms": {
         "negin": {
@@ -213,15 +213,6 @@
         "editAccount": {
             "company": "mohaddes"
         },
-        "editSms": {
-            "type": 2,
-            "text": " ",
-            "status": true
-        },
-        "editShare": {
-            "duration": 15,
-            "unitTime": "M"
-        },
         "editOrderPrice": {
             "orderId": "60f69fcac2ef642cfc2ce6b6",
             "productId": "60f2bff24ca7f01d68ad6da7",
@@ -338,6 +329,24 @@
                 }
             ],
             "address": "کلاهدوز 4 اولین کوچه پلاک 50"
+        },
+        "editSettingOrder":{
+            "share": {
+                "time": 123 ,
+                "unitTime": "H"
+              },
+              "preSms": {
+                "text": "سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم",
+                "status": false
+              },
+              "postDeliverySms": {
+                "text": "",
+                "status": false
+              },
+              "postCustomerSms": {
+                "text": "سفارش شما به راننده تحویل داده شد",
+                "status": false
+              }
         }
         
     }
