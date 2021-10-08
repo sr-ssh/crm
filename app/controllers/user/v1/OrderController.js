@@ -206,6 +206,23 @@ module.exports = new class OrderController extends Controller {
                 customer.successfullOrders = customer.successfullOrders + 1;
             await customer.save()
 
+            //reduce stock amount
+            let orderIngredients = await this.model.Order.findOne({_id: order._id}).populate({path:'products._id', model: 'Product'})
+            let update = []
+            orderIngredients.products.map(product => {
+                if (product._id.checkWareHouse){
+                    product._id.ingredients.map(ing => {
+                        update.push({
+                            updateOne : {
+                                filter : { _id : ing.stock },
+                                update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
+                            } 
+                        })
+                    })
+                } 
+            })
+            await this.model.Stock.bulkWrite(update)
+            
             res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
 
             let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')
