@@ -612,7 +612,7 @@ module.exports = new class ReceiptController extends Controller {
     async editReceipt(req, res) {
         try {
             req.checkBody('receiptId', 'please set receipt Id').notEmpty();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('address', 'please enter address').exists()
             req.checkBody('stocks', 'please enter stocks').notEmpty();
             req.checkBody('stocks.*._id', 'please enter stocks id').notEmpty();
             req.checkBody('stocks.*.quantity', 'please enter stocks quantity').notEmpty();
