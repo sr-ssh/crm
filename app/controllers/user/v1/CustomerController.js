@@ -362,7 +362,7 @@ module.exports = new class CustomerController extends Controller {
 
             let filter = { active: true, user: req.decodedData.user_employer, mobile: req.params.mobile };
 
-            let customer = await this.model.Customer.findOne(filter, { family: 1, mobile: 1, birthday: 1 });
+            let customer = await this.model.Customer.findOne(filter, { family: 1, mobile: 1, birthday: 1, company: 1, lastAddress: 1 });
             if (!customer)
                 return res.json({ success: false, message: 'مشتری موجود نیست', data: {} })
 

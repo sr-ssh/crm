@@ -9,6 +9,7 @@ let Customer = new Schema({
     mobile: { type: String, required: true, sparse: true },
     birthday: { type: Date },
     company: { type: String },
+    lastAddress: { type: String },
     order: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Order' }] },
     failOrders : { type: Number, default: 0 },
     successfullOrders : { type: Number, default: 0 },

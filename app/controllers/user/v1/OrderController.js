@@ -213,6 +213,9 @@ module.exports = new class OrderController extends Controller {
             await customer.order.push(order._id)
             if (req.body.status !== 3)
                 customer.successfullOrders = customer.successfullOrders + 1;
+            if (req.body.address != STRING_FLAG)
+                customer.lastAddress = req.body.address
+            customer.company = req.body.customer.company
             await customer.save()
 
             //reduce stock amount
