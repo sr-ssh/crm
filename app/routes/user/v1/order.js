@@ -64,7 +64,12 @@ router.post('/', OrderController.addOrder.bind(OrderController));
  *      products: [...{
  *          _id: "60b72a70e353f0385c2fe5af",
  *          quantity: 2,
- *          sellingPrice: "30000"
+ *          sellingPrice: "30000",
+ *          ingredients: [...{
+ *              stock: { _id: "dfuewkjdbafhewjfdjs3243"},
+ *              amount: 2
+ *          }],
+ *          checkWareHouse: true
  *      }],
  *     notes: [...{
  *          text: "مشتری خواهان کالاست",

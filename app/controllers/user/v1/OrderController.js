@@ -121,6 +121,10 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
             req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            req.checkBody('products.*.ingredients.*.stock', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.ingredients.*.stock._id', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.ingredients.*.amount', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.checkWareHouse', 'please enter product checkWareHouse').notEmpty();
             req.checkBody('customer', 'please enter customer').notEmpty();
             req.checkBody('customer.family', 'please enter customer family').notEmpty();
             req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
@@ -157,9 +161,14 @@ module.exports = new class OrderController extends Controller {
                 req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
 
 
+            let trimProducts = req.body.products.map(pro => {return {
+                _id: pro._id,
+                quantity: pro.quantity,
+                sellingPrice: pro.sellingPrice
+            }})
             // add order
             params = {
-                products: req.body.products,
+                products: trimProducts,
                 notes: req.body.notes,
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
@@ -207,14 +216,13 @@ module.exports = new class OrderController extends Controller {
             await customer.save()
 
             //reduce stock amount
-            let orderIngredients = await this.model.Order.findOne({_id: order._id}).populate({path:'products._id', model: 'Product'})
             let update = []
-            orderIngredients.products.map(product => {
-                if (product._id.checkWareHouse){
-                    product._id.ingredients.map(ing => {
+            req.body.products.map(product => {
+                if (product.checkWareHouse){
+                    product.ingredients.map(ing => {
                         update.push({
                             updateOne : {
-                                filter : { _id : ing.stock },
+                                filter : { _id : ing.stock._id },
                                 update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
                             } 
                         })

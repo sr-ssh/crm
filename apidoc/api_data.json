@@ -1179,7 +1179,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\"\n    }],\n   notes: [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }],\n   status : 3,\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\",\n        company: \"تیم ایکس\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
+          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\",\n        ingredients: [...{\n            stock: { _id: \"dfuewkjdbafhewjfdjs3243\"},\n            amount: 2\n        }],\n        checkWareHouse: true\n    }],\n   notes: [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }],\n   status : 3,\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\",\n        company: \"تیم ایکس\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
           "type": "json"
         }
       ]
