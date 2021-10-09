@@ -55,19 +55,21 @@ module.exports = new class ReceiptController extends Controller {
 
             // add receipt to supplier
             await supplier.receipts.push(receipt._id)
+            if(req.body.address)
+                supplier.address = req.body.address
             // customer.successfullOrders = customer.successfullOrders + 1;
             await supplier.save()
 
-            //save stock amount
-            let query = req.body.stock.map(stock => {
-                return {
-                    updateOne : {
-                        filter : { _id : stock._id },
-                        update : { $inc : {  amount : stock.quantity } } 
-                    } 
-                }  
-            })
-            await this.model.Stock.bulkWrite(query)
+            // //save stock amount
+            // let query = req.body.stock.map(stock => {
+            //     return {
+            //         updateOne : {
+            //             filter : { _id : stock._id },
+            //             update : { $inc : {  amount : stock.quantity } } 
+            //         } 
+            //     }  
+            // })
+            // await this.model.Stock.bulkWrite(query)
 
             res.json({ success: true, message: 'فاکتور شما با موفقیت ثبت شد' })
 
@@ -388,6 +390,19 @@ module.exports = new class ReceiptController extends Controller {
             receipt.shopApproval = params
             receipt.markModified('shopApproval')
             await receipt.save()
+
+            if(req.body.status === 1 && receipt.shopApproval.status !== 1){
+                //save stock amount
+                let query = receipt.stock.map(stock => {
+                    return {
+                        updateOne : {
+                            filter : { _id : stock._id },
+                            update : { $inc : {  amount : stock.quantity } } 
+                        } 
+                    }  
+                })
+                await this.model.Stock.bulkWrite(query)
+            }
 
 
             return res.json({ success: true, message: 'فاکتور تایید خرید شد', data: { status: true } })

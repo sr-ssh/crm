@@ -257,7 +257,7 @@ module.exports = new class SupplierController extends Controller {
 
             let filter = { active: true, user: req.decodedData.user_employer, mobile: req.params.mobile };
 
-            let supplier = await this.model.Supplier.findOne(filter, { family: 1, mobile: 1, company: 1 });
+            let supplier = await this.model.Supplier.findOne(filter, { family: 1, mobile: 1, company: 1, address: 1 });
             if (!supplier)
                 return res.json({ success: true, message: 'تامین کننده موجود نیست', data: { status: false } })
 

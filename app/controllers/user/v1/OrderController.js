@@ -218,21 +218,24 @@ module.exports = new class OrderController extends Controller {
             customer.company = req.body.customer.company
             await customer.save()
 
-            //reduce stock amount
-            let update = []
-            req.body.products.map(product => {
-                if (product.checkWareHouse){
-                    product.ingredients.map(ing => {
-                        update.push({
-                            updateOne : {
-                                filter : { _id : ing.stock._id },
-                                update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
-                            } 
+             //reduce stock amount
+            if (req.body.status !== 3){
+                let update = []
+                req.body.products.map(product => {
+                    if (product.checkWareHouse){
+                        product.ingredients.map(ing => {
+                            update.push({
+                                updateOne : {
+                                    filter : { _id : ing.stock._id },
+                                    update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
+                                } 
+                            })
                         })
-                    })
-                } 
-            })
-            await this.model.Stock.bulkWrite(update)
+                    } 
+                })
+                await this.model.Stock.bulkWrite(update)
+            }
+           
             
             res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
 
