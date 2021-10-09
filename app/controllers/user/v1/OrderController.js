@@ -121,6 +121,10 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
             req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
+            req.checkBody('products.*.ingredients.*.stock', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.ingredients.*.stock._id', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.ingredients.*.amount', 'please enter product ingredients').notEmpty();
+            req.checkBody('products.*.checkWareHouse', 'please enter product checkWareHouse').notEmpty();
             req.checkBody('customer', 'please enter customer').notEmpty();
             req.checkBody('customer.family', 'please enter customer family').notEmpty();
             req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
@@ -157,9 +161,14 @@ module.exports = new class OrderController extends Controller {
                 req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
 
 
+            let trimProducts = req.body.products.map(pro => {return {
+                _id: pro._id,
+                quantity: pro.quantity,
+                sellingPrice: pro.sellingPrice
+            }})
             // add order
             params = {
-                products: req.body.products,
+                products: trimProducts,
                 notes: req.body.notes,
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
@@ -204,8 +213,27 @@ module.exports = new class OrderController extends Controller {
             await customer.order.push(order._id)
             if (req.body.status !== 3)
                 customer.successfullOrders = customer.successfullOrders + 1;
+            if (req.body.address != STRING_FLAG)
+                customer.lastAddress = req.body.address
+            customer.company = req.body.customer.company
             await customer.save()
 
+            //reduce stock amount
+            let update = []
+            req.body.products.map(product => {
+                if (product.checkWareHouse){
+                    product.ingredients.map(ing => {
+                        update.push({
+                            updateOne : {
+                                filter : { _id : ing.stock._id },
+                                update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
+                            } 
+                        })
+                    })
+                } 
+            })
+            await this.model.Stock.bulkWrite(update)
+            
             res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
 
             let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')
