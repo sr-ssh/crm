@@ -61,11 +61,11 @@ module.exports = new class ReceiptController extends Controller {
             //save stock amount
             let query = req.body.stock.map(stock => {
                 return {
-                    updateOne : {
-                        filter : { _id : stock._id },
-                        update : { $inc : {  amount : stock.quantity } } 
-                    } 
-                }  
+                    updateOne: {
+                        filter: { _id: stock._id },
+                        update: { $inc: { amount: stock.quantity } }
+                    }
+                }
             })
             await this.model.Stock.bulkWrite(query)
 
@@ -597,7 +597,7 @@ module.exports = new class ReceiptController extends Controller {
     async editReceipt(req, res) {
         try {
             req.checkBody('receiptId', 'please set receipt Id').notEmpty();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('address', 'please enter address').exists()
             req.checkBody('stocks', 'please enter stocks').notEmpty();
             req.checkBody('stocks.*._id', 'please enter stocks id').notEmpty();
             req.checkBody('stocks.*.quantity', 'please enter stocks quantity').notEmpty();
