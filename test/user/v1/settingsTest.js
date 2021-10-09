@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/settings';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, user, getOrderParams, editOrderStatus, deliverySms, editSms, editShare;
+let user, editSettingOrder, idToken, accessToken;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -16,13 +16,9 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        order = appConfig.test.order;
         user = appConfig.test.userMJH;
-        getOrderParams = appConfig.test.getOrderParams;
-        editOrderStatus = appConfig.test.editOrderStatus;
-        deliverySms = appConfig.test.deliverySms;
-        editSms = appConfig.test.editSms;
-        editShare = appConfig.test.editShare;
+        editSettingOrder = appConfig.test.editSettingOrder
+
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -46,51 +42,31 @@ describe(`${sectionName}`, () => {
 
     describe('Check get Apis', () => {
 
-        it('check get sms information', async () => {
+        it('check get order setting', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/order/sms`)
+                .get(`${baseRoute}/order`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send()
             res.should.have.status(200)
         })
-
-        it('check get shareLink information', async () => {
-            const res = await chai
-                .request(server)
-                .get(`${baseRoute}/order/share`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
-                .send()
-            res.should.have.status(200)
-        })
-
 
     });
 
 
     describe('Check Put Apis', () => {
 
-        it('check edit sms', async () => {
+        it('check edit setting order', async () => {
             const res = await chai
                 .request(server)
-                .put(`${baseRoute}/order/sms`)
+                .put(`${baseRoute}/edit/order`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
-                .send(editSms);
+                .send(editSettingOrder);
             res.should.have.status(200);
         });
 
-        it('check edit shareLink setting', async () => {
-            const res = await chai
-                .request(server)
-                .put(`${baseRoute}/order/share`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
-                .send(editShare);
-            res.should.have.status(200);
-        });
 
     });
 

@@ -6,78 +6,57 @@ const { user: userController } = config.path.controllers;
 
 const SettingsController = require(`${userController}/v1/SettingsController`)
 
-/**
- * @api {put} /api/user/v1/settings/order/sms edit sms settings
- * @apiVersion 1.0.0
- * @apiName editSms
- * @apiDescription edit sms settings, type 1 is customer sms after adding order, type 2 is customer info for delivery, type 3 ic acknowledge for customer that your product is sent.
- * @apiGroup settings
- * @apiParam {int} type sms type , {min:1, max:3}
- * @apiParam {varchar} text sms text
- * @apiParam {varchar} status sms status
- * @apiSuccessExample {json} Success-Response:
- * {
- *      success: true,
- *      message: "ویرایش با موفقیت انجام شد"
- */
-router.put('/order/sms', SettingsController.editSms.bind(SettingsController));
-
 
 
 /**
- * @api {get} /api/user/v1/settings/order/sms get sms messages and status
+ * @api {get} /api/user/v1/settings/order get Order Setting
  * @apiVersion 1.0.0
- * @apiName getSms
- * @apiDescription get sms messages and status 
+ * @apiName getOrderSetting
+ * @apiDescription get setting order. setting sms & setting Share link
  * @apiGroup settings
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
- *      message: "با موفقیت انجام شد",
+ *      message: "تنظیمات با موفقیت ارسال شد",
  *      data: {}
  * }
  *     
  */
-router.get('/order/sms', SettingsController.getSms.bind(SettingsController));
-
-
+router.get('/order', SettingsController.getOrderSetting.bind(SettingsController));
 
 /**
- * @api {get} /api/user/v1/settings/order/share get time and unitTime
+ * @api {put} /api/user/v1/settings/edit/order edit  order settings
  * @apiVersion 1.0.0
- * @apiName getshare
- * @apiDescription  get time and unitTime
- * @apiGroup settings
- * @apiSuccessExample {json} Success-Response:
- * {
- *      success: true,
- *      message: "با موفقیت انجام شد",
- *      data: {}
- * }
- *     
- */
-router.get('/order/share', SettingsController.getShare.bind(SettingsController));
-
-
-/**
- * @api {put} /api/user/v1/settings/order/share edit shareLinh order settings
- * @apiVersion 1.0.0
- * @apiName editShare
- * @apiDescription edit shareLinh order settings settings, unitTime "M" is minutes , unitTime "H" is hour , unitTime "D" is day. for e.g time is 2 and unitTime is "M" it means shareLink will expire after 2 minutes.
+ * @apiName editOrderSetting
+ * @apiDescription edit shareLinh order settings & sms setting order. for e.g time is 2 and unitTime is "M" it means shareLink will expire after 2 minutes.
  * @apiGroup settings
  * @apiParam {int} duration the link will expire after that base on unittime 
  * @apiParam {varchar} unitTime  "M" is minutes, "H" is hour, "D" is Day
  * @apiParamExample {json} Request-Example:
  *  {
- *     duration : 5,
- *     unitTime : "M"
- *  } 
+ *   share: {
+ *     time: "6",
+ *     unitTime: "D",
+ *   },
+ *   preSms: {
+ *     text: "سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم",
+ *     status: false,
+ *   },
+ *   postDeliverySms: {
+ *     text: "",
+ *     status: false,
+ *   },
+ *   postCustomerSms: {
+ *     text: "سفارش شما به راننده تحویل داده شد",
+ *     status: false,
+ *   },
+ * } 
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
- *      message: "ویرایش با موفقیت انجام شد"
+ *      message: "تنظیمات با موفقیت ویرایش شد"
  */
-router.put('/order/share', SettingsController.editShare.bind(SettingsController));
+router.put('/edit/order', SettingsController.editSettingOrder.bind(SettingsController));
 
 
 module.exports = router;

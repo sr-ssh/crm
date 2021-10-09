@@ -2535,11 +2535,11 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/api/user/v1/settings/order/share",
-    "title": "edit shareLinh order settings",
+    "url": "/api/user/v1/settings/edit/order",
+    "title": "edit  order settings",
     "version": "1.0.0",
-    "name": "editShare",
-    "description": "<p>edit shareLinh order settings settings, unitTime &quot;M&quot; is minutes , unitTime &quot;H&quot; is hour , unitTime &quot;D&quot; is day. for e.g time is 2 and unitTime is &quot;M&quot; it means shareLink will expire after 2 minutes.</p>",
+    "name": "editOrderSetting",
+    "description": "<p>edit shareLinh order settings &amp; sms setting order. for e.g time is 2 and unitTime is &quot;M&quot; it means shareLink will expire after 2 minutes.</p>",
     "group": "settings",
     "parameter": {
       "fields": {
@@ -2563,7 +2563,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n   duration : 5,\n   unitTime : \"M\"\n}",
+          "content": " {\n  share: {\n    time: \"6\",\n    unitTime: \"D\",\n  },\n  preSms: {\n    text: \"سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم\",\n    status: false,\n  },\n  postDeliverySms: {\n    text: \"\",\n    status: false,\n  },\n  postCustomerSms: {\n    text: \"سفارش شما به راننده تحویل داده شد\",\n    status: false,\n  },\n}",
           "type": "json"
         }
       ]
@@ -2572,54 +2572,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"ویرایش با موفقیت انجام شد\"",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/settings.js",
-    "groupTitle": "settings"
-  },
-  {
-    "type": "put",
-    "url": "/api/user/v1/settings/order/sms",
-    "title": "edit sms settings",
-    "version": "1.0.0",
-    "name": "editSms",
-    "description": "<p>edit sms settings, type 1 is customer sms after adding order, type 2 is customer info for delivery, type 3 ic acknowledge for customer that your product is sent.</p>",
-    "group": "settings",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "int",
-            "optional": false,
-            "field": "type",
-            "description": "<p>sms type , {min:1, max:3}</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "text",
-            "description": "<p>sms text</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "status",
-            "description": "<p>sms status</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"ویرایش با موفقیت انجام شد\"",
+          "content": "{\n     success: true,\n     message: \"تنظیمات با موفقیت ویرایش شد\"",
           "type": "json"
         }
       ]
@@ -2629,37 +2582,17 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/api/user/v1/settings/order/sms",
-    "title": "get sms messages and status",
+    "url": "/api/user/v1/settings/order",
+    "title": "get Order Setting",
     "version": "1.0.0",
-    "name": "getSms",
-    "description": "<p>get sms messages and status</p>",
+    "name": "getOrderSetting",
+    "description": "<p>get setting order. setting sms &amp; setting Share link</p>",
     "group": "settings",
     "success": {
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"با موفقیت انجام شد\",\n     data: {}\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/settings.js",
-    "groupTitle": "settings"
-  },
-  {
-    "type": "get",
-    "url": "/api/user/v1/settings/order/share",
-    "title": "get time and unitTime",
-    "version": "1.0.0",
-    "name": "getshare",
-    "description": "<p>get time and unitTime</p>",
-    "group": "settings",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"با موفقیت انجام شد\",\n     data: {}\n}",
+          "content": "{\n     success: true,\n     message: \"تنظیمات با موفقیت ارسال شد\",\n     data: {}\n}",
           "type": "json"
         }
       ]
