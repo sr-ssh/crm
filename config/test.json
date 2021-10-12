@@ -94,34 +94,38 @@
             "duration": 40
         },
         "order_V1": {
+            "status":3,
+            "force":1,
             "products": [
                 {
-                    "_id": "60b72afa1f24b03fe4fc7b51",
+                    "_id": "61653322f4381d11fce2223b",
+            "name":"کافه",
                     "quantity": 3,
-                    "sellingPrice": "30000"
+                    "sellingPrice": "30000",
+            "ingredients":[],
+            "checkWareHouse":false
+                },{
+                    "_id":"616531bef4381d11fce22239",
+                    "name":"لاته",
+                    "quantity":25,
+                    "sellingPrice":"15000",
+                    "ingredients":[{"amount":1,"stock":{"amount":25,"_id":"616531bef4381d11fce22238"}}],
+                    "checkWareHouse":true
                 }
             ],
-            "notes": [
-                {
-                    "text": "مشتری از خرید کالا منصرف شد",
-                    "createdAt":"1900-01-01T05:42:13.845Z"
-                },
-                {
-                    "text": "مشتری از قیمت کالا ناراضی بود",
-                    "createdAt":"1900-01-01T05:42:13.845Z"
-                }
-            ],
-            "status" : 3,
+            "notes": [],
             "customer": {
-                "family": "ریحانه شکوهی",
-                "mobile": "09307580142",
+                "_id":"61586198ddb649aef8c74579",
+                "family": "محمد جواد حیدری",
+                "mobile": "09105044033",
+                "company":"مجید",
                 "birthday": "1900-01-01T05:42:13.845Z",
-                "company":"تیم ایکس"
+                "lastAddress":"کلاهدوز 4",
+                "address":"کلاهدوز 4"
             },
-            "description": "",
-            "reminder": 7,
             "address": "معلم 24",
-            "duration": 40
+            "reminder":-1,
+            "duration":-1
         },
         "product": {
             "name": "لیموناد",
