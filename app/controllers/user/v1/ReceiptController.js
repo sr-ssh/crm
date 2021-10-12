@@ -391,7 +391,7 @@ module.exports = new class ReceiptController extends Controller {
             receipt.markModified('shopApproval')
             await receipt.save()
 
-            if(req.body.status === 1){
+            if(req.body.status === 1 && receipt.shopApproval.status !== 1){
                 //save stock amount
                 let query = receipt.stock.map(stock => {
                     return {
