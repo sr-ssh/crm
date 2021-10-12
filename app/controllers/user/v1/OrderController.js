@@ -163,7 +163,7 @@ module.exports = new class OrderController extends Controller {
             }
 
             if(isAmountOk.length > 0 )
-            res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk   })
+            res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk , dialogTrigger : true  })
 
            }
 
