@@ -25,6 +25,13 @@ module.exports = new class ReceiptController extends Controller {
             req.checkBody('note.createdAt', 'please enter receipt note createdAt').optional().isString();
             if (this.showValidationErrors(req, res)) return;
 
+
+
+
+
+
+            
+
             // add supplier
             let filter = { mobile: req.body.supplier.mobile, user: req.decodedData.user_employer }
             let params = {
