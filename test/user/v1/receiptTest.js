@@ -18,7 +18,7 @@ describe(`${sectionName}`, () => {
         console.log('Waiting to ensure database connection stablished ');
         receipt = appConfig.test.receipt;
         shopConfirmation = appConfig.test.shopConfirmation;
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         getReceipts = appConfig.test.getReceipts;
         editReceiptStatus = appConfig.test.editReceiptStatus
         editReceipt = appConfig.test.editReceipt
