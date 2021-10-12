@@ -59,6 +59,7 @@ router.post('/', OrderController.addOrder.bind(OrderController));
  * @apiParam {int} reminder number of days for reminding
  * @apiParam {int} duration minutes to the order become ready
  * @apiParam {varchar} address number of days for reminding
+ * @apiParam {int} force if status was 3 it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.
  * @apiParamExample {json} Request-Example:
  *  {
  *      products: [...{

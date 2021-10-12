@@ -137,9 +137,9 @@ module.exports = new class OrderController extends Controller {
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
             const INT_FLAG = "-1";
             const STRING_FLAG = " ";
-            let force = 0
+            let FORCE = 0
 
-           if(req.body.status === 3 && req.body.force == force ){
+           if(req.body.status === 3 && req.body.force == FORCE ){
 
             let productsfilter = req.body.products.filter(item => item.checkWareHouse == true )
 
@@ -166,12 +166,6 @@ module.exports = new class OrderController extends Controller {
             res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk   })
 
            }
-
-
-
-
-
-
 
             // add customer
             let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
