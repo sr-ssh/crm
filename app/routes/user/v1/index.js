@@ -14,6 +14,7 @@ const settings = require('./settings');
 const stock = require('./stock');
 const receipt = require('./receipt');
 const supplier = require('./supplier');
+const lead = require('./lead');
 
 
 
@@ -30,6 +31,8 @@ router.use('/settings', settings)
 router.use('/stock', stock)
 router.use('/receipt', receipt)
 router.use('/supplier', supplier)
+router.use('/lead', lead)
+
 
 
 
