@@ -1089,6 +1089,7 @@ module.exports = new class OrderController extends Controller {
 
             if (this.showValidationErrors(req, res)) return;
 
+
             const Minutes = 60000;
             const Hour = 3600000;
             const Day = 86400000;
@@ -1115,12 +1116,35 @@ module.exports = new class OrderController extends Controller {
             if (!order)
                 return res.json({ success: false, message: 'سفارش موجود نیست' })
 
+            if(req.body.type == 0){
+                let customer = await this.model.Customer.findOne({
+                    _id: order.customer, 
+                    nationalCard: { $exists: true }, 
+                    financialCode: { $exists: true },  
+                    postalCode: { $exists: true }, 
+                    registerNo: { $exists: true }
+                })
+                if(!customer)
+                    return res.json({ success: true, message: 'لطفا اطلاعات مشتری را از طریق ویرایش سفارش کامل کنید.', data: { status: false } })
+
+                let provider = await this.model.User.findOne({
+                    _id: order.provider, 
+                    nationalCode: { $exists: true }, 
+                    financialCode: { $exists: true },  
+                    postalCode: { $exists: true }, 
+                    registerNo: { $exists: true },
+                    nationalIDCode: { $exists: true }
+                })
+                if(!provider)
+                    return res.json({ success: true, message: 'لطفا اطلاعات کارفرما را از طریق اکانت کارفرما کامل کنید.', data: { status: false } })
+            }
+
 
             order.sharelink.push(params)
             order.markModified('sharelink')
             await order.save()
 
-            return res.json({ success: true, message: 'لینک اشتراک گذاری با موفقیت ارسال شد', data: { orderId: req.body.orderId, keyLink: params._id } })
+            return res.json({ success: true, message: 'لینک اشتراک گذاری با موفقیت ارسال شد', data: { status: true, orderId: req.body.orderId, keyLink: params._id } })
 
 
         }
