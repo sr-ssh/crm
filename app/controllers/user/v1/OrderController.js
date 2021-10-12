@@ -137,6 +137,41 @@ module.exports = new class OrderController extends Controller {
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
             const INT_FLAG = "-1";
             const STRING_FLAG = " ";
+            let force = 0
+
+           if(req.body.status === 3 && req.body.force == force ){
+
+            let productsfilter = req.body.products.filter(item => item.checkWareHouse == true )
+
+            let products = []
+            for (let index = 0; index < productsfilter.length; index++) {
+                for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
+                    products.push(productsfilter[index].ingredients[j].stock._id)
+                }
+            }
+            let  filter = { _id: { $in: products } }
+            let  stocks = await this.model.Stock.find(filter, {name: 1, description: 1, active: 1, updatedAt: 1, amount: 1})
+
+            let isAmountOk=[]
+
+            for (let index = 0; index < productsfilter.length; index++) {
+                for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
+                   let stocksInfo = stocks.find(stocks => (stocks._id.toString() === productsfilter[index].ingredients[j].stock._id.toString() && stocks.amount < productsfilter[index].quantity )  )
+                    if (stocksInfo)                    
+                        isAmountOk.push({name : stocksInfo.name , amount :  productsfilter[index].quantity - stocksInfo.amount  } )
+                }
+            }
+
+            if(isAmountOk.length > 0 )
+            res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk   })
+
+           }
+
+
+
+
+
+
 
             // add customer
             let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
