@@ -1066,6 +1066,62 @@
     "groupTitle": "home"
   },
   {
+    "type": "post",
+    "url": "/api/user/v1/lead",
+    "title": "add lead",
+    "version": "1.0.0",
+    "name": "addLead",
+    "description": "<p>add lead</p>",
+    "group": "lead",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "family",
+            "description": "<p>lead family</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>lead mobile</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>description of lead</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سرنخ شما با موفقیت ثبت شد\",\n     data: { status: true }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : true, \n     message : \"سرنخ وارد شده، موجود است\",\n     data: { status: true }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/lead.js",
+    "groupTitle": "lead"
+  },
+  {
     "type": "put",
     "url": "/api/user/v1/order/notes",
     "title": "add Notes to order",
@@ -1173,6 +1229,13 @@
             "optional": false,
             "field": "address",
             "description": "<p>number of days for reminding</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "force",
+            "description": "<p>if status was 3 it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.</p>"
           }
         ]
       },

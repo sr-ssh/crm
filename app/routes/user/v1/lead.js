@@ -8,23 +8,25 @@ const LeadController = require(`${userController}/v1/LeadController`)
 
 
 /**
- * @api {post} /api/user/v1/product/ add product 
+ * @api {post} /api/user/v1/lead add lead 
  * @apiVersion 1.0.0
- * @apiName addProduct
- * @apiDescription add product.all params are necessary and in case of no entry , there is a flag in parantheses for each optional param.if that flag entered it asumed as no entry
- * @apiGroup product
- * @apiParam  {varchar} name product name
- * @apiParam  {varchar} sellingPrice product selling price
- * @apiParam  {varachar} description description of product (" ")
+ * @apiName addLead
+ * @apiDescription add lead
+ * @apiGroup lead
+ * @apiParam  {String} family lead family
+ * @apiParam  {String} mobile lead mobile
+ * @apiParam  {String} [description] description of lead 
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
- *      message: "محصول شما با موفقیت ثبت شد"
+ *      message: "سرنخ شما با موفقیت ثبت شد",
+ *      data: { status: true }
  * }
  * @apiErrorExample {json} Error-Response:
  * { 
- *      success : false, 
- *      message : "محصول وارد شده، موجود است"
+ *      success : true, 
+ *      message : "سرنخ وارد شده، موجود است",
+ *      data: { status: true }
  * }
  */
 router.post('/', LeadController.addLead.bind(LeadController));
