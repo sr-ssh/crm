@@ -582,13 +582,31 @@ module.exports = new class OrderController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
-            let order = await this.model.Order.findOne(filter)
+            let order = await this.model.Order.findOne(filter).populate({path: 'products._id', model: 'Product'})
 
             if (!order)
                 return res.json({ success: false, message: 'سفارش موجود نیست' })
 
             order.status = req.body.status
             await order.save()
+
+            //return stock amount
+            if(req.body.status == 2){
+                let update = []
+                order.products.map(product => {
+                    if (product._id.checkWareHouse){
+                        product._id.ingredients.map(ing => {
+                            update.push({
+                                updateOne : {
+                                    filter : { _id : ing.stock._id },
+                                    update : { $inc : {  amount : (parseInt(ing.amount) * product.quantity) } } 
+                                } 
+                            })
+                        })
+                    } 
+                })
+                await this.model.Stock.bulkWrite(update)
+            }
 
             filter = { active: true, _id: order.customer, user: req.decodedData.user_employer }
             let customer = await this.model.Customer.findOne(filter)
@@ -1135,10 +1153,11 @@ module.exports = new class OrderController extends Controller {
             if (!order)
                 return res.json({ success: true, message: 'سفارش موجود نیست', data: { status: false } })
 
-            order.financialApproval = params
-            order.markModified('financialApproval')
-            await order.save()
-
+            if(order.financialApproval !== 1){
+                order.financialApproval = params
+                order.markModified('financialApproval')
+                await order.save()
+            }
 
             return res.json({ success: true, message: 'وضعیت مالی سفارش ثبت شد', data: { status: true } })
 
