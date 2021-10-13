@@ -7,7 +7,7 @@ let Lead = new Schema({
     family: { type: String, required: true },
     mobile: { type: String, required: true },
     description: { type: String },
-    status: { type: Number, default: 0 },// 0 -> in proggress, 1 -> canceled, 2 -> accepted
+    status: { type: Number, default: 0 },// 0 -> in proggress, 1 -> canceled, 2 -> add to order
     accepted: { type: Boolean, default: false },
     addUser: { type: Schema.Types.ObjectId, ref: 'User' }, // user who have added the lead
     acceptUser: { type: Schema.Types.ObjectId, ref: 'User' }, // user who have accepted the lead

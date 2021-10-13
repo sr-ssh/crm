@@ -88,6 +88,9 @@ module.exports = new class HomeController extends Controller {
                         preSms: { text: config.addOrderSms, status: false },
                         postDeliverySms: { text: "", status: false },
                         postCustomerSms: { text: config.deliveryAcknowledgeSms, status: false }
+                    },
+                    lead: {
+                        leadCountPerEmployee: 5
                     }
                 }
                 params.permission = {
