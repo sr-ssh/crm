@@ -21,6 +21,7 @@ module.exports = new class LeadController extends Controller {
             let params = {
                 family: req.body.family,
                 mobile: req.body.mobile,
+                addUser: req.decodedData.user_id,
                 user: req.decodedData.user_employer,
                 description: req.body.description || ""
             }
@@ -40,6 +41,24 @@ module.exports = new class LeadController extends Controller {
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('addLead')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+    async getLead(req, res) {
+        try {
+            let filter = { user: req.decodedData.user_employer, active: true, status: 0 }
+            let leads = await this.model.Lead.find(filter).sort({ createdAt: -1, accepted: true });
+            res.json({ success: true, message: 'سرنخ ها با موفقیت ارسال شد', data: products })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('getProducts')
                 .inputParams(req.body)
                 .call();
 
