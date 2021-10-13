@@ -48,18 +48,32 @@ module.exports = new class LeadController extends Controller {
         }
     }
 
-    async getLead(req, res) {
+    async getLeads(req, res) {
         try {
-            let filter = { user: req.decodedData.user_employer, active: true, status: 0 }
-            let leads = await this.model.Lead.find(filter).sort({ createdAt: -1, accepted: true });
-            res.json({ success: true, message: 'سرنخ ها با موفقیت ارسال شد', data: products })
+            let filter = { 
+                user: req.decodedData.user_employer, 
+                active: true, status: 0, 
+                $or: [ 
+                    {
+                        $and: [
+                            {accepted: true}, 
+                            {acceptUser: req.decodedData.user_id}
+                        ]
+                    },
+                    {
+                        accepted: false
+                    }
+                ]
+            }
+            let leads = await this.model.Lead.find(filter, { _id: 1, family: 1, accepted: 1, mobile: 1, description: 1}).sort({ createdAt: -1, accepted: 1 });
+            res.json({ success: true, message: 'سرنخ ها با موفقیت ارسال شد', data: leads })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getProducts')
-                .inputParams(req.body)
+                .method('getLeads')
+                .inputParams(req.params)
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);

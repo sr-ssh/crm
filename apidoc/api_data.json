@@ -1122,6 +1122,26 @@
     "groupTitle": "lead"
   },
   {
+    "type": "get",
+    "url": "/api/user/v1/lead",
+    "title": "get leads",
+    "version": "1.0.0",
+    "name": "getLeads",
+    "description": "<p>get leads</p>",
+    "group": "lead",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سرنخ ها با موفقیت ارسال شد\",\n     data: [...{\n            _id: \"61669d38a19885330ee5d7b2\",\n          family: \"ریحانه شکوهی\" ,\n          mobile: \"09307580142\",\n          description: \"از شرکت روغن سازان مشهد\",\n            accepted: true\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/lead.js",
+    "groupTitle": "lead"
+  },
+  {
     "type": "put",
     "url": "/api/user/v1/order/notes",
     "title": "add Notes to order",

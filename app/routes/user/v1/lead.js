@@ -32,4 +32,28 @@ const LeadController = require(`${userController}/v1/LeadController`)
 router.post('/', LeadController.addLead.bind(LeadController));
 
 
+
+
+/**
+* @api {get} /api/user/v1/lead get leads 
+* @apiVersion 1.0.0
+* @apiName getLeads
+* @apiDescription get leads 
+* @apiGroup lead
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سرنخ ها با موفقیت ارسال شد",
+*      data: [...{
+            _id: "61669d38a19885330ee5d7b2",
+*           family: "ریحانه شکوهی" ,
+*           mobile: "09307580142",
+*           description: "از شرکت روغن سازان مشهد",
+            accepted: true
+*      }]
+* }
+*/
+router.get('/', LeadController.getLeads.bind(LeadController));
+
+
 module.exports = router;
