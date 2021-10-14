@@ -37,6 +37,7 @@ let Order = new Schema({
         }
     },
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
+    lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
     address: { type: String },
     readyTime: { type: Date },
     documents: [{ _id: false, name: String, key: { type: String, unique: true }, location: String, size: Number, fileType: String }],

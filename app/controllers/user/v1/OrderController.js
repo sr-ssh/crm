@@ -195,6 +195,7 @@ module.exports = new class OrderController extends Controller {
                 quantity: pro.quantity,
                 sellingPrice: pro.sellingPrice
             }})
+
             // add order
             params = {
                 products: trimProducts,
@@ -213,8 +214,13 @@ module.exports = new class OrderController extends Controller {
                 params.readyTime = event.toISOString()
             }
             if (req.body.status === 3)
-                params.status = req.body.status
+                params.status = req.body.status            
 
+            //remove lead
+            filter = { user: req.decodedData.user_employer, mobile: customer.mobile, status: { $ne: 2 } }
+            let lead = await this.model.Lead.findOneAndUpdate(filter, {status: 2, active: false})
+            if(lead)
+                params.lead = lead._id
 
             let order = await this.model.Order.create(params)
 
