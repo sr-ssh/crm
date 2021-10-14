@@ -180,12 +180,12 @@ module.exports = new class LeadController extends Controller {
 
             if(req.body.status == 0){
                 let settings = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting')
-                let userAcceptCount = await this.model.User.findOne({ _id: req.decodedData.user_id }, 'acceptedLeadCount')
-                // if(settings.setting.lead.leadCountPerEmployee > userAcceptCount.acceptedLeadCount){
+                let userAcceptCount = await this.model.User.findOne({ _id: req.decodedData.user_id })
+                if(settings.setting.lead.leadCountPerEmployee > userAcceptCount.acceptedLeadCount){
                     update = { accepted: true, acceptUser: req.decodedData.user_id }
-                    // userAcceptCount.acceptedLeadCount = userAcceptCount.acceptedLeadCount + 1
-                    // await userAcceptCount.save()
-                // }
+                    userAcceptCount.acceptedLeadCount = userAcceptCount.acceptedLeadCount + 1
+                    await userAcceptCount.save()
+                } else return res.json({ success: true, message: 'تعداد سرنخ های شما به حد نصاب رسیده است', data: { status: false } })
                    
             } else if(req.body.status == 1){
                 update = { status: 1 }
