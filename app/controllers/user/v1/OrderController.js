@@ -439,6 +439,8 @@ module.exports = new class OrderController extends Controller {
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
 
+            let permission = await this.model.User.findOne({_id: req.decodedData.user_id}, 'permission')
+
             if (req.params.endDate !== TIME_FLAG) {
                 let nextDay = new Date(req.params.endDate).setDate(new Date(req.params.endDate).getDate() + 1);
                 req.params.endDate = nextDay
@@ -455,11 +457,15 @@ module.exports = new class OrderController extends Controller {
             if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
                 filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
 
-            if (req.params.status == 3)
-                filter = { status: 3, ...filter };
+            if (req.params.status == 3){
+                if(permission.permission.getAllSaleOpprotunity)
+                    filter = { status: 3, ...filter };
+                else
+                    filter = { $and:[  {...filter, status: 3}, { $or: [{'sellers.active': { $ne: true }},{sellers: {id: req.decodedData.user_id, active: true}}]  }] };
+            }
+                
             else
                 filter = { status: 0, ...filter };
-
 
             let orders = await this.model.Order.find(filter).populate({ path: 'notes.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
 
@@ -477,7 +483,8 @@ module.exports = new class OrderController extends Controller {
                     createdAt: orders[index].createdAt,
                     updatedAt: orders[index].updatedAt,
                     employee: orders[index].employee,
-                    financialApproval: orders[index].financialApproval
+                    financialApproval: orders[index].financialApproval,
+                    sellers: orders[index].sellers
                 }
                 params.push(param)
             }

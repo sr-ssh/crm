@@ -102,7 +102,8 @@ module.exports = new class HomeController extends Controller {
                     finance: true,
                     getCustomers: true,
                     getEmployees: true,
-                    getDiscounts: true
+                    getDiscounts: true,
+                    getAllSaleOpprotunity: true
                 }
             }
 
