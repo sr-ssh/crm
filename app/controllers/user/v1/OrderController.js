@@ -1067,14 +1067,18 @@ module.exports = new class OrderController extends Controller {
 
 
             filter = { _id: params.customer }
-            let customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1 })
+            let customers = await this.model.Customer.find(filter, { 
+                _id: 1, family: 1, mobile: 1, createdAt: 1, company: 1, nationalCard: 1, financialCode: 1, postalCode: 1, registerNo: 1
+            })
 
             let customerInfo = customers.find(user => user._id.toString() == params.customer)
             params.customer = customerInfo;
 
 
             filter = { _id: params.provider }
-            let provider = await this.model.User.find(filter, { _id: 1, family: 1, address: 1 })
+            let provider = await this.model.User.find(filter, { 
+                _id: 1, family: 1, address: 1, nationalCode: 1, financialCode: 1, postalCode: 1, registerNo: 1, company: 1
+            })
 
             let providerInfo = provider.find(user => user._id.toString() == params.provider)
             params.provider = providerInfo;
