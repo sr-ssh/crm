@@ -188,7 +188,7 @@ module.exports = new class LeadController extends Controller {
                 } else return res.json({ success: true, message: 'تعداد سرنخ های شما به حد نصاب رسیده است', data: { status: false } })
                    
             } else if(req.body.status == 1){
-                update = { status: 1 }
+                update = { status: 1, active: false }
             }
             await this.model.Lead.updateOne(filter, update)
 
