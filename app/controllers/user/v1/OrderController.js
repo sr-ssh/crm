@@ -1301,9 +1301,8 @@ module.exports = new class OrderController extends Controller {
         try {
 
             req.checkBody('orderId', 'please set order id').notEmpty();
-            req.checkBody('status', 'please set order status').notEmpty().isIn[0];//0 => free sale opportunity
+            req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1];//0 => free sale opportunity
             if (this.showValidationErrors(req, res)) return;
-
 
             let filter ;
             let update;
@@ -1311,11 +1310,17 @@ module.exports = new class OrderController extends Controller {
             if(req.body.status == 0){
                 filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer, sellers: { id: req.decodedData.user_id, active: true } }
                 update = { 'sellers.$.active': false}
+            } else if(req.body.status == 1){
+                filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
+                update = { $push: { sellers: {id: req.decodedData.user_id, active: true }} }
             }
 
             let order = await this.model.Order.update(filter, update)
 
-            res.json({ success: true, message: 'فرصت فروش با موفقیت آزاد شد' })
+            if(req.body.status == 0)
+                res.json({ success: true, message: 'فرصت فروش با موفقیت آزاد شد' })
+            if(req.body.status == 1)
+                res.json({ success: true, message: 'فرصت فروش با موفقیت گرفته شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
