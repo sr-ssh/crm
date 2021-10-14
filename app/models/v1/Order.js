@@ -36,6 +36,11 @@ let Order = new Schema({
             acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
         }
     },
+    sellers: [{
+        _id: false, 
+        id: { type: Schema.Types.ObjectId, ref: 'User' },
+        active: { type: Boolean }
+    }],
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
     lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
     address: { type: String },

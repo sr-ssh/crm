@@ -202,7 +202,6 @@ module.exports = new class OrderController extends Controller {
                 notes: req.body.notes,
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
-                employee: req.decodedData.user_id,
                 financialApproval: { status: false }
             }
 
@@ -213,8 +212,13 @@ module.exports = new class OrderController extends Controller {
                 event.setMinutes(event.getMinutes() + parseInt(req.body.duration));
                 params.readyTime = event.toISOString()
             }
-            if (req.body.status === 3)
-                params.status = req.body.status            
+            if (req.body.status === 3){
+                params.status = req.body.status  
+                params.sellers = [{id: req.decodedData.user_id, active : true}]
+            }
+                
+            if(req.body.status === "")
+                params.employee = req.decodedData.user_id,          
 
             //remove lead
             filter = { user: req.decodedData.user_employer, mobile: customer.mobile, status: { $ne: 2 } }
