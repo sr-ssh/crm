@@ -139,7 +139,7 @@ module.exports = new class OrderController extends Controller {
             const STRING_FLAG = " ";
             let FORCE = 0
 
-           if(req.body.status === 3 && req.body.force == FORCE ){
+         if ((req.body.status === 3 && req.body.force == FORCE) || (req.body.status == '') ){
 
             let productsfilter = req.body.products.filter(item => item.checkWareHouse == true )
 
@@ -161,12 +161,13 @@ module.exports = new class OrderController extends Controller {
                         isAmountOk.push({name : stocksInfo.name , amount :  productsfilter[index].quantity - stocksInfo.amount  } )
                 }
             }
-
-            if(isAmountOk.length > 0 )
-            res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk , dialogTrigger : true  })
-
-           }
-
+            if(isAmountOk.length > 0 ){
+                if(req.body.status === 3)
+                     return  res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk , dialogTrigger : true  })
+                else if (req.body.status == "")
+                     return      res.json({ success: false, message: 'موجودی موارد انتخاب شده به اتمام رسیده است.' , dialogTrigger : false  })
+            }
+        }
             // add customer
             let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
             let customer = await this.model.Customer.findOne(filter)
@@ -188,7 +189,6 @@ module.exports = new class OrderController extends Controller {
 
             if (req.body.notes.length > 0)
                 req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
-
 
             let trimProducts = req.body.products.map(pro => {return {
                 _id: pro._id,
