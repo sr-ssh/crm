@@ -199,8 +199,8 @@
             "_id": "60f523f57a68a84600beb524"
         },
         "editOrderStatus": {
-            "orderId": "60e1b387cef3a81c70726ede",
-            "status": 2
+            "orderId": "616914f5b125147910f36c9b",
+            "status": 0
         },
         "deliverySms": {
             "orderId": "60e1b387cef3a81c70726ede",

@@ -627,11 +627,76 @@ module.exports = new class OrderController extends Controller {
             // 0 -> successfull order, 4 -> fail sale opprtunity, 2 -> cancel order 
             if (this.showValidationErrors(req, res)) return;
 
+            console.time('test editOrderStatus')
+
             let filter = { active: true, _id: req.body.orderId, provider: req.decodedData.user_employer }
-            let order = await this.model.Order.findOne(filter).populate({path: 'products._id', model: 'Product'})
+            let order = await this.model.Order.findOne(filter).populate({path: 'products._id', model: 'Product' , select : 'ingredients  checkWareHouse' })
+          
 
             if (!order)
                 return res.json({ success: false, message: 'سفارش موجود نیست' })
+
+                if (req.body.status == 0 ){
+
+                    let  products = []
+
+                    order.products.reduce((oldval , curval , index)=> {
+
+                        products[index]={
+                            _id : curval?._id._id.toString(),
+                            quantity : curval.quantity,
+                            sellingPrice : curval.sellingPrice,
+                            ingredients :  curval._id.ingredients,
+                            checkWareHouse :  curval._id.checkWareHouse
+                        }
+                    
+                    },{})
+                    
+                    let productsfilter = products.filter(item => item.checkWareHouse == true )
+
+                    products = []
+                    for (let index = 0; index < productsfilter.length; index++) {
+                        for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
+                            products.push(productsfilter[index].ingredients[j].stock._id)
+                        }
+                    }
+                    let  filter = { _id: { $in: products } }
+                    let  stocks = await this.model.Stock.find(filter, {name: 1, active: 1, updatedAt: 1, amount: 1})
+        
+                    let isAmountOk=[]
+        
+                    for (let index = 0; index < productsfilter.length; index++) {
+                        for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
+                           let stocksInfo = stocks.find(stocks => (stocks._id.toString() === productsfilter[index].ingredients[j].stock._id.toString() && stocks.amount < productsfilter[index].quantity )  )
+                            if (stocksInfo)                    
+                                isAmountOk.push({name : stocksInfo.name , amount :  productsfilter[index].quantity - stocksInfo.amount  } )
+                        }
+                    }
+
+                    if(isAmountOk.length > 0 ){ 
+                        
+                        console.timeEnd('test editOrderStatus')
+                        return  res.json({ success: false, message: 'امکان انجام عملیات نیست. کالاهای داخل سفارش ناموجود اند.' })
+            
+                    } else {
+
+                        let update = []
+                        productsfilter.map(product => {
+                            if (product.checkWareHouse){
+                                product.ingredients.map(ing => {
+                                    update.push({
+                                        updateOne : {
+                                            filter : { _id : ing.stock._id },
+                                            update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
+                                        } 
+                                    })
+                                })
+                            } 
+                        })
+                        await this.model.Stock.bulkWrite(update)
+                    }
+
+                }
 
             order.status = req.body.status
             await order.save()
@@ -674,7 +739,9 @@ module.exports = new class OrderController extends Controller {
 
             await customer.save()
 
-            res.json({ success: true, message: 'وضعیت سفارش با موفقیت ویرایش شد' })
+            console.timeEnd('test editOrderStatus')
+
+            res.json({ success: true, message: 'وضعیت سفارش با موفقیت ویرایش شد'  })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
