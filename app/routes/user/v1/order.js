@@ -195,7 +195,7 @@ router.put('/status', OrderController.editOrderStatus.bind(OrderController));
 * @api {put} /api/user/v1/order/seller/status edit sale opportunity seler status
 * @apiVersion 1.0.0
 * @apiName editSaleOpportunitySellerStatus
-* @apiDescription edit ale opportunity seller status, in status : send 0 to free a sale opportunity
+* @apiDescription edit ale opportunity seller status, in status : send 0 to free a sale opportunity, send 1 for getting a sale opportunity
 * @apiGroup order
 * @apiParam {int} status order status
 * @apiParam {varchar} orderId order id

@@ -1122,6 +1122,62 @@
     "groupTitle": "lead"
   },
   {
+    "type": "post",
+    "url": "/api/user/v1/lead",
+    "title": "add lead",
+    "version": "1.0.0",
+    "name": "addLead",
+    "description": "<p>add lead</p>",
+    "group": "lead",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "family",
+            "description": "<p>lead family</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>lead mobile</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>description of lead</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سرنخ شما با موفقیت ثبت شد\",\n     data: { status: true }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : true, \n     message : \"سرنخ وارد شده، موجود است\",\n     data: { status: true }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/lead.js",
+    "groupTitle": "lead"
+  },
+  {
     "type": "get",
     "url": "/api/user/v1/lead",
     "title": "get leads",
@@ -1564,6 +1620,46 @@
     "version": "1.0.0",
     "name": "editOrderStatus",
     "description": "<p>edit order status, in status : send 0 for normal order , send 2 to cancele the order</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "status",
+            "description": "<p>order status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"وضعیت سفارش با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/order/seller/status",
+    "title": "edit sale opportunity seler status",
+    "version": "1.0.0",
+    "name": "editSaleOpportunitySellerStatus",
+    "description": "<p>edit ale opportunity seller status, in status : send 0 to free a sale opportunity, send 1 for getting a sale opportunity</p>",
     "group": "order",
     "parameter": {
       "fields": {
@@ -2285,6 +2381,48 @@
       ]
     },
     "filename": "app/routes/user/v1/product.js",
+    "groupTitle": "product"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/lead/excel",
+    "title": "upload excel product",
+    "version": "1.0.0",
+    "name": "uplaodExcelProduct",
+    "description": "<p>upload file excel that contains your list of product</p>",
+    "group": "product",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "excel",
+            "optional": false,
+            "field": "excel",
+            "description": "<p>excel file</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"محصولات با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n     success : false, \n     message : \"خطا در پردازش فایل\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/lead.js",
     "groupTitle": "product"
   },
   {
