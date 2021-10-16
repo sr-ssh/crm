@@ -27,11 +27,6 @@ module.exports = new class ReceiptController extends Controller {
 
 
 
-
-
-
-            
-
             // add supplier
             let filter = { mobile: req.body.supplier.mobile, user: req.decodedData.user_employer }
             let params = {
@@ -56,7 +51,7 @@ module.exports = new class ReceiptController extends Controller {
                 address: req.body.address,
                 provider: req.decodedData.user_employer,
                 employee: req.decodedData.user_id,
-                shopApproval: { status: false }
+                shopApproval: { status: 0 }
             }
             let receipt = await this.model.Receipt.create(params)
 
@@ -394,11 +389,7 @@ module.exports = new class ReceiptController extends Controller {
             if (!receipt)
                 return res.json({ success: true, message: 'فاکتور موجود نیست', data: { status: false } })
 
-            receipt.shopApproval = params
-            receipt.markModified('shopApproval')
-            await receipt.save()
-
-            if(req.body.status === 1 && receipt.shopApproval.status !== 1){
+            if(req.body.status == 1 && receipt.shopApproval.status != 1){
                 //save stock amount
                 let query = receipt.stock.map(stock => {
                     return {
@@ -411,6 +402,12 @@ module.exports = new class ReceiptController extends Controller {
                 await this.model.Stock.bulkWrite(query)
             }
 
+            if(receipt.shopApproval.status != 1){
+                receipt.shopApproval = params
+                receipt.markModified('shopApproval')
+                await receipt.save()
+            }
+            
 
             return res.json({ success: true, message: 'فاکتور تایید خرید شد', data: { status: true } })
         }
