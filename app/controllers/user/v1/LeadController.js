@@ -26,10 +26,10 @@ module.exports = new class LeadController extends Controller {
                 description: req.body.description || ""
             }
 
-            let filter = { mobile: params.mobile, user: params.user }
+            let filter = { mobile: params.mobile, user: params.user, status: 0 }
             let lead = await this.model.Lead.findOne(filter)
-    
-            if (lead && lead.status === 0)
+            
+            if (lead)
                 return res.json({ success: true, message: 'سرنخ وارد شده موجود است', data: { status: false } })
 
             await this.model.Lead.create(params)
