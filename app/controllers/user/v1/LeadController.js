@@ -175,12 +175,14 @@ module.exports = new class LeadController extends Controller {
             req.checkBody('leadId', 'please enter family').notEmpty().isString();
             req.checkBody('status', 'please enter mobile').notEmpty().isIn[0, 1]; // 0 -> accept lead, 1 -> fail lead
             if (this.showValidationErrors(req, res)) return;
+
             let filter = { _id: req.body.leadId }
             let update;
+            let userAcceptCount = await this.model.User.findOne({ _id: req.decodedData.user_id })
 
             if(req.body.status == 0){
                 let settings = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting')
-                let userAcceptCount = await this.model.User.findOne({ _id: req.decodedData.user_id })
+                
                 if(settings.setting.lead.leadCountPerEmployee > userAcceptCount.acceptedLeadCount){
                     update = { accepted: true, acceptUser: req.decodedData.user_id }
                     userAcceptCount.acceptedLeadCount = userAcceptCount.acceptedLeadCount + 1
@@ -189,10 +191,15 @@ module.exports = new class LeadController extends Controller {
                    
             } else if(req.body.status == 1){
                 update = { status: 1, active: false }
+                userAcceptCount.acceptedLeadCount = userAcceptCount.acceptedLeadCount - 1
+                await userAcceptCount.save()
             }
             await this.model.Lead.updateOne(filter, update)
 
-            res.json({ success: true, message: 'سرنخ شما با موفقیت ثبت شد', data: { status: true } })
+            if(req.body.status == 0)
+                return res.json({ success: true, message: 'سرنخ شما با موفقیت قبول شد', data: { status: true } })
+            else if(req.body.status == 1)
+                return res.json({ success: true, message: 'سرنخ شما حذف شد', data: { status: true } })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)

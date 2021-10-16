@@ -222,9 +222,13 @@ module.exports = new class OrderController extends Controller {
 
             //remove lead
             filter = { user: req.decodedData.user_employer, mobile: customer.mobile, status: { $ne: 2 } }
-            let lead = await this.model.Lead.findOneAndUpdate(filter, {status: 2, active: false})
-            if(lead)
+            let lead = await this.model.Lead.findOneAndUpdate(filter, {status: 2, active: false}).populate('acceptUser', 'acceptedLeadCount')
+            if(lead){
                 params.lead = lead._id
+                if(lead.status == 0 && lead.accepted){
+                    await this.model.User.updateOne({_id: lead.acceptUser._id}, { $inc: { acceptedLeadCount: -1 }})
+                }
+            }
 
             let order = await this.model.Order.create(params)
 
