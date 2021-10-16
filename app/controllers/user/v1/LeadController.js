@@ -103,58 +103,29 @@ module.exports = new class LeadController extends Controller {
                     updateOne: {
                         filter: { 
                             user: req.decodedData.user_employer , 
-                            $and: [ 
-                                {mobile: pattOnlyNum.test(row.values[2]) ? row.values[2] : null}, 
-                                {satus: {$ne:0}}
-                            ]
+                            mobile: pattOnlyNum.test(row.values[2]) ? row.values[2] : null, 
+                            status: 0
                         },
                         update :{
                             family: pattAlphanumeric.test(row.values[1]) ? row.values[1] : null,
                             addUser: req.decodedData.user_id,
+                            active: true,
+                            $setOnInsert: {accepted: false, updatedAt: new Date().toISOString(), createdAt: new Date().toISOString()},
                         },
                         upsert: true
                     }
                 }
-                if (row.values[3])
+
+                if(row.values[3])
                     params.updateOne.update.description = row.values[3]
-                // if (params.family != null && params.mobile != null)
-                    leadUser.push(params)
+
+                leadUser.push(params)
 
             })
             // Delete Excel file that was sent to upload
             fs.unlinkSync(pathExcelFile)
-            console.log(leadUser)
-            await this.model.Lead.bulkWrite({
-                leadUser
-            })
-
-            // // find User leads
-            // let filter = { user: req.decodedData.user_employer }
-            // let leads = await this.model.Product.find(filter).sort({ createdAt: -1 });
-
-
-            // for (let index = 0; index < leadUser.length; index++) {
-
-            //     let find = products.find(item => item.name.trim() == leadUser[index].name.trim())
-
-            //     // if Product existed it'll be updated if not it will create new one
-            //     if (find !== undefined) {
-
-            //         let param = {
-            //             active: leadUser[index].active,
-            //             name: find.name,
-            //             sellingPrice: leadUser[index].sellingPrice
-            //         }
-
-            //         if (leadUser[index].description)
-            //             param.description = leadUser[index].description
-
-            //         let filter = { _id: find._id }
-            //         await this.model.Product.findOneAndUpdate(filter, param)
-            //     } else {
-            //         await this.model.Product.create(leadUser[index])
-            //     }
-            // }
+            
+            let r = await this.model.Lead.bulkWrite(leadUser)
 
             res.json({ success: true, message: 'سرنخ ها با موفقیت ایجاد شد' })
         }

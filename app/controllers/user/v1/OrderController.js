@@ -218,7 +218,7 @@ module.exports = new class OrderController extends Controller {
             }
                 
             if(req.body.status === "")
-                params.employee = req.decodedData.user_id,          
+                params.employee = req.decodedData.user_id        
 
             //remove lead
             filter = { user: req.decodedData.user_employer, mobile: customer.mobile, status: 1 }
@@ -1245,7 +1245,8 @@ module.exports = new class OrderController extends Controller {
                     nationalCard: { $exists: true }, 
                     financialCode: { $exists: true },  
                     postalCode: { $exists: true }, 
-                    registerNo: { $exists: true }
+                    registerNo: { $exists: true },
+                    company: { $exists: true },
                 })
                 if(!customer)
                     return res.json({ success: true, message: 'لطفا اطلاعات مشتری را از طریق ویرایش سفارش کامل کنید.', data: { status: false } })
