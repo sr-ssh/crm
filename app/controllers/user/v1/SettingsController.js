@@ -31,27 +31,41 @@ module.exports = new class SettingsController extends Controller {
 
     async editSettingOrder(req, res) {
         try {
-            req.checkBody('share', 'please enter share field').notEmpty();
-            req.checkBody('share.time', 'please enter share time').notEmpty();
-            req.checkBody('share.unitTime', 'please enter share unitTime').notEmpty().isString();
-            req.checkBody('preSms', 'please enter preSms field').notEmpty();
-            req.checkBody('preSms.text', 'please enter preSms text').exists().isString();
-            req.checkBody('preSms.status', 'please enter preSms status').notEmpty().isBoolean();
-            req.checkBody('postDeliverySms', 'please enter postDeliverySms field').notEmpty();
-            req.checkBody('postDeliverySms.text', 'please enter postDeliverySms text').exists().isString();
-            req.checkBody('postDeliverySms.status', 'please enter postDeliverySms status').notEmpty().isBoolean();
-            req.checkBody('postCustomerSms', 'please enter postCustomerSms field').notEmpty();
-            req.checkBody('postCustomerSms.text', 'please enter postCustomerSms text').exists().isString();
-            req.checkBody('postCustomerSms.status', 'please enter postCustomerSms status').notEmpty().isBoolean();
+            req.checkBody('order.share', 'please enter share field').notEmpty();
+            req.checkBody('order.share.time', 'please enter share time').notEmpty().isNumeric();
+            req.checkBody('order.share.unitTime', 'please enter share unitTime').notEmpty().isString();
+
+            req.checkBody('lead.leadCountPerEmployee', 'please enter lead leadCountPerEmployee field').notEmpty();
+
+            req.checkBody('order.reminder', 'please enter reminder field').notEmpty();
+            req.checkBody('order.reminder.time', 'please enter reminder time').notEmpty().isNumeric();
+            req.checkBody('order.reminder.unitTime', 'please enter reminder unitTime').notEmpty().isString();
+
+            req.checkBody('order.duration', 'please enter duration field').notEmpty();
+            req.checkBody('order.duration.time', 'please enter duration time').notEmpty().isNumeric();
+            req.checkBody('order.duration.unitTime', 'please enter duration unitTime').notEmpty().isString();
+
+            req.checkBody('order.preSms', 'please enter preSms field').notEmpty();
+            req.checkBody('order.preSms.text', 'please enter preSms text').exists().isString();
+            req.checkBody('order.preSms.status', 'please enter preSms status').notEmpty().isBoolean();
+
+            req.checkBody('order.postDeliverySms', 'please enter postDeliverySms field').notEmpty();
+            req.checkBody('order.postDeliverySms.text', 'please enter postDeliverySms text').exists().isString();
+            req.checkBody('order.postDeliverySms.status', 'please enter postDeliverySms status').notEmpty().isBoolean();
+
+            req.checkBody('order.postCustomerSms', 'please enter postCustomerSms field').notEmpty();
+            req.checkBody('order.postCustomerSms.text', 'please enter postCustomerSms text').exists().isString();
+            req.checkBody('order.postCustomerSms.status', 'please enter postCustomerSms status').notEmpty().isBoolean();
+
             if (this.showValidationErrors(req, res)) return;
 
 
             let filter = { active: true, _id: req.decodedData.user_employer }
             let user = await this.model.User.findOne(filter)
 
-            user.setting.order = req.body
+            user.setting = req.body
 
-            user.markModified('setting.order')
+            user.markModified('setting')
             await user.save();
 
 

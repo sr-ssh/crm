@@ -87,7 +87,9 @@ module.exports = new class HomeController extends Controller {
                         share: { time: 1, unitTime: "D" },
                         preSms: { text: config.addOrderSms, status: false },
                         postDeliverySms: { text: "", status: false },
-                        postCustomerSms: { text: config.deliveryAcknowledgeSms, status: false }
+                        postCustomerSms: { text: config.deliveryAcknowledgeSms, status: false },
+                        reminder: { time: 7, unitTime: "D" },
+                        duration: { time: 1, unitTime: "H"}
                     },
                     lead: {
                         leadCountPerEmployee: 5
