@@ -158,7 +158,7 @@ module.exports = new class OrderController extends Controller {
                 for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
                    let stocksInfo = stocks.find(stocks => (stocks._id.toString() === productsfilter[index].ingredients[j].stock._id.toString() && stocks.amount < productsfilter[index].quantity )  )
                     if (stocksInfo)                    
-                        isAmountOk.push({name : stocksInfo.name , amount :  productsfilter[index].quantity - stocksInfo.amount  } )
+                        isAmountOk.push({name : stocksInfo.name} )
                 }
             }
             if(isAmountOk.length > 0 ){
