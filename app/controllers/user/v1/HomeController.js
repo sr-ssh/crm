@@ -194,9 +194,9 @@ module.exports = new class HomeController extends Controller {
             let updateInfo = await this.model.AppInfo.find(filter).sort({ createdAt: -1 }).limit(1)
             updateInfo = updateInfo[0]
             if (!updateInfo)
-                return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {} });
+                return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {userId: req.decodedData.user_id} });
 
-            let data = { active: true, update: updateInfo.update, isForce: updateInfo.isForce, updateUrl: updateInfo.updateUrl }
+            let data = { active: true, update: updateInfo.update, isForce: updateInfo.isForce, updateUrl: updateInfo.updateUrl, userId: req.decodedData.user_id }
             return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: data });
         }
         catch (err) {
