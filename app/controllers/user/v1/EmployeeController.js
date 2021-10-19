@@ -70,6 +70,25 @@ module.exports = new class EmployeeController extends Controller {
             if (!employer.employee.includes(req.body._id))
                 return res.json({ success: false, message: "کاربر وارد شده جزو کامندان شما نمی باشد" })
 
+            // add employee voip number to employer 
+            let employeeIndex = employer.employeeVoipNumbers.findIndex(emp => emp.employeeId.toString() === req.body._id)
+            if(employeeIndex !== -1){
+                employer.employeeVoipNumbers[employeeIndex].voipNumber = req.body.voipNo
+                employer.markModified('employeeVoipNumbers')
+                await employer.save()
+                // await this.model.User.update(
+                //     {_id: req.decodedData.user_id}, 
+                //     { $set: {'employeeVoipNumbers.$[index].voipNumber': req.body.voipNo} },
+                //     { arrayFilters: [{ 'index.employeeId': req.body._id }]}
+                // )
+            } else {
+                employer.employeeVoipNumbers.push({ 
+                    employeeId: req.body._id,
+                    voipNumber: req.body.voipNo
+                })
+            }
+            
+
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
 
