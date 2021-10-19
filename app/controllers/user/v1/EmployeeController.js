@@ -51,6 +51,8 @@ module.exports = new class EmployeeController extends Controller {
         try {
 
             req.checkBody('_id', 'please enter employee id').notEmpty().isString();
+            req.checkBody('voipNo', 'please enter employer voipNo').notEmpty();
+
             req.checkBody('permissions', 'please enter employee permissions').notEmpty();
             req.checkBody('permissions.addOrder', 'please enter addOrder status').notEmpty().isBoolean();
             req.checkBody('permissions.getOrders', 'please enter getOrders status').notEmpty().isBoolean();
@@ -74,6 +76,7 @@ module.exports = new class EmployeeController extends Controller {
             if (!employee)
                 return res.json({ success: false, message: "کاربر وارد شده موجود نمی باشد" })
 
+            employee.voipNumber = req.body.voipNo
             employee.permission = req.body.permissions
             await employee.save()
 
@@ -103,7 +106,7 @@ module.exports = new class EmployeeController extends Controller {
                 employees.push(employer.employee[j])
             }
             filter = { _id: { $in: employees } }
-            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1 })
+            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 })
             return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employees })
 
         } catch (err) {

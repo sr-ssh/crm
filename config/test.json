@@ -183,7 +183,8 @@
             "sms": true
         },
         "editedEmployee": {
-            "_id": "60d953d772c6de4484069ecb",
+            "_id": "616810eec68b7fd551258843",
+            "voipNo": "30",
             "permissions": {
                 "addOrder": true,
                 "getOrders": true,
