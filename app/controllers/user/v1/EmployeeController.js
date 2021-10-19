@@ -75,7 +75,7 @@ module.exports = new class EmployeeController extends Controller {
             if(employeeIndex !== -1){
                 employer.employeeVoipNumbers[employeeIndex].voipNumber = req.body.voipNo
                 employer.markModified('employeeVoipNumbers')
-                await employer.save()
+                
                 // await this.model.User.update(
                 //     {_id: req.decodedData.user_id}, 
                 //     { $set: {'employeeVoipNumbers.$[index].voipNumber': req.body.voipNo} },
@@ -88,6 +88,7 @@ module.exports = new class EmployeeController extends Controller {
                 })
             }
             
+            await employer.save()
 
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
