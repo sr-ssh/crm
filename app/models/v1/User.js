@@ -25,14 +25,15 @@ let User = new Schema({
     type: Array,
     default: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
-  employeeVoipNumbers: [
+  employeeVoipNumbers: [ //emplyees and voip numbers
     {
       _id: false,
       employeeId: { type: Schema.Types.ObjectId, ref: "User" },
       voipNumber: Number,
     }
   ],
-  voipNumber: Number,
+  voipNumber: Number, // employee voip number
+  voipNumbers: [], // employer voip numbers
   permission: {
     type: Object,
     default: {
