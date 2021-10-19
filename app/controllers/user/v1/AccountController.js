@@ -32,7 +32,8 @@ module.exports = new class AccountController extends Controller {
                 params.nationalCode = user.nationalCode
                 params.financialCode = user.financialCode
                 params.registerNo = user.registerNo
-                params.postalCode = user.postalCode
+                params.postalCode = user.postalCode,
+                params.voipNumbers = user.voipNumbers
             }
 
             if(user.employer && user._id.toString() != user.employer.toString())
@@ -64,21 +65,32 @@ module.exports = new class AccountController extends Controller {
             req.checkBody('financialCode', 'please enter financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('registerNo', 'please enter registerNo').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('postalCode', 'please enter postalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('voipNumbers.*', 'please enter voipNumbers').optional({nullable: true,checkFalsy: true}).isNumeric();
+
 
             if (this.showValidationErrors(req, res)) return;
 
             let params = {
                 family: req.body.family,
-                nationalIDCode: req.body.nationalIDCode,
-                company: req.body.company,
-                address: req.body.address,
-                nationalCode: req.body.nationalCode,
-                financialCode: req.body.financialCode,
-                registerNo: req.body.registerNo,
-                postalCode: req.body.postalCode
+                address: req.body.address
             }
 
-            await this.model.User.update({ _id: req.decodedData.user_id }, params)
+            if(req.body.nationalIDCode)
+                params.nationalIDCode = req.body.nationalIDCode
+            if(req.body.company)
+                params.company = req.body.company
+            if(req.body.nationalCode)
+                params.nationalCode = req.body.nationalCode
+            if(req.body.financialCode)
+                params.financialCode = req.body.financialCode
+            if(req.body.registerNo)
+                params.registerNo = req.body.registerNo
+            if(req.body.postalCode)
+                params.postalCode = req.body.postalCode
+            if(req.body.voipNumbers)
+                params.voipNumbers = req.body.voipNumbers
+
+            await this.model.User.updateOne({ _id: req.decodedData.user_id }, params)
 
             return res.json({ success : true, message : 'اطلاعات کاربر با موفقیت ویرایش شد', data: { status: true }})
         }
