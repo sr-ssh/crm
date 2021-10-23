@@ -1445,7 +1445,7 @@ module.exports = new class OrderController extends Controller {
                 "isImportant": "1",
                 "userId": employee[0].employeeId,
                 "ttl": "100",
-                "message": "test"
+                "message": {baseCall:req.body.baseCall}
             }
 
             let response = await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
