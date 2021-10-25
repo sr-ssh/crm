@@ -184,7 +184,7 @@
         },
         "editedEmployee": {
             "_id": "616810eec68b7fd551258842",
-            "voipNo": "33",
+            "voipNo": "365",
             "permissions": {
                 "addOrder": true,
                 "getOrders": true,
@@ -359,7 +359,7 @@
             "mobile": "09307580142"
         },
         "addOrderPush": {
-            "voipId": "20",
+            "voipId": "365",
             "baseCall": "09203256464",
             "distinationCall": "09307580142"
         },

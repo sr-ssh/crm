@@ -1424,13 +1424,16 @@ module.exports = new class OrderController extends Controller {
             let filter = { mobile: req.body.distinationCall, 'employeeVoipNumbers.voipNumber': req.body.voipId }
             let user = await this.model.User.findOne(filter, {'employeeVoipNumbers.$.employeeId': 1}).lean()
 
+            if(!user)
+                return res.json({ success: true, message: 'کاربری با این اطلاعات یافت نشد', data: { status: false }})
+
             let params = {
                 "projectId": "3",
                 "apiKey": "turboAABMoh",
                 "isImportant": "1",
                 "userId": user.employeeVoipNumbers[0].employeeId,
                 "ttl": "100",
-                "message": "test"
+                "message": {baseCall: req.body.baseCall}
             }
 
             let response = await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)

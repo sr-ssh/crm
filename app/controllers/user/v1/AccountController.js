@@ -24,6 +24,7 @@ module.exports = new class AccountController extends Controller {
                 mobile: user.mobile,
                 address: user.address,
                 type: user.type,
+                voipNumber: user.voipNumber
             }
 
             if(user.type == config.employer){
