@@ -183,7 +183,8 @@
             "sms": true
         },
         "editedEmployee": {
-            "_id": "60d953d772c6de4484069ecb",
+            "_id": "616810eec68b7fd551258842",
+            "voipNo": "365",
             "permissions": {
                 "addOrder": true,
                 "getOrders": true,
@@ -356,8 +357,17 @@
         "lead": {
             "family":"ریحانه شکوهی",
             "mobile": "09307580142"
+        },
+        "addOrderPush": {
+            "voipId": "223",
+            "baseCall": "09203256464",
+            "distinationCall": 1260
+        },
+        "editEmployerAccount": {
+            "family":"ریحانه شکوهی",
+            "address":"معلم 24",
+            "voipNumbers": [1230, 1260]
         }
-        
     }
 }
 

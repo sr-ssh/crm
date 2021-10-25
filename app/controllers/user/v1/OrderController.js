@@ -3,6 +3,7 @@ const { param } = require("../../../routes");
 const path = require('path')
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Order';
+const axios = require('axios').default;
 
 module.exports = new class OrderController extends Controller {
 
@@ -1399,6 +1400,46 @@ module.exports = new class OrderController extends Controller {
                 res.json({ success: true, message: 'فرصت فروش با موفقیت آزاد شد' })
             if(req.body.status == 1)
                 res.json({ success: true, message: 'فرصت فروش با موفقیت گرفته شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('editSaleOpportunitySellerStatus')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+    async addOrderPush(req, res) {
+        try {
+
+            req.checkBody('voipId', 'please set user id').notEmpty();
+            req.checkBody('baseCall', 'please set baseCall').notEmpty().isNumeric()
+            req.checkBody('distinationCall', 'please set distinationCall').notEmpty().isNumeric()
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { voipNumbers: req.body.distinationCall, 'employeeVoipNumbers.voipNumber': req.body.voipId }
+            let user = await this.model.User.findOne(filter, {employeeVoipNumbers: {$elemMatch: {voipNumber: req.body.voipId}}}).lean()
+
+            
+            if(!user)
+                return res.json({ success: true, message: 'کاربری با این اطلاعات یافت نشد', data: { status: false }})
+
+            let params = {
+                "projectId": "3",
+                "apiKey": "turboAABMoh",
+                "isImportant": "1",
+                "userId": user.employeeVoipNumbers[0].employeeId,
+                "ttl": "100",
+                "message": {baseCall: req.body.baseCall}
+            }
+
+            let response = await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
+           
+            res.json({ success: true, message: 'پیام سوکت با موفقیت انجام شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)

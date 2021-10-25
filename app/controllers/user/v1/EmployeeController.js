@@ -51,6 +51,8 @@ module.exports = new class EmployeeController extends Controller {
         try {
 
             req.checkBody('_id', 'please enter employee id').notEmpty().isString();
+            req.checkBody('voipNo', 'please enter employer voipNo').notEmpty();
+
             req.checkBody('permissions', 'please enter employee permissions').notEmpty();
             req.checkBody('permissions.addOrder', 'please enter addOrder status').notEmpty().isBoolean();
             req.checkBody('permissions.getOrders', 'please enter getOrders status').notEmpty().isBoolean();
@@ -68,12 +70,27 @@ module.exports = new class EmployeeController extends Controller {
             if (!employer.employee.includes(req.body._id))
                 return res.json({ success: false, message: "کاربر وارد شده جزو کامندان شما نمی باشد" })
 
+            // add employee voip number to employer 
+            let employeeIndex = employer.employeeVoipNumbers.findIndex(emp => emp.employeeId.toString() === req.body._id)
+            if(employeeIndex !== -1){
+                employer.employeeVoipNumbers[employeeIndex].voipNumber = req.body.voipNo
+            } else {
+                employer.employeeVoipNumbers.push({ 
+                    employeeId: req.body._id,
+                    voipNumber: req.body.voipNo
+                })
+            }
+            employer.markModified('employeeVoipNumbers')
+            await employer.save()
+            
+
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
 
             if (!employee)
                 return res.json({ success: false, message: "کاربر وارد شده موجود نمی باشد" })
 
+            employee.voipNumber = req.body.voipNo
             employee.permission = req.body.permissions
             await employee.save()
 
@@ -103,7 +120,7 @@ module.exports = new class EmployeeController extends Controller {
                 employees.push(employer.employee[j])
             }
             filter = { _id: { $in: employees } }
-            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1 })
+            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 })
             return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employees })
 
         } catch (err) {

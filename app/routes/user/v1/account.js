@@ -6,6 +6,36 @@ const { user: userController } = config.path.controllers;
 
 const AccountController = require(`${userController}/v1/AccountController`)
 
+
+
+
+ /**
+ * @api {put} /api/user/v1/account/employer edit employer account
+ * @apiVersion 1.0.0
+ * @apiName editEmployerAccount
+ * @apiDescription edit employer account
+ * @apiGroup account
+ * @apiParam {varchar} family user family
+ * @apiParam {varchar} [nationalIDCode] user national ID code
+ * @apiParam {varchar} [company] user company
+ * @apiParam {varchar} address user address
+ * @apiParam {varchar} [nationalCode] user company national code
+ * @apiParam {varchar} [financialCode] user company financial code
+ * @apiParam {varchar} [registerNo] user company register number
+ * @apiParam {varchar} [postalCode] user company postal code
+ * @apiParam {Number[]} [voipNumbers] user voip numbers
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *     success: true,
+ *     message: "اطلاعات کاربر با موفقیت ویرایش شد", 
+ *     data: { status: true }
+ * }
+ */
+  router.put('/employer',AccountController.editEmployerAccount.bind(AccountController)); 
+
+ 
+
+  
 /**
  * @api {get} /api/user/v1/account get user account
  * @apiVersion 1.0.0
@@ -32,32 +62,6 @@ const AccountController = require(`${userController}/v1/AccountController`)
  */
  router.get('/',AccountController.getUserAccount.bind(AccountController)); 
 
-
-
- /**
- * @api {put} /api/user/v1/account/employer edit employer account
- * @apiVersion 1.0.0
- * @apiName editEmployerAccount
- * @apiDescription edit employer account
- * @apiGroup account
- * @apiParam {varchar} family user family
- * @apiParam {varchar} [nationalIDCode] user national ID code
- * @apiParam {varchar} [company] user company
- * @apiParam {varchar} address user address
- * @apiParam {varchar} [nationalCode] user company national code
- * @apiParam {varchar} [financialCode] user company financial code
- * @apiParam {varchar} [registerNo] user company register number
- * @apiParam {varchar} [postalCode] user company postal code
- * @apiSuccessExample {json} Success-Response:
- * {
- *     success: true,
- *     message: "اطلاعات کاربر با موفقیت ویرایش شد", 
- *     data: { status: true }
- * }
- */
- router.put('/employer',AccountController.editEmployerAccount.bind(AccountController)); 
-
- 
 
 
 /**

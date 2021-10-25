@@ -65,6 +65,13 @@ define({ "api": [
             "optional": true,
             "field": "postalCode",
             "description": "<p>user company postal code</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number[]",
+            "optional": true,
+            "field": "voipNumbers",
+            "description": "<p>user voip numbers</p>"
           }
         ]
       }
@@ -564,6 +571,13 @@ define({ "api": [
             "optional": false,
             "field": "_id",
             "description": "<p>employee id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "voipNo",
+            "description": "<p>employee voip number</p>"
           },
           {
             "group": "Parameter",
@@ -1390,6 +1404,53 @@ define({ "api": [
           "type": "json"
         }
       ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سفارش شما با موفقیت ثبت شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/order/",
+    "title": "add order",
+    "version": "1.0.0",
+    "name": "addOrder",
+    "description": "<p>add order: customer birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "products",
+            "description": "<p>array of product objects</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "customer",
+            "description": "<p>customer information</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "reminder",
+            "description": "<p>number of days for reminding</p>"
+          }
+        ]
+      }
     },
     "success": {
       "examples": [

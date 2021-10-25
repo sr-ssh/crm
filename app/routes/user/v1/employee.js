@@ -60,6 +60,7 @@ const EmployeeController = require(`${userController}/v1/EmployeeController`)
  * @apiDescription change employee permission
  * @apiGroup employee
  * @apiParam {varchar} _id employee id
+ * @apiParam {Number} voipNo employee voip number
  * @apiParam {object} permissions object exactly like it is sent
  * @apiSuccessExample {json} Success-Response:
  * {

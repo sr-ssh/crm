@@ -6,7 +6,19 @@ const baseRoute = '/api/user/v1/order';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let order, order_V1, user, getOrderParams, editOrderStatus, deliverySms, editSms, editOrderPrice, editOrderQuantity, deleteOrder, editProductOrder, financialConfirmation;
+let order,
+  order_V1,
+  user,
+  getOrderParams,
+  editOrderStatus,
+  deliverySms,
+  editSms,
+  editOrderPrice,
+  editOrderQuantity,
+  deleteOrder,
+  editProductOrder,
+  financialConfirmation,
+  addOrderPush;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -34,7 +46,8 @@ describe(`${sectionName}`, () => {
         editeStatusNotes = appConfig.test.editeStatusNotes;
         createShareLinkOrder = appConfig.test.createShareLinkOrder;
         getOrderDetails = appConfig.test.getOrderDetails
-        financialConfirmation = appConfig.test.financialConfirmation
+        financialConfirmation = appConfig.test.financialConfirmation;
+        addOrderPush = appConfig.test.addOrderPush;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -158,6 +171,15 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
+        it('check order push notification', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/push`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(addOrderPush);
+            res.should.have.status(200);
+        });
 
     });
 
