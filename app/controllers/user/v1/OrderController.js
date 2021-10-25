@@ -1421,9 +1421,10 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('distinationCall', 'please set distinationCall').notEmpty().isNumeric()
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { mobile: req.body.distinationCall, 'employeeVoipNumbers.voipNumber': req.body.voipId }
-            let user = await this.model.User.findOne(filter, {'employeeVoipNumbers.$.employeeId': 1}).lean()
+            let filter = { voipNumbers: req.body.distinationCall, 'employeeVoipNumbers.voipNumber': req.body.voipId }
+            let user = await this.model.User.findOne(filter, {employeeVoipNumbers: {$elemMatch: {voipNumber: req.body.voipId}}}).lean()
 
+            
             if(!user)
                 return res.json({ success: true, message: 'کاربری با این اطلاعات یافت نشد', data: { status: false }})
 
@@ -1438,7 +1439,7 @@ module.exports = new class OrderController extends Controller {
 
             let response = await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
            
-            res.json({ success: true, message: 'فرصت فروش با موفقیت گرفته شد' })
+            res.json({ success: true, message: 'پیام سوکت با موفقیت انجام شد' })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
