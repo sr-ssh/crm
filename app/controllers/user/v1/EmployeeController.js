@@ -51,7 +51,7 @@ module.exports = new class EmployeeController extends Controller {
         try {
 
             req.checkBody('_id', 'please enter employee id').notEmpty().isString();
-            req.checkBody('voipNo', 'please enter employer voipNo').notEmpty();
+            req.checkBody('voipNo', 'please enter employer voipNo').exists();
 
             req.checkBody('permissions', 'please enter employee permissions').notEmpty();
             req.checkBody('permissions.addOrder', 'please enter addOrder status').notEmpty().isBoolean();
@@ -64,12 +64,18 @@ module.exports = new class EmployeeController extends Controller {
             req.checkBody('permissions.getDiscounts', 'please enter getDiscounts status').notEmpty().isBoolean();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, _id: req.decodedData.user_id }
+            let filter = { active: true, _id: req.decodedData.user_employer }
             let employer = await this.model.User.findOne(filter)
 
-            if (!employer.employee.includes(req.body._id))
-                return res.json({ success: false, message: "کاربر وارد شده جزو کامندان شما نمی باشد" })
 
+            if (!employer.employee.includes(req.body._id))
+                return res.json({ success: false, message: "همچین کاربری موجود نیست" })
+
+
+            let voipNumberExists = employer.employeeVoipNumbers.filter(item => item.voipNumber == req.body.voipNo )
+            if( voipNumberExists.length > 0 && voipNumberExists[0].employeeId.toString() != req.body._id )
+                return res.json({ success: false, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
+           
             // add employee voip number to employer 
             let employeeIndex = employer.employeeVoipNumbers.findIndex(emp => emp.employeeId.toString() === req.body._id)
             if(employeeIndex !== -1){
@@ -83,6 +89,7 @@ module.exports = new class EmployeeController extends Controller {
             employer.markModified('employeeVoipNumbers')
             await employer.save()
             
+            await employer.save()
 
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
