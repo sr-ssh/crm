@@ -61,7 +61,7 @@ module.exports = new class AccountController extends Controller {
             req.checkBody('family', 'please enter family').notEmpty();
             req.checkBody('nationalIDCode', 'please enter nationalIDCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('company', 'please enter company').optional({nullable: true,checkFalsy: true}).isString();
-            req.checkBody('address', 'please enter address').notEmpty().isvoipNumbersString();
+            req.checkBody('address', 'please enter address').notEmpty().isString();
             req.checkBody('nationalCode', 'please enter nationalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('financialCode', 'please enter financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('registerNo', 'please enter registerNo').optional({nullable: true,checkFalsy: true}).isNumeric();
