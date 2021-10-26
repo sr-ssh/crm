@@ -192,6 +192,7 @@ module.exports = new class ProductController extends Controller {
     async uploadExcel(req, res) {
         try {
 
+            console.time('test uploadExcel')
             // get path File that was uploaded by user
             let pathExcelFile = path.resolve(`./tmp/user${req.decodedData.user_employer}${path.extname(req.file.originalname)}`)
 
@@ -200,13 +201,13 @@ module.exports = new class ProductController extends Controller {
             await workbook.xlsx.readFile(pathExcelFile);
             let worksheet = workbook.getWorksheet(1);
             // read Excel file
-            worksheet.eachRow({ includeEmpty: true }, async (row, rowNumber) => {
+            worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
 
                 if (rowNumber == 1)
                     return
 
-                const pattOnlyNum = /^[0-9]+$/;
-                const pattAlphanumeric = /^[آ-یa-zA-Z 0-9\s]+[آ-یa-zA-Z 0-9\s]+$(\.0-9+)?/;
+                const pattOnlyNum = /^[0-9 ۰-۹]+$/;
+                const pattAlphanumeric = /^[آ-یa-zA-Z 0-9 ۰-۹\s]+[آ-یa-zA-Z 0-9 ۰-۹\s]+$(\.0-9 ۰-۹+)?/;
 
                 let params = {
                     name: pattAlphanumeric.test(row.values[1]) ? row.values[1] : null,
@@ -220,6 +221,7 @@ module.exports = new class ProductController extends Controller {
                     productsUser.push(params)
 
             })
+
             // Delete Excel file that was sent to upload
             fs.unlinkSync(pathExcelFile)
 
@@ -250,6 +252,8 @@ module.exports = new class ProductController extends Controller {
                     await this.model.Product.create(productsUser[index])
                 }
             }
+            console.timeEnd('test uploadExcel')
+
 
             res.json({ success: true, message: 'محصولات با موفقیت ویرایش شد' })
         }
