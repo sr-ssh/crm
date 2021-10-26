@@ -14,7 +14,7 @@ module.exports = new class AccountController extends Controller {
     
     async getUserAccount(req, res) {
         try {
-            let user = await this.model.User.findById(req.decodedData.user_id)
+            let user = await this.model.User.findById(req.decodedData.user_id).lean()
 
             let params = {
                 active: user.active,
@@ -33,8 +33,8 @@ module.exports = new class AccountController extends Controller {
                 params.nationalCode = user.nationalCode
                 params.financialCode = user.financialCode
                 params.registerNo = user.registerNo
-                params.postalCode = user.postalCode,
-                params.voipNumbers = user.voipNumbers
+                params.postalCode = user.postalCode
+                params.voipNumbers = user.voipNumbers            
             }
 
             if(user.employer && user._id.toString() != user.employer.toString())
@@ -61,7 +61,7 @@ module.exports = new class AccountController extends Controller {
             req.checkBody('family', 'please enter family').notEmpty();
             req.checkBody('nationalIDCode', 'please enter nationalIDCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('company', 'please enter company').optional({nullable: true,checkFalsy: true}).isString();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
+            req.checkBody('address', 'please enter address').notEmpty().isvoipNumbersString();
             req.checkBody('nationalCode', 'please enter nationalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('financialCode', 'please enter financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('registerNo', 'please enter registerNo').optional({nullable: true,checkFalsy: true}).isNumeric();
