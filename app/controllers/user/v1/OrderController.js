@@ -1425,31 +1425,42 @@ module.exports = new class OrderController extends Controller {
             if(req.body.distinationCall)
             req.body.distinationCall = parseInt(req.body.distinationCall)
 
-            let filter =  { voipNumbers : req.body.distinationCall , 'employeeVoipNumbers.voipNumber': req.body.voipId } 
-    
-            let user = await this.model.User.findOne(filter).lean()
+            let filter =  { voipNumbers : req.body.distinationCall } 
+            let user = await this.model.User.findOne(filter).populate({path: 'employee', model: 'User' , select : 'voipNumber' }).lean()
 
 
             if (!user)
                 return res.json({ success: false, message: "کاربری با این شماره  ویپ وجود ندارد" });
 
 
-            let employee = user.employeeVoipNumbers.filter((item ) => item.voipNumber  ==  parseInt(req.body.voipId)  )
+            let employee =  user.employee.filter((item ) => item.voipNumber  ==  parseInt(req.body.voipId) )
 
-            if (employee.length  === 0)
-                return res.json({ success: false, message: "کارمندی با این Sip  وجود ندارد" });
+            let pushMessage = { message :{baseCall: req.body.baseCall} }
+            
+            if (employee.length  === 0){
+                if(user.voipNumber == parseInt(req.body.voipId))
+                    pushMessage.userId = user._id.toString()
+                else
+                    return res.json({ success: false, message: "کارمندی با این Sip  وجود ندارد" });
+            } else{
+                pushMessage.userId = employee[0]._id.toString()
+            }    
 
+
+            // this.sendPushToUser(pushMessage.userId, pushMessage.message);
+            
+            
             let params = {
                 "projectId": "3",
                 "apiKey": "turboAABMoh",
                 "isImportant": "1",
-                "userId": employee[0].employeeId,
+                "userId": pushMessage.userId,
                 "ttl": "100",
-                "message": {baseCall: req.body.baseCall}
+                "message": pushMessage.message
             }
 
             let response = await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
-           
+
             res.json({ success: true, message: 'پیام سوکت با موفقیت انجام شد' })
         }
         catch (err) {
