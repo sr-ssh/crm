@@ -106,7 +106,7 @@ module.exports = new class EmployeeController extends Controller {
     async getEmployees(req, res) {
         try {
 
-            let filter = { active: true, _id: req.decodedData.user_id }
+            let filter = { active: true, _id: req.decodedData.user_employer }
             let employer = await this.model.User.findOne(filter, { employee: 1 })
             let employees = [];
             for (let j = 1; j < employer.employee.length; j++) {
