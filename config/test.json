@@ -191,8 +191,8 @@
             "sms": true
         },
         "editedEmployee": {
-            "_id": "616810eec68b7fd551258842",
-            "voipNo": "365",
+            "_id": "61768fa3e40f79f3708d2b44",
+            "voipNo": "222",
             "permissions": {
                 "addOrder": true,
                 "getOrders": true,
@@ -374,7 +374,7 @@
         "editEmployerAccount": {
             "family":"ریحانه شکوهی",
             "address":"معلم 24",
-            "voipNumbers": [1230, 1260]
+            "sip": 500
         }
     }
 }

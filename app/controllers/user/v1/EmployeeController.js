@@ -65,31 +65,17 @@ module.exports = new class EmployeeController extends Controller {
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.decodedData.user_employer }
-            let employer = await this.model.User.findOne(filter)
+            // check for sip duplication
+            let employer = await this.model.User
+                .findOne(filter)
+                .populate({path:'employee', match: { voipNumber: req.body.voipNo }, select: 'voipNumber'})
+                .lean()
 
+            if (!employer)
+                return res.json({ success: true, message: "همچین کاربری موجود نیست" })
 
-            if (!employer.employee.includes(req.body._id))
-                return res.json({ success: false, message: "همچین کاربری موجود نیست" })
-
-
-            let voipNumberExists = employer.employeeVoipNumbers.filter(item => item.voipNumber == req.body.voipNo )
-            if( voipNumberExists.length > 0 && voipNumberExists[0].employeeId.toString() != req.body._id )
-                return res.json({ success: false, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
-           
-            // add employee voip number to employer 
-            let employeeIndex = employer.employeeVoipNumbers.findIndex(emp => emp.employeeId.toString() === req.body._id)
-            if(employeeIndex !== -1){
-                employer.employeeVoipNumbers[employeeIndex].voipNumber = req.body.voipNo
-            } else {
-                employer.employeeVoipNumbers.push({ 
-                    employeeId: req.body._id,
-                    voipNumber: req.body.voipNo
-                })
-            }
-            employer.markModified('employeeVoipNumbers')
-            await employer.save()
-            
-            await employer.save()
+            if(employer.employee.length)
+                return res.json({ success: true, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
 
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
