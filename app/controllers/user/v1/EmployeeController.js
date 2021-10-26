@@ -68,14 +68,18 @@ module.exports = new class EmployeeController extends Controller {
             // check for sip duplication
             let employer = await this.model.User
                 .findOne(filter)
-                .populate({path:'employee', match: { voipNumber: req.body.voipNo }, select: 'voipNumber'})
+                .populate({path:'employee', match: { voipNumber : req.body.voipNo }, select: 'voipNumber'})
                 .lean()
 
-            if (!employer)
-                return res.json({ success: true, message: "همچین کاربری موجود نیست" })
+            // if (!employer)
+            //     return res.json({ success: false, message: "همچین کاربری موجود نیست" })
+            if(employer.employee.length > 0){
 
-            if(employer.employee.length)
-                return res.json({ success: true, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
+                let isDuplicateVoipNumber =  employer.employee.filter(item => item._id.toString() == req.body._id )
+                if(isDuplicateVoipNumber.length < 1)
+                    return res.json({ success: true, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
+
+            }
 
             filter = { _id: req.body._id }
             let employee = await this.model.User.findOne(filter)
@@ -415,7 +419,8 @@ module.exports = new class EmployeeController extends Controller {
                         getDiscounts: false,
                         excelProduct: false,
                         excelCustomer: false
-                    }
+                    },
+                    voipNumber: null
                 }
                 await this.model.User.findOneAndUpdate(filter, update)
                 update = { $addToSet: { employee: user._id } }
