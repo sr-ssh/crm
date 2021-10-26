@@ -67,6 +67,7 @@ module.exports = new class AccountController extends Controller {
             req.checkBody('registerNo', 'please enter registerNo').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('postalCode', 'please enter postalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
             req.checkBody('voipNumbers.*', 'please enter voipNumbers').optional({nullable: true,checkFalsy: true}).isNumeric();
+            req.checkBody('sip', 'please enter sip').optional({nullable: true,checkFalsy: true}).isNumeric();
 
 
             if (this.showValidationErrors(req, res)) return;
@@ -90,6 +91,8 @@ module.exports = new class AccountController extends Controller {
                 params.postalCode = req.body.postalCode
             if(req.body.voipNumbers)
                 params.voipNumbers = req.body.voipNumbers
+            if(req.body.sip)
+                params.voipNumber = req.body.sip
 
             await this.model.User.updateOne({ _id: req.decodedData.user_id }, params)
 

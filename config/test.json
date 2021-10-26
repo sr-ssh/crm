@@ -366,7 +366,7 @@
         "editEmployerAccount": {
             "family":"ریحانه شکوهی",
             "address":"معلم 24",
-            "voipNumbers": [1230, 1260]
+            "sip": 500
         }
     }
 }
