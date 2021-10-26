@@ -71,13 +71,11 @@ module.exports = new class EmployeeController extends Controller {
                 .populate({path:'employee', match: { voipNumber : req.body.voipNo }, select: 'voipNumber'})
                 .lean()
 
-            // if (!employer)
-            //     return res.json({ success: false, message: "همچین کاربری موجود نیست" })
             if(employer.employee.length > 0){
 
                 let isDuplicateVoipNumber =  employer.employee.filter(item => item._id.toString() == req.body._id )
                 if(isDuplicateVoipNumber.length < 1)
-                    return res.json({ success: true, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
+                    return res.json({ success: false, message: "این شماره sip  قبلا برای کارمند دیگری استفاده شده است" })
 
             }
 
