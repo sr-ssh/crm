@@ -21,10 +21,7 @@ let User = new Schema({
   postalCode: Number,
   acceptedLeadCount: { type: Number, default: 0 },
   employer: { type: Schema.Types.ObjectId, ref: "User" },
-  employee: {
-    type: Array,
-    default: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  },
+  employee: [{ type: Schema.Types.ObjectId, ref: "User" }],
   employeeVoipNumbers: [ //employees and voip numbers
     {
       _id: false,
@@ -33,7 +30,6 @@ let User = new Schema({
     }
   ],
   voipNumber: Number, // employee voip number
-  voipNumbers: [], // employer voip numbers
   permission: {
     type: Object,
     default: {
