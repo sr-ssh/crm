@@ -32,17 +32,17 @@ module.exports = new class SettingsController extends Controller {
     async editSettingOrder(req, res) {
         try {
             req.checkBody('order.share', 'please enter share field').notEmpty();
-            req.checkBody('order.share.time', 'please enter share time').notEmpty().isNumeric();
+            req.checkBody('order.share.time', 'please enter share time').exists()
             req.checkBody('order.share.unitTime', 'please enter share unitTime').notEmpty().isString();
 
-            req.checkBody('lead.leadCountPerEmployee', 'please enter lead leadCountPerEmployee field').notEmpty();
+            req.checkBody('lead.leadCountPerEmployee', 'please enter lead leadCountPerEmployee field').exists()
 
             req.checkBody('order.reminder', 'please enter reminder field').notEmpty();
-            req.checkBody('order.reminder.time', 'please enter reminder time').notEmpty().isNumeric();
+            req.checkBody('order.reminder.time', 'please enter reminder time').exists()
             req.checkBody('order.reminder.unitTime', 'please enter reminder unitTime').notEmpty().isString();
 
             req.checkBody('order.duration', 'please enter duration field').notEmpty();
-            req.checkBody('order.duration.time', 'please enter duration time').notEmpty().isNumeric();
+            req.checkBody('order.duration.time', 'please enter duration time').exists();
             req.checkBody('order.duration.unitTime', 'please enter duration unitTime').notEmpty().isString();
 
             req.checkBody('order.preSms', 'please enter preSms field').notEmpty();
