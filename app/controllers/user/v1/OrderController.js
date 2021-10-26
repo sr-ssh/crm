@@ -474,8 +474,13 @@ module.exports = new class OrderController extends Controller {
             else
                 filter = { status: 0, ...filter };
 
-            let orders = await this.model.Order.find(filter).populate({ path: 'notes.writtenBy', model: 'User', select: 'family' }).sort({ createdAt: -1 });
+            let orders = await this.model.Order.find(filter).populate([
+                { path: 'notes.writtenBy', model: 'User', select: 'family' },
+                { path: 'sellers.id', model: 'User', select: 'family' }
+            ]).sort({ createdAt: -1 });
 
+        
+            // getOrderParams_V1.status
             let params = [];
             for (let index = 0; index < orders.length; index++) {
                 let param = {
