@@ -14,6 +14,14 @@
             "sender": "100018801880"
         }
     },
+    "push": {
+        "host": "http://turbotaxi.ir:6061",
+        "userId": 3,
+        "user": {
+            "projectId": 3,
+            "apiKey": "turboAABMohsen"
+        }
+    },
     "test": {
         "user": {
             "password": "1234",
@@ -359,9 +367,9 @@
             "mobile": "09307580142"
         },
         "addOrderPush": {
-            "voipId": "33",
-            "baseCall": "09203256464",
-            "distinationCall": "2222"
+            "voipId": "99",
+            "baseCall": "09105044033",
+            "distinationCall": "1111"
         },
         "editEmployerAccount": {
             "family":"ریحانه شکوهی",

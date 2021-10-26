@@ -13,5 +13,13 @@
             "apikey": "36792F47687237546569536A4F56303472794A6F50673D3D",
             "sender": "100018801880"
         }
+    },
+    "push": {
+        "host": "http://turbotaxi.ir:6061",
+        "userId": 3,
+        "user": {
+            "projectId": 3,
+            "apiKey": "turboAABMohsen"
+        }
     }
 }
