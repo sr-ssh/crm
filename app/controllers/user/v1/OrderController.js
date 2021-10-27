@@ -1335,7 +1335,7 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('fileName', 'please set your fileName').notEmpty().isString();
             req.checkBody('orderId', 'please set your orderId').notEmpty().isMongoId();
             if (this.showValidationErrors(req, res)) return;
-
+            
             let filter = { _id: req.body.orderId }
             let extname = path.extname(req.file.originalname).toLowerCase()
 
@@ -1451,7 +1451,20 @@ module.exports = new class OrderController extends Controller {
                 pushMessage.userId = employee[0]._id.toString()
             }    
 
-            this.sendPushToUser(pushMessage);
+            // this.sendPushToUser(pushMessage);
+
+             
+            let params = {
+                "projectId": "3",
+                "apiKey": "turboAABMoh",
+                "isImportant": "1",
+                "userId": pushMessage.userId,
+                "ttl": "100",
+                "message": pushMessage.message
+            }
+
+            await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
+
             
             return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
         }
