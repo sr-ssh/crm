@@ -1451,19 +1451,19 @@ module.exports = new class OrderController extends Controller {
                 pushMessage.userId = employee[0]._id.toString()
             }    
 
-            // this.sendPushToUser(pushMessage);
+           await this.sendPushToUser(pushMessage);
 
              
-            let params = {
-                "projectId": "3",
-                "apiKey": "turboAABMoh",
-                "isImportant": "1",
-                "userId": pushMessage.userId,
-                "ttl": "100",
-                "message": pushMessage.message
-            }
+            // let params = {
+            //     "projectId": "3",
+            //     "apiKey": "turboAABMoh",
+            //     "isImportant": "1",
+            //     "userId": pushMessage.userId,
+            //     "ttl": "100",
+            //     "message": pushMessage.message
+            // }
 
-            await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
+            // await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
 
             
             return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
