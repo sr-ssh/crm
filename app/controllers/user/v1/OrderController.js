@@ -1425,7 +1425,8 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('baseCall', 'please set baseCall').notEmpty().isNumeric()
             req.checkBody('distinationCall', 'please set distinationCall').notEmpty().isNumeric()
             if (this.showValidationErrors(req, res)) return;
-
+            
+            console.time("test addOrderPush")
 
             if(req.body.distinationCall)
             req.body.distinationCall = parseInt(req.body.distinationCall)
@@ -1465,7 +1466,8 @@ module.exports = new class OrderController extends Controller {
 
             // await axios.post(`http://turbotaxi.ir:6061/api/sendPush`, params)
 
-            
+            console.timeEnd("test addOrderPush")
+
             return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
         }
         catch (err) {

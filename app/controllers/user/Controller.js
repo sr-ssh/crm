@@ -27,7 +27,6 @@ module.exports = class Controller extends MainController {
         
         await axios.post(pushUrl, pushParams)
        .then(function (response) {
-            console.log(response)            
         })
         .catch(function (error) {
             new this.transforms.ErrorTransform(error)
