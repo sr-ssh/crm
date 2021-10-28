@@ -421,6 +421,20 @@ module.exports = new class EmployeeController extends Controller {
                         getReceipts: true,   
                         getSuppliers: true,   
                         getStock: true,  
+                        getAllSaleOpprotunity: false,
+                        reminder: false,
+                        ExcelProducts: false,
+                        finance: false,
+                        currentCosts: false,
+                        getCustomers: false,
+                        getExcelCustomers: false,
+                        getEmployees: false,
+                        employeeRequests: false,
+                        getDiscounts: false,
+                        uploadExcelLeads: false,
+                        getExcelSuppliers: false,
+                        financialConfirmationOrder: false,
+                        purchaseConfirmationInvoice: false
                     },
                     voipNumber: null
                 }
