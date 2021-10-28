@@ -106,8 +106,11 @@ module.exports = new class HomeController extends Controller {
                     getEmployees: true,
                     getDiscounts: true,
                     getAllSaleOpprotunity: true,
-                    getLeads: true
-
+                    getLeads: true,
+                    addReceipt : true,
+                    getReceipts: true,
+                    getSuppliers: true,
+                    getStock: true
                 }
             }
 

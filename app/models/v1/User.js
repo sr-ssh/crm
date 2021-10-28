@@ -37,7 +37,11 @@ let User = new Schema({
       getEmployees: false,
       getDiscounts: false,
       getAllSaleOpprotunity: false,
-      getLeads: false
+      getLeads: false,
+      addReceipt : false,
+      getReceipts: false,
+      getSuppliers: false,
+      getStock: false
     },
   },
 

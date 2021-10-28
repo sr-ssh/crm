@@ -62,6 +62,13 @@ module.exports = new class EmployeeController extends Controller {
             req.checkBody('permissions.getCustomers', 'please enter getCustomers status').notEmpty().isBoolean();
             req.checkBody('permissions.getEmployees', 'please enter getEmployees status').notEmpty().isBoolean();
             req.checkBody('permissions.getDiscounts', 'please enter getDiscounts status').notEmpty().isBoolean();
+            req.checkBody('permissions.getAllSaleOpprotunity', 'please enter getAllSaleOpprotunity status').notEmpty().isBoolean();
+            req.checkBody('permissions.getLead', 'please enter getLead status').notEmpty().isBoolean();
+            req.checkBody('permissions.addReceipt', 'please enter addReceipt status').notEmpty().isBoolean();
+            req.checkBody('permissions.getReceipts', 'please enter getReceipts status').notEmpty().isBoolean();
+            req.checkBody('permissions.getSuppliers', 'please enter getSuppliers status').notEmpty().isBoolean();
+            req.checkBody('permissions.getStock', 'please enter getStock status').notEmpty().isBoolean();
+
             if (this.showValidationErrors(req, res)) return;
 
             let filter = { active: true, _id: req.decodedData.user_employer }
