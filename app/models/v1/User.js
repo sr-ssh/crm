@@ -27,21 +27,29 @@ let User = new Schema({
   permission: {
     type: Object,
     default: {
-      addOrder: false,
-      getOrders: false,
-      saleOpprotunity: false,
-      reminder: false,
-      getProducts: false,
-      finance: false,
-      getCustomers: false,
-      getEmployees: false,
-      getDiscounts: false,
-      getAllSaleOpprotunity: false,
-      getLeads: false,
-      addReceipt : false,
-      getReceipts: false,
-      getSuppliers: false,
-      getStock: false
+      addOrder: false, // -> ثبت سفارش
+      getOrders: false,  // -> سفارش ها
+      saleOpprotunity: false,  // -> فرصت فروش ها
+      getAllSaleOpprotunity: false,  // -> تمامی فرصت فروش ها
+      reminder: false,  // -> یاد آوری
+      getProducts: false,  // -> محصول ها
+      ExcelProducts: false,  // -> بارگذاری و دانلود اکسل محصول ها
+      finance: false,  // -> مالی
+      currentCosts: false,  // -> هزینه های جاری
+      getCustomers: false,  // -> مشتریان
+      getExcelCustomers: false,  // -> دانلود اکسل مشتریان
+      getEmployees: false,  // -> کارمندان
+      employeeRequests : false,  // -> درخواست های کارمندان
+      getDiscounts: false,  // -> تخفیف ها 
+      leads: false,  // -> سرنخ 
+      uploadExcelLeads: false,  // -> بارگذاری اکسل سرنخ
+      addReceipt : false,  // -> ثبت فاکتور
+      getReceipts: false,  // -> فاکتور ها 
+      getSuppliers: false,  // -> تامین کننده ها 
+      getExcelSuppliers: false,  // -> دانلود اکسل تامین کننده ها 
+      getStock: false,  // -> مواد خام
+      financialConfirmationOrder : false,  // -> تایید مالی سفارش 
+      purchaseConfirmationInvoice: false   // -> تایید خرید فاکتور 
     },
   },
 

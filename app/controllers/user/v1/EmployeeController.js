@@ -413,17 +413,15 @@ module.exports = new class EmployeeController extends Controller {
                 let update = {
                     employer: req.decodedData.user_id,
                     permission: {
-                        addOrder: true,
-                        getOrders: true,
-                        saleOpprotunity: true,
-                        reminder: false,
+                        addOrder: true, 
+                        leads: true,   
+                        getOrders: true,  
+                        saleOpprotunity: true,  
                         getProducts: true,
-                        finance: false,
-                        getCustomers: true,
-                        getEmployees: false,
-                        getDiscounts: false,
-                        excelProduct: false,
-                        excelCustomer: false
+                        addReceipt : true,  
+                        getReceipts: true,   
+                        getSuppliers: true,   
+                        getStock: true,  
                     },
                     voipNumber: null
                 }
