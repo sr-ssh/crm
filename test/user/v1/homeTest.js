@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.userMJH;
+        user = appConfig.test.user;
         appInfo = appConfig.test.appInfo;
         newUser = appConfig.test.newUser;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)

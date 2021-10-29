@@ -3,7 +3,6 @@ const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Home';
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
-const ObjectId = require('mongoose').Types.ObjectId;
 
 
 module.exports = new class HomeController extends Controller {
@@ -200,44 +199,18 @@ module.exports = new class HomeController extends Controller {
 
             if (this.showValidationErrors(req, res)) return;
 
-            console.time("test appInfo")
-
             if (!req.decodedData.user_active)
                 return res.json({ success: false, message: "کاربر بلاک می باشد", data: {} })
 
             // save in mongodb
-            // let filter = { os: req.body.os, version: req.body.versionCode }
-            // let updateInfo = await this.model.AppInfo.find(filter).sort({ createdAt: -1 }).limit(1)
-            // updateInfo = updateInfo[0]
-            // if (!updateInfo)
-                // return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {userId: req.decodedData.user_id} });
+            let filter = { os: req.body.os, version: req.body.versionCode }
+            let updateInfo = await this.model.AppInfo.find(filter).sort({ createdAt: -1 }).limit(1)
+            updateInfo = updateInfo[0]
+            if (!updateInfo)
+                return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {userId: req.decodedData.user_id} });
 
-            let filter = { active: true, _id : req.decodedData.user_id }
-            let userInfo = await this.model.User.aggregate([
-                { $match: { _id : ObjectId(req.decodedData.user_id) } },
-                {
-                    $lookup:
-                      {
-                        from: "products",
-                        localField: "employer",
-                        foreignField: "user",
-                        as: "products_count"
-                      }
-                },
-                {
-                    $addFields: {
-                        products_count: { $size: "$products_count" } ,
-                    }
-                },
-                {
-                    $project : { _id : 1 , family: 1 , products_count : 1 , type : 1 , permission: 1 }
-                }
-            ])
-                             
-            
-            console.timeEnd("test appInfo")
-
-            return res.json({ success: true, message: "عملیات با موفقیت انجام شد", data: userInfo });
+            let data = { active: true, update: updateInfo.update, isForce: updateInfo.isForce, updateUrl: updateInfo.updateUrl, userId: req.decodedData.user_id }
+            return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: data });
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
