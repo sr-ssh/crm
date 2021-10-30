@@ -63,7 +63,7 @@ module.exports = new class EmployeeController extends Controller {
             req.checkBody('permissions.getEmployees', 'please enter getEmployees status').notEmpty().isBoolean();
             req.checkBody('permissions.getDiscounts', 'please enter getDiscounts status').notEmpty().isBoolean();
             req.checkBody('permissions.getAllSaleOpprotunity', 'please enter getAllSaleOpprotunity status').notEmpty().isBoolean();
-            req.checkBody('permissions.leads', 'please enter leads status').notEmpty().isBoolean();
+            req.checkBody('permissions.getLead', 'please enter getLead status').notEmpty().isBoolean();
             req.checkBody('permissions.addReceipt', 'please enter addReceipt status').notEmpty().isBoolean();
             req.checkBody('permissions.getReceipts', 'please enter getReceipts status').notEmpty().isBoolean();
             req.checkBody('permissions.getSuppliers', 'please enter getSuppliers status').notEmpty().isBoolean();
@@ -115,21 +115,22 @@ module.exports = new class EmployeeController extends Controller {
     async getEmployees(req, res) {
         try {
 
-            console.time("test getEmployees")
-
-            let filter = { active: true, employer: req.decodedData.user_employer , _id : { $ne : req.decodedData.user_employer }  }
-            let employer = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 } )
-
-            console.timeEnd("test getEmployees")
-
-            return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employer })
+            let filter = { active: true, _id: req.decodedData.user_employer }
+            let employer = await this.model.User.findOne(filter, { employee: 1 })
+            let employees = [];
+            for (let j = 1; j < employer.employee.length; j++) {
+                employees.push(employer.employee[j])
+            }
+            filter = { _id: { $in: employees } }
+            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 })
+            return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employees })
 
         } catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('getEmployees')
-                .inputParams(req.params)
+                .inputParams(req.body)
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);
@@ -412,29 +413,17 @@ module.exports = new class EmployeeController extends Controller {
                 let update = {
                     employer: req.decodedData.user_id,
                     permission: {
-                        addOrder: true, 
-                        leads: true,   
-                        getOrders: true,  
-                        saleOpprotunity: true,  
-                        getProducts: true,
-                        addReceipt : true,  
-                        getReceipts: true,   
-                        getSuppliers: true,   
-                        getStock: true,  
-                        getAllSaleOpprotunity: false,
+                        addOrder: true,
+                        getOrders: true,
+                        saleOpprotunity: true,
                         reminder: false,
-                        ExcelProducts: false,
+                        getProducts: true,
                         finance: false,
-                        currentCosts: false,
-                        getCustomers: false,
-                        getExcelCustomers: false,
+                        getCustomers: true,
                         getEmployees: false,
-                        employeeRequests: false,
                         getDiscounts: false,
-                        uploadExcelLeads: false,
-                        getExcelSuppliers: false,
-                        financialConfirmationOrder: false,
-                        purchaseConfirmationInvoice: false
+                        excelProduct: false,
+                        excelCustomer: false
                     },
                     voipNumber: null
                 }

@@ -96,29 +96,21 @@ module.exports = new class HomeController extends Controller {
                     }
                 }
                 params.permission = {
-                    addOrder: true, 
-                    getOrders: true,  
-                    saleOpprotunity: true,  
-                    getAllSaleOpprotunity: true,
-                    reminder: true,  
+                    addOrder: true,
+                    getOrders: true,
+                    saleOpprotunity: true,
+                    reminder: true,
                     getProducts: true,
-                    ExcelProducts: true,
-                    finance: true, 
-                    currentCosts: true,
+                    finance: true,
                     getCustomers: true,
-                    getExcelCustomers: true,
                     getEmployees: true,
-                    employeeRequests : true,  
-                    getDiscounts: true,  
-                    leads: true,   
-                    uploadExcelLeads: true,
-                    addReceipt : true,  
-                    getReceipts: true,   
-                    getSuppliers: true,   
-                    getExcelSuppliers: true, 
-                    getStock: true,
-                    financialConfirmationOrder : true, 
-                    purchaseConfirmationInvoice: true 
+                    getDiscounts: true,
+                    getAllSaleOpprotunity: true,
+                    getLeads: true,
+                    addReceipt : true,
+                    getReceipts: true,
+                    getSuppliers: true,
+                    getStock: true
                 }
             }
 
