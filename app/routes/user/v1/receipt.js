@@ -76,6 +76,25 @@ router.post('/confirm/shop', ReceiptController.confirmShop.bind(ReceiptControlle
 
 
 /**
+* @api {put} /api/user/v1/receipt/note/status edit note status
+* @apiVersion 1.0.0
+* @apiName editStatusNotes
+* @apiDescription edit note status, in status : send 0 to public note, send 1 to private the note
+* @apiGroup receipt
+* @apiParam {int} status note privacy status
+* @apiParam {String} receiptId receipt id
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "وضعیت یادداشت با موفقیت ویرایش شد"
+* }
+*/
+router.put('/note/status', ReceiptController.editStatusNotes.bind(ReceiptController));
+
+
+
+
+/**
 * @api {get} /api/user/v1/receipt  get receipts
 * @apiVersion 1.0.0
 * @apiName getReceipts
