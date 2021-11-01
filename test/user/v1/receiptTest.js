@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/receipt';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let receipt, user, getReceipts, shopConfirmation, editReceiptStatus, editReceipt, editReceiptNoteStatus;
+let receipt, user, getReceipts, shopConfirmation, editReceiptStatus, editReceipt, editReceiptNoteStatus, newUser;
 const axios = require('axios').default;
 
 chai.use(chaiHttp);
@@ -23,6 +23,7 @@ describe(`${sectionName}`, () => {
         editReceiptStatus = appConfig.test.editReceiptStatus
         editReceipt = appConfig.test.editReceipt;
         editReceiptNoteStatus = appConfig.test.editReceiptNoteStatus
+        newUser = appConfig.test.newUser
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
