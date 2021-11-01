@@ -187,7 +187,7 @@ module.exports = new (class ReceiptController extends Controller {
         .lean();
 
       receipts = receipts.map((receipt) => {
-        if (receipt.note) {
+        if (receipt.note && receipt.note.text) {
           if (
             receipt.note.writtenBy._id.toString() !== req.decodedData.user_id &&
             receipt.note.private == true
