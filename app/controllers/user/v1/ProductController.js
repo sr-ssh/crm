@@ -197,11 +197,12 @@ module.exports = new class ProductController extends Controller {
             let pathExcelFile = path.resolve(`./tmp/user${req.decodedData.user_employer}${path.extname(req.file.originalname)}`)
 
             let productsUser = []
+            let stockUser = []
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(pathExcelFile);
             let worksheet = workbook.getWorksheet(1);
             // read Excel file
-            worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
+            await worksheet.eachRow({ includeEmpty: false },async (row, rowNumber) => {
 
                 if (rowNumber == 1)
                     return
@@ -210,50 +211,93 @@ module.exports = new class ProductController extends Controller {
                 const pattAlphanumeric = /^[آ-یa-zA-Z 0-9 ۰-۹\s]+[آ-یa-zA-Z 0-9 ۰-۹\s]+$(\.0-9 ۰-۹+)?/;
 
                 let params = {
-                    name: pattAlphanumeric.test(row.values[1]) ? row.values[1] : null,
-                    active: row.values[2].trim() == 'فعال' ? true : false,
-                    sellingPrice: pattOnlyNum.test(row.values[3]) ? row.values[3] : null,
-                    user: req.decodedData.user_employer
-                }
+                  updateOne: {
+                    filter: {
+                      user: req.decodedData.user_employer,
+                      name: pattAlphanumeric.test(row.values[1])
+                        ? row.values[1]
+                        : null,
+                    },
+                    update: {
+                      active: row.values[2].trim() == "فعال" ? true : false,
+                      sellingPrice: pattOnlyNum.test(row.values[3])
+                        ? row.values[3]
+                        : null,
+                      checkWareHouse:
+                        row.values[6].trim() == "بله" ? true : false,
+                      $setOnInsert: {
+                        updatedAt: new Date().toISOString(),
+                        createdAt: new Date().toISOString(),
+                      },
+                    },
+                    upsert: true,
+                  },
+                };
+
                 if (row.values[5])
-                    params.description = row.values[5]
-                if (params.name != null && params.sellingPrice != null)
-                    productsUser.push(params)
+                    params.updateOne.update.description = row.values[5]
+                
+                //add stock
+                let stockParams = {};
+                if (
+                  row.values[7].trim() == "بله" &&
+                  params.updateOne.filter.name != null &&
+                  params.updateOne.update.sellingPrice != null
+                ) {
+                  stockParams = {
+                    name: params.updateOne.filter.name,
+                    user: req.decodedData.user_employer,
+                  };
+
+                  if (row.values[5]) stockParams.description = row.values[5];
+
+                 params.updateOne.update.ingredients = [
+                    { stock: stockParams, amount: 1 },
+                  ];
+                }
+
+                if (
+                  params.updateOne.filter.name != null &&
+                  params.updateOne.update.sellingPrice != null
+                )
+                  productsUser.push(params);
 
             })
 
             // Delete Excel file that was sent to upload
             fs.unlinkSync(pathExcelFile)
 
-            // find User products
-            let filter = { user: req.decodedData.user_employer }
-            let products = await this.model.Product.find(filter).sort({ createdAt: -1 });
-
-
+            //add ingredients
             for (let index = 0; index < productsUser.length; index++) {
-
-                let find = products.find(item => item.name.trim() == productsUser[index].name.trim())
-
-                // if Product existed it'll be updated if not it will create new one
-                if (find !== undefined) {
-
-                    let param = {
-                        active: productsUser[index].active,
-                        name: find.name,
-                        sellingPrice: productsUser[index].sellingPrice
-                    }
-
-                    if (productsUser[index].description)
-                        param.description = productsUser[index].description
-
-                    let filter = { _id: find._id }
-                    await this.model.Product.findOneAndUpdate(filter, param)
-                } else {
-                    await this.model.Product.create(productsUser[index])
-                }
+              if (
+                productsUser[index].updateOne.update.ingredients &&
+                productsUser[index].updateOne.update.ingredients[0] &&
+                productsUser[index].updateOne.update.ingredients[0].stock
+              ) {
+                let stockId = await this.model.Stock.findOneAndUpdate(
+                  {
+                    name: productsUser[index].updateOne.update.ingredients[0].stock
+                      .name,
+                    user: productsUser[index].updateOne.update.ingredients[0].stock
+                      .user,
+                  },
+                  {
+                    description:
+                      productsUser[index].updateOne.update.ingredients[0].stock
+                        .description,
+                    active: true,
+                    $setOnInsert: {
+                      amount: 0
+                    },
+                  },
+                  { new: true, upsert: true }
+                );
+                productsUser[index].updateOne.update.ingredients[0].stock =
+                  stockId._id;
+              }
             }
-            console.timeEnd('test uploadExcel')
 
+            await this.model.Product.bulkWrite(productsUser)
 
             res.json({ success: true, message: 'محصولات با موفقیت ویرایش شد' })
         }
