@@ -3,7 +3,8 @@ const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Product';
 const ExcelJS = require('exceljs');
 var path = require('path');
-const fs = require('fs')
+const fs = require('fs');
+const { param } = require('../../../routes');
 
 module.exports = new class ProductController extends Controller {
 
@@ -155,6 +156,8 @@ module.exports = new class ProductController extends Controller {
             req.checkBody('name', 'please enter name').notEmpty().isString();
             req.checkBody('sellingPrice', 'please enter sellingPrice').notEmpty().isFloat({ min: 0 });
             req.checkBody('description', 'please enter description').notEmpty().isString();
+            req.checkBody('checkWareHouse', 'please enter checkWareHouse').notEmpty().isBoolean();
+            req.checkBody('direct', 'please enter direct').notEmpty().isBoolean();
             if (this.showValidationErrors(req, res)) return;
 
             const STRING_FLAG = " ";
@@ -162,7 +165,8 @@ module.exports = new class ProductController extends Controller {
             let params = {
                 active: req.body.active,
                 name: req.body.name,
-                sellingPrice: req.body.sellingPrice
+                sellingPrice: req.body.sellingPrice,
+                checkWareHouse: req.body.checkWareHouse,
             }
 
             if (req.body.description !== STRING_FLAG)
@@ -174,6 +178,30 @@ module.exports = new class ProductController extends Controller {
             if (!product)
                 return res.json({ success: false, message: 'محصول وارد شده، موجود نیست' })
 
+            //update stock
+            filter = { name: product.name, user: product.user };
+
+            if (
+              req.body.direct &&
+              (!product.ingredients || !product.ingredients.length)
+            ) {
+              let stock = await this.model.Stock.findOneAndUpdate(
+                filter,
+                {$setOnInsert: {
+                    active: true,
+                    amount: 0
+                }},
+                { new: true, upsert: true }
+              );
+              product.ingredients = [{ stock: stock._id, amount: 1 }];
+              await product.save();
+            }
+
+            if (req.body.direct && product.ingredients.length) {
+              filter = { _id: product.ingredients[0].stock };
+              params = { name: req.body.name };
+              await this.model.Stock.findOneAndUpdate(filter, params);
+            }
 
             res.json({ success: true, message: 'محصول شما با موفقیت ویرایش شد' })
         }
