@@ -247,7 +247,7 @@ module.exports = new class HomeController extends Controller {
                     },
                     {
                         $addFields: {
-                            applications: { $arrayElemAt : [ "$applications" , 0 ]  } ,
+                            applications: { $arrayElemAt : [ "$applications" , -1 ]  } ,
                         }
                     },
                     {
