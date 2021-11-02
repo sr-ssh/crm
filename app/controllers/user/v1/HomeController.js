@@ -287,7 +287,8 @@ module.exports = new class HomeController extends Controller {
                             permission: 1 ,
                             application_status : "$applications.status" ,
                             application_id : "$applications._id",
-                            employer_info : {family : "$employer.family" , mobile : "$employer.mobile"  } 
+                            employer_info : { $cond : [ { $or: [{ $eq: ["$applications.status" , 1 ] },{ $eq: ["$applications.status" , 2 ] }] } ,{family : "$employer.family" , mobile : "$employer.mobile"  }, null ] }   
+                            
                         }
                     }
                 ])

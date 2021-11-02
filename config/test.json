@@ -63,6 +63,15 @@
             "code": "7386",
             "position":2
         },
+        "userMH": {
+            "password": "123456",
+            "family": "مجید حیدری ",
+            "email": "mh1355@gmail.com",
+            "mobile": "09155247046",
+            "mobileOrEmail": "09155247046",
+            "code": "7386",
+            "position":2
+        },
         "userMohsen": {
             "password": "474210",
             "family": "محسن",
