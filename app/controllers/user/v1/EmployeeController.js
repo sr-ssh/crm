@@ -114,22 +114,21 @@ module.exports = new class EmployeeController extends Controller {
     async getEmployees(req, res) {
         try {
 
-            let filter = { active: true, _id: req.decodedData.user_employer }
-            let employer = await this.model.User.findOne(filter, { employee: 1 })
-            let employees = [];
-            for (let j = 1; j < employer.employee.length; j++) {
-                employees.push(employer.employee[j])
-            }
-            filter = { _id: { $in: employees } }
-            employees = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 })
-            return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employees })
+            console.time("test getEmployees")
+
+            let filter = { active: true, employer: req.decodedData.user_employer , _id : { $ne : req.decodedData.user_employer }  }
+            let employer = await this.model.User.find(filter, { family: 1, mobile: 1, permission: 1, voipNumber: 1 } )
+
+            console.timeEnd("test getEmployees")
+
+            return res.json({ success: true, message: "کارمندان با موفقیت فرستاده شدند", data: employer })
 
         } catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
                 .method('getEmployees')
-                .inputParams(req.body)
+                .inputParams(req.params)
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);
