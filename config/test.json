@@ -397,6 +397,9 @@
         "editReceiptNoteStatus":{
             "status": 1,
             "receiptId": "617e7cc1c1fc44a80a7ed0d9"
+        },
+        "seller":{
+            
         }
     }
 }
