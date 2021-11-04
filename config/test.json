@@ -47,10 +47,28 @@
         },
         "userMBH": {
             "password": "123456",
+            "family": "محمد باقر حیدری",
+            "email": "MBH@gmail.com",
+            "mobile": "09900199471",
+            "mobileOrEmail": "09900199471",
+            "code": "7386",
+            "position":2
+        },
+        "userMRH": {
+            "password": "123456",
             "family": "محمد رضا حیدری",
-            "email": "9amir9heidari9@gmail.com",
-            "mobile": "09218570513",
-            "mobileOrEmail": "09218570513",
+            "email": "MRH@gmail.com",
+            "mobile": "09155044033",
+            "mobileOrEmail": "09155044033",
+            "code": "7386",
+            "position":2
+        },
+        "userMH": {
+            "password": "123456",
+            "family": "مجید حیدری ",
+            "email": "mh1355@gmail.com",
+            "mobile": "09155247046",
+            "mobileOrEmail": "09155247046",
             "code": "7386",
             "position":2
         },
