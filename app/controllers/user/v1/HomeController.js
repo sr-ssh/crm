@@ -3,7 +3,7 @@ const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Home';
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
-
+const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = new class HomeController extends Controller {
 
@@ -191,18 +191,103 @@ module.exports = new class HomeController extends Controller {
 
             if (this.showValidationErrors(req, res)) return;
 
+            console.time("test appInfo")
+
             if (!req.decodedData.user_active)
                 return res.json({ success: false, message: "کاربر بلاک می باشد", data: {} })
 
-            // save in mongodb
-            let filter = { os: req.body.os, version: req.body.versionCode }
-            let updateInfo = await this.model.AppInfo.find(filter).sort({ createdAt: -1 }).limit(1)
-            updateInfo = updateInfo[0]
-            if (!updateInfo)
-                return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: {userId: req.decodedData.user_id} });
+            let filter = { active: true, _id : req.decodedData.user_id }
+            let userInfo;
+            if(req.decodedData.user_type == 1 ){
+                userInfo = await this.model.User.aggregate([
+                    { $match: { _id : ObjectId(req.decodedData.user_id) } },
+                    {
+                        $lookup:
+                            {
+                              from: "products",
+                              localField: "employer",
+                              foreignField: "user",
+                              as: "products_count"
+                            } 
+                    },
+                    {
+                        $addFields: {
+                            products_count: { $size: "$products_count" } ,
+                        }
+                    },
+                    {
+                        $project : {
+                            _id : 1 ,
+                            family: 1 ,
+                            products_count : 1 ,
+                            type : 1 ,
+                            permission: 1 ,
+                        }
+                    }
+                ])
+            }else if(req.decodedData.user_type == 2){
+                userInfo = await this.model.User.aggregate([
+                    { $match: { _id : ObjectId(req.decodedData.user_id) } },
+                    {
+                        $lookup:
+                            {
+                              from: "applications",
+                              localField: "_id",
+                              foreignField: "employee",
+                              as: "applications"
+                            } 
+                    },
+                    {
+                        $addFields: {
+                            applications: { $arrayElemAt : [ "$applications" , -1 ]  } ,
+                        }
+                    },
+                    {
+                        $lookup:
+                            {
+                              from: "users",
+                              localField: "applications.employer",
+                              foreignField: "_id",
+                              as: "employer"
+                            } 
+                    },
+                    {
+                        $addFields: {
+                            employer: { $arrayElemAt : [ "$employer" , 0 ]  } ,
+                        }
+                    },
+                    {
+                        $lookup:
+                            {
+                            from: "products",
+                            localField: "employer._id",
+                            foreignField: "user",
+                            as: "products_count"
+                            } 
+                    },
+                    {
+                        $addFields: {
+                            products_count: { $size: "$products_count" } ,
+                        }
+                    },
+                    {
+                        $project : {
+                            _id : 1 ,
+                            family: 1 ,
+                            products_count : { $cond : [ { $eq: ["$applications.status" , 2 ] } ,"$products_count", null ] },
+                            type : 1 ,
+                            permission: 1 ,
+                            application_status : "$applications.status" ,
+                            application_id : "$applications._id",
+                            employer_info : { $cond : [ { $or: [{ $eq: ["$applications.status" , 1 ] },{ $eq: ["$applications.status" , 2 ] }] } ,{family : "$employer.family" , mobile : "$employer.mobile"  }, null ] }   
+                            
+                        }
+                    }
+                ])
+            }
 
-            let data = { active: true, update: updateInfo.update, isForce: updateInfo.isForce, updateUrl: updateInfo.updateUrl, userId: req.decodedData.user_id }
-            return res.json({ success: true, message: "اطلاعات نرم افزار فرستاده شد", data: data });
+            console.timeEnd("test appInfo")
+            return res.json({ success: true, message: "عملیات با موفقیت انجام شد", data: userInfo[0] });
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
