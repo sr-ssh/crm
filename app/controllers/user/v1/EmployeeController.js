@@ -413,20 +413,33 @@ module.exports = new class EmployeeController extends Controller {
                 let update = {
                     employer: req.decodedData.user_id,
                     permission: {
-                        addOrder: true,
-                        getOrders: true,
-                        saleOpprotunity: true,
-                        reminder: false,
+                        addOrder: true, 
+                        leads: true,   
+                        getOrders: true,  
+                        saleOpprotunity: true,  
                         getProducts: true,
+                        addReceipt : true,  
+                        getReceipts: true,   
+                        getSuppliers: true,   
+                        getStock: true,  
+                        getAllSaleOpprotunity: false,
+                        reminder: false,
+                        ExcelProducts: false,
                         finance: false,
-                        getCustomers: true,
+                        currentCosts: false,
+                        getCustomers: false,
+                        getExcelCustomers: false,
                         getEmployees: false,
+                        employeeRequests: false,
                         getDiscounts: false,
-                        excelProduct: false,
-                        excelCustomer: false
+                        uploadExcelLeads: false,
+                        getExcelSuppliers: false,
+                        financialConfirmationOrder: false,
+                        purchaseConfirmationInvoice: false
                     },
                     voipNumber: null
                 }
+
                 await this.model.User.findOneAndUpdate(filter, update)
                 update = { $addToSet: { employee: user._id } }
                 await this.model.User.findByIdAndUpdate(req.decodedData.user_id, update)
