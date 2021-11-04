@@ -16,6 +16,8 @@ const uploadFile = require("../../middleware/storeExcelConfig");
  * @apiParam  {varchar} name product name
  * @apiParam  {varchar} sellingPrice product selling price
  * @apiParam  {varachar} description description of product (" ")
+ * @apiParam  {Boolean} checkWareHouse product checkWareHouse
+ * @apiParam  {Boolean} direct direct
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -78,6 +80,8 @@ router.get("/", ProductController.getProducts.bind(ProductController));
  * @apiParam {varchar} name product name
  * @apiParam {varchar} sellingPrice product selling price
  * @apiParam {varachar} description description of product (" ")
+ * @apiParam  {Boolean} checkWareHouse product checkWareHouse
+ * @apiParam  {Boolean} direct direct
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
