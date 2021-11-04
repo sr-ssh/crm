@@ -7,7 +7,6 @@ module.exports = new class EmployeeController extends Controller {
 
     async index(req, res) {
         return res.json({ success: true, message: "Employee v1" });
-
     }
 
     async addEmployee(req, res) {
@@ -143,6 +142,8 @@ module.exports = new class EmployeeController extends Controller {
 
             let filter = { _id: req.decodedData.user_id }
             let permission = await this.model.User.findOne(filter, { permission: 1, type: 1 })
+            if (!permission)
+                    return res.json({ success: true, message: "کاربر موجود نیست", data: { status: false } })
 
             let data;
             //if the user is employee send the application status of it
@@ -152,7 +153,7 @@ module.exports = new class EmployeeController extends Controller {
                 application = await this.model.Application.find(filter, 'status employer').sort({ createdAt: -1 }).limit(1)
                 let employer = await this.model.User.findOne({ active: true, _id: application[0].employer }, { family: 1, mobile: 1 })
                 if (!employer)
-                    return res.json({ success: false, message: "کارفرما موجود نیست", data: {} })
+                    return res.json({ success: true, message: "کارفرما موجود نیست", data: { status: false } })
 
                 data = {
                     permission: permission.permission,

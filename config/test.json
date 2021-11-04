@@ -84,10 +84,10 @@
             "position": 1
         },
         "newUser": {
-            "password": "123",
+            "password": "1234",
             "family": "علی محمودی",
             "email": "a.mhm@gmail.com",
-            "mobile": "09520321475",
+            "mobile": "09927961998",
             "code": "7469",
             "position": 2,
             "companyName": "mhmnejad",
@@ -393,6 +393,10 @@
             "family":"ریحانه شکوهی",
             "address":"معلم 24",
             "sip": 500
+        },
+        "editReceiptNoteStatus":{
+            "status": 1,
+            "receiptId": "617e7cc1c1fc44a80a7ed0d9"
         }
     }
 }

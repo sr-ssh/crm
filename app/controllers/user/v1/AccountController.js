@@ -1,9 +1,6 @@
 
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_account';
-const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt");
-
 
 module.exports = new class AccountController extends Controller {
 
@@ -15,6 +12,8 @@ module.exports = new class AccountController extends Controller {
     async getUserAccount(req, res) {
         try {
             let user = await this.model.User.findById(req.decodedData.user_id).lean()
+            if(!user)
+                return res.json({ success : true, message : 'کاربر موجود نمی باشد', data : { status: false }})
 
             let params = {
                 active: user.active,
