@@ -400,12 +400,18 @@
         },
         "seller":{
             "family": "سارا بنی اسدی",
-            "phone": 38651425,
-            "mobile": "09307278878",
+            "phone": 36041849,
+            "mobile": "09307580142",
             "company": "هتل ابان",
             "address": "بلوار پیروزی.بین پیروزی ۶۲و ۶۴",
             "cardNumber": 5846253665328596,
             "description": "استقبال شدید شد"
+        },
+        "getSellers":{
+            "address": " ",
+            "phone": " ",
+            "mobile": " ",
+            "company": "ابان"
         }
     }
 }

@@ -2289,6 +2289,20 @@ define({ "api": [
             "optional": false,
             "field": "description",
             "description": "<p>description of product (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "checkWareHouse",
+            "description": "<p>product checkWareHouse</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "direct",
+            "description": "<p>direct</p>"
           }
         ]
       }
@@ -2306,7 +2320,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{ \n     success : false, \n     message : \"محصول وارد شده، موجود است\"\n}",
+          "content": "{\n     success : false,\n     message : \"محصول وارد شده، موجود است\"\n}",
           "type": "json"
         }
       ]
@@ -2359,6 +2373,20 @@ define({ "api": [
             "optional": false,
             "field": "description",
             "description": "<p>description of product (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "checkWareHouse",
+            "description": "<p>product checkWareHouse</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "direct",
+            "description": "<p>direct</p>"
           }
         ]
       }
@@ -2376,7 +2404,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{ \n     success : false, \n     message : \"محصول وارد شده، موجود نیست\"\n}",
+          "content": "{\n     success : false,\n     message : \"محصول وارد شده، موجود نیست\"\n}",
           "type": "json"
         }
       ]
@@ -2396,7 +2424,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{ \n     success : false, \n     message : \"متاسفانه فایل ایجاد نشد\"\n}",
+          "content": "{\n     success : false,\n     message : \"متاسفانه فایل ایجاد نشد\"\n}",
           "type": "json"
         }
       ]
@@ -2492,7 +2520,7 @@ define({ "api": [
     "title": "upload excel product",
     "version": "1.0.0",
     "name": "uplaodExcelProduct",
-    "description": "<p>upload file excel that contains your list of product</p>",
+    "description": "<p>upload file excel that contains your list of product.The excel file should contains; name, activity status ('فعال' or 'غیر فعال'), sellingPrice, last edit date, description, checkWarehouse ('بله' or 'خیر') and direct ('بله' or 'خیر'). They should be all in order, just like the output excel of products</p>",
     "group": "product",
     "parameter": {
       "fields": {
@@ -2520,7 +2548,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{ \n     success : false, \n     message : \"خطا در پردازش فایل\"\n}",
+          "content": "{\n     success : false,\n     message : \"خطا در پردازش فایل\"\n}",
           "type": "json"
         }
       ]
@@ -2742,6 +2770,46 @@ define({ "api": [
     "groupTitle": "receipt"
   },
   {
+    "type": "put",
+    "url": "/api/user/v1/receipt/note/status",
+    "title": "edit note status",
+    "version": "1.0.0",
+    "name": "editStatusNotes",
+    "description": "<p>edit note status, in status : send 0 to public note, send 1 to private the note</p>",
+    "group": "receipt",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "status",
+            "description": "<p>note privacy status</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receiptId",
+            "description": "<p>receipt id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"وضعیت یادداشت با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/receipt.js",
+    "groupTitle": "receipt"
+  },
+  {
     "type": "get",
     "url": "/api/user/v1/receipt",
     "title": "get receipts",
@@ -2814,6 +2882,144 @@ define({ "api": [
     },
     "filename": "app/routes/user/v1/reminder.js",
     "groupTitle": "reminder"
+  },
+  {
+    "type": "post",
+    "url": "/api/user/v1/seller/",
+    "title": "add seller",
+    "version": "1.0.0",
+    "name": "addSeller",
+    "description": "<p>add seller</p>",
+    "group": "seller",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "phone",
+            "description": "<p>seller phone</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>seller mobile</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "family",
+            "description": "<p>seller family</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "company",
+            "description": "<p>seller company</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "cardNumber",
+            "description": "<p>seller cardNumber</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "address",
+            "description": "<p>seller address</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>seller description</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فروشنده با موفقیت ثبت شد\",\n     data: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success : true,\n     message : \"فروشنده ای با این تلفن موجود است\",\n     data: { status: false }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/seller.js",
+    "groupTitle": "seller"
+  },
+  {
+    "type": "get",
+    "url": "/api/user/v1/seller/:company/:phone/:mobile/:address",
+    "title": "get sellers",
+    "version": "1.0.0",
+    "name": "getSellers",
+    "description": "<p>get sellers. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry</p>",
+    "group": "seller",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "company",
+            "description": "<p>seller company (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "phone",
+            "description": "<p>seller phone (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>seller mobile (&quot; &quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "address",
+            "description": "<p>seller address (&quot; &quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فرشنده ها با موفقیت ارسال شد\",\n     data: [...{\n         _id: '6183e3b0ea6d46d4bc8de170', \n         family: 'سارا بنی اسدی', \n         phone: '36041849', \n         mobile: '09307580142', \n         company: 'هتل ابان',\n         address: \"بلوار پیروزی.بین پیروزی ۶۲و ۶۴\",\n         cardNumber: 5846253665328596,\n         description: \"استقبال شدید شد\",\n         marketer: {\n                _id: \"61614c019128741180e6e58f\", \n                family: \"ریحانه شکوهی\"\n            }\n      }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/seller.js",
+    "groupTitle": "seller"
   },
   {
     "type": "put",
