@@ -13,7 +13,8 @@ let Seller = new Schema({
     failOrders : { type: Number, default: 0 },
     successfulOrders : { type: Number, default: 0 },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    cardNumber: { type: Number, required: true, sparse: true }
+    cardNumber: { type: Number, required: true, sparse: true },
+    description: String
 });
 
 

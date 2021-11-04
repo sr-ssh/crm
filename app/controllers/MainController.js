@@ -14,6 +14,7 @@ const Stock = require(`${config.path.models.root}/v1/Stock`);
 const Supplier = require(`${config.path.models.root}/v1/Supplier`);
 const Receipt = require(`${config.path.models.root}/v1/Receipt`);
 const Lead = require(`${config.path.models.root}/v1/Lead`);
+const Seller = require(`${config.path.models.root}/v1/Seller`);
 const Kavenegar = require('kavenegar');
 
 
@@ -21,7 +22,7 @@ const Kavenegar = require('kavenegar');
 module.exports = class MainController {
 
     constructor() {
-        this.model = { User, Order, Product, Customer, AppInfo, Bill , Reminder , Discount, VerificationCode , Application, Stock, Supplier, Receipt, Lead }
+        this.model = { User, Order, Product, Customer, AppInfo, Bill , Reminder , Discount, VerificationCode , Application, Stock, Supplier, Receipt, Lead, Seller }
         this.transforms = { ErrorTransform };
     }
 
