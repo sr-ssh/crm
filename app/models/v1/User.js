@@ -41,7 +41,8 @@ let User = new Schema({
       addReceipt : false,
       getReceipts: false,
       getSuppliers: false,
-      getStock: false
+      getStock: false,
+      addSeller : false // ثبت فروشنده
     },
   },
 
