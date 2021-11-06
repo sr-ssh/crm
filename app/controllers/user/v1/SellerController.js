@@ -135,7 +135,7 @@ module.exports = new class SellerController extends Controller {
             }).lean();
             if (!seller)
               return res.json({
-                success: true,
+                success: false,
                 message: "فروشنده موجود نیست",
                 data: { status: false },
               });
