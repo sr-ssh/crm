@@ -57,6 +57,18 @@ describe(`${sectionName}`, () => {
             .send();
           res.should.have.status(200);
         });
+
+        it("check get seller", async () => {
+            const res = await chai
+              .request(server)
+              .get(
+                `${baseRoute}/${encodeURI(getSellers.mobile)}`
+              )
+              .set("Authorization", accessToken)
+              .set("idToken", idToken)
+              .send();
+            res.should.have.status(200);
+          });
         
     });
         describe('Check post Apis', () => {

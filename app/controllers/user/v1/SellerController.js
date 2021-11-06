@@ -108,5 +108,55 @@ module.exports = new class SellerController extends Controller {
         }
     }
 
+
+    async getSeller(req, res) {
+        try {
+
+            req
+              .checkParams("mobile", "please enter seller mobile")
+              .notEmpty()
+              .isNumeric();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = {
+              active: true,
+              user: req.decodedData.user_employer,
+              mobile: req.params.mobile,
+            };
+
+            let seller = await this.model.Seller.findOne(filter, {
+              family: 1,
+              mobile: 1,
+              phone: 1,
+              company: 1,
+              address: 1,
+              cardNumber: 1,
+              description: 1,
+            }).lean();
+            if (!seller)
+              return res.json({
+                success: true,
+                message: "فروشنده موجود نیست",
+                data: { status: false },
+              });
+
+            return res.json({
+              success: true,
+              message: "اطلاعات فروشنده با موفقیت ارسال شد",
+              data: seller,
+            });
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('getSeller')
+                .inputParams(req.body)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 }
 
