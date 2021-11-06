@@ -2969,6 +2969,39 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/api/user/v1/seller/:mobile",
+    "title": "get seller",
+    "version": "1.0.0",
+    "name": "getSeller",
+    "description": "<p>get seller. all params are necessary and in case of no entry , there is a flag in parantheses for each param.if that flag entered it asumed as no entry</p>",
+    "group": "seller",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>seller mobile (&quot; &quot;)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"فرشنده ها با موفقیت ارسال شد\",\n     data: {\n         _id: '6183e3b0ea6d46d4bc8de170', \n         family: 'سارا بنی اسدی', \n         phone: '36041849', \n         mobile: '09307580142', \n         company: 'هتل ابان',\n         address: \"بلوار پیروزی.بین پیروزی ۶۲و ۶۴\",\n         cardNumber: 5846253665328596,\n         description: \"استقبال شدید شد\",\n      }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/seller.js",
+    "groupTitle": "seller"
+  },
+  {
+    "type": "get",
     "url": "/api/user/v1/seller/:company/:phone/:mobile/:address",
     "title": "get sellers",
     "version": "1.0.0",
