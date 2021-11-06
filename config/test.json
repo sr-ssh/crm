@@ -397,6 +397,21 @@
         "editReceiptNoteStatus":{
             "status": 1,
             "receiptId": "617e7cc1c1fc44a80a7ed0d9"
+        },
+        "seller":{
+            "family": "سارا بنی اسدی",
+            "phone": 36041849,
+            "mobile": "09307580142",
+            "company": "هتل ابان",
+            "address": "بلوار پیروزی.بین پیروزی ۶۲و ۶۴",
+            "cardNumber": 5846253665328596,
+            "description": "استقبال شدید شد"
+        },
+        "getSellers":{
+            "address": " ",
+            "phone": " ",
+            "mobile": "09307580142",
+            "company": " "
         }
     }
 }

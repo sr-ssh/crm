@@ -49,8 +49,8 @@ let User = new Schema({
       getExcelSuppliers: false,  // -> دانلود اکسل تامین کننده ها 
       getStock: false,  // -> مواد خام
       financialConfirmationOrder : false,  // -> تایید مالی سفارش 
-      purchaseConfirmationInvoice: false   // -> تایید خرید فاکتور 
-
+      purchaseConfirmationInvoice: false,   // -> تایید خرید فاکتور 
+      addSeller : false // ثبت فروشنده
     },
   },
 

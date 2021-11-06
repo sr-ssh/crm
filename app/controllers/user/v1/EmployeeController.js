@@ -435,7 +435,8 @@ module.exports = new class EmployeeController extends Controller {
                         uploadExcelLeads: false,
                         getExcelSuppliers: false,
                         financialConfirmationOrder: false,
-                        purchaseConfirmationInvoice: false
+                        purchaseConfirmationInvoice: false,
+                        addSeller : false
                     },
                     voipNumber: null
                 }
