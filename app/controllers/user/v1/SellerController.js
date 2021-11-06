@@ -37,7 +37,7 @@ module.exports = new class SellerController extends Controller {
 
             let seller = await this.model.Seller.findOne({ phone: req.body.phone })
             if(seller)
-                return res.json({ success: true, message: 'فروشنده ای با این تلفن موجود است', data: { status: false } })
+                return res.json({ success: false, message: 'فروشنده ای با این تلفن موجود است', data: { status: false } })
             
             await this.model.Seller.create(params)
          
