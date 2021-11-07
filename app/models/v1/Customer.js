@@ -6,15 +6,16 @@ let Customer = new Schema({
     active: { type: Boolean, default: true },
     family: { type: String, required: true },
     username: { type: String, required: true, sparse: true },
-    mobile: { type: String, required: true, sparse: true },
+    phoneNumber: { type: String, required: true, sparse: true },
+    mobile: { type: String },
     birthday: { type: Date },
     company: { type: String },
     lastAddress: { type: String },
-    order: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Order' }] },
+    order: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
     failOrders : { type: Number, default: 0 },
     successfullOrders : { type: Number, default: 0 },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    reminder: { type: Array, default: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] },
+    reminder: [{ type: Schema.Types.ObjectId, ref: 'Reminder' }] ,
     nationalCard: Number,
     financialCode: Number,
     postalCode: Number,
@@ -22,7 +23,7 @@ let Customer = new Schema({
 });
 
 Customer.pre('validate', function (next) {
-    this.username = this.get('mobile');
+    this.username = this.get('phoneNumber');
     next()
 })
 

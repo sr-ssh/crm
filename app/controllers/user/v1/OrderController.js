@@ -17,122 +17,28 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('products.*._id', 'please enter product id').notEmpty();
             req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
             req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
-            req.checkBody('customer', 'please enter customer').notEmpty();
-            req.checkBody('customer.family', 'please enter customer family').notEmpty();
-            req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
-            req.checkBody('customer.birthday', 'please enter customer birthday').notEmpty().isISO8601();
-            req.checkBody('reminder', 'please enter customer birthday').notEmpty().isInt({ min: -1 });
-            req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('duration', 'please enter order duration').notEmpty().isInt({ min: -1 });
-            if (this.showValidationErrors(req, res)) return;
-
-            const TIME_FLAG = "1900-01-01T05:42:13.845Z";
-            const INT_FLAG = "-1";
-            const STRING_FLAG = " ";
-
-            // add customer
-            let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
-            let customer = await this.model.Customer.findOne(filter)
-
-            let params = {
-                family: req.body.customer.family,
-                mobile: req.body.customer.mobile,
-                user: req.decodedData.user_employer
-            }
-
-            if (req.body.customer.birthday != TIME_FLAG)
-                params.birthday = req.body.customer.birthday
-
-            if (!customer)
-                customer = await this.model.Customer.create(params)
-            if (customer && !customer.birthday && req.body.customer.birthday != TIME_FLAG)
-                customer.birthday = req.body.customer.birthday;
-
-            // add order
-            params = {
-                products: req.body.products,
-                customer: customer._id,
-                provider: req.decodedData.user_employer,
-                employee: req.decodedData.user_id,
-                description: req.body.description
-            }
-
-            if (req.body.address != STRING_FLAG)
-                params.address = req.body.address
-            if (req.body.duration != INT_FLAG) {
-                const event = new Date();
-                event.setMinutes(event.getMinutes() + parseInt(req.body.duration));
-                params.readyTime = event.toISOString()
-            }
-
-            let order = await this.model.Order.create(params)
-
-
-            // add reminder
-            if (req.body.reminder !== INT_FLAG) {
-
-                // calculate date
-                const event = new Date();
-                event.setDate(event.getDate() + parseInt(req.body.reminder));
-
-                params = {
-                    date: event.toISOString(),
-                    user: req.decodedData.user_employer,
-                    customer: customer._id,
-                    order: order._id
-                }
-                let reminder = await this.model.Reminder.create(params)
-
-                // add reminder to customer
-                await customer.reminder.push(reminder._id)
-            }
-
-            // add order to customer
-            await customer.order.push(order._id)
-            await customer.save()
-
-            res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
-
-            let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')
-            if (user.setting.order.preSms.status) {
-                let message = ""
-                if (user.company)
-                    message = user.setting.order.preSms.text + ` \n${req.decodedData.user_company}`
-                else
-                    message = user.setting.order.preSms.text
-
-                this.sendSms(req.body.customer.mobile, message)
-            }
-        }
-        catch (err) {
-            let handelError = new this.transforms.ErrorTransform(err)
-                .parent(this.controllerTag)
-                .class(TAG)
-                .method('addOrder')
-                .inputParams(req.body)
-                .call();
-
-            if (!res.headersSent) return res.status(500).json(handelError);
-        }
-    }
-
-    async addOrderV1(req, res) {
-        try {
-            req.checkBody('products', 'please enter products').notEmpty();
-            req.checkBody('products.*._id', 'please enter product id').notEmpty();
-            req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
-            req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
             req.checkBody('products.*.ingredients.*.stock', 'please enter product ingredients').notEmpty();
             req.checkBody('products.*.ingredients.*.stock._id', 'please enter product ingredients').notEmpty();
             req.checkBody('products.*.ingredients.*.amount', 'please enter product ingredients').notEmpty();
             req.checkBody('products.*.checkWareHouse', 'please enter product checkWareHouse').notEmpty();
+
             req.checkBody('customer', 'please enter customer').notEmpty();
             req.checkBody('customer.family', 'please enter customer family').notEmpty();
-            req.checkBody('customer.mobile', 'please enter customer mobile').notEmpty().isNumeric();
-            req.checkBody('customer.birthday', 'please enter customer birthday').notEmpty().isISO8601();
-            req.checkBody('reminder', 'please enter customer birthday').notEmpty().isInt({ min: -1 });
+            req.checkBody('customer.company', 'please enter customer company').notEmpty();
+            req.checkBody('customer.phoneNumber', 'please enter customer mobile').notEmpty().isNumeric();
+
+            req.checkBody('reminder', 'please enter customer reminder').notEmpty().isInt({ min: -1 });
             req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('duration', 'please enter order duration').notEmpty().isInt({ min: -1 });
+            req.checkBody('duration', 'please enter order duration').notEmpty().isISO8601();
+
+            req.checkBody('mobile', 'please enter order mobile').notEmpty().isInt({ min: -1 });
+            req.checkBody('seller', 'please enter customer').notEmpty();
+
+            req.checkBody('seller.family', 'please enter seller family').notEmpty();
+            req.checkBody('seller.mobile', 'please enter seller mobile').notEmpty();
+
+            req.checkBody('force', 'please enter force').notEmpty();
+            req.checkBody('notes', 'please enter notes').optional({nullable: true,checkFalsy: true});
             if (this.showValidationErrors(req, res)) return;
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
@@ -140,7 +46,7 @@ module.exports = new class OrderController extends Controller {
             const STRING_FLAG = " ";
             let FORCE = 0
 
-         if ((req.body.status === 3 && req.body.force == FORCE) || (req.body.status == '') ){
+         if (req.body.force == FORCE){
 
             let productsfilter = req.body.products.filter(item => item.checkWareHouse == true )
 
@@ -170,23 +76,18 @@ module.exports = new class OrderController extends Controller {
             }
         }
             // add customer
-            let filter = { mobile: req.body.customer.mobile, user: req.decodedData.user_employer }
+            let filter = { phoneNumber: req.body.customer.phoneNumber, user: req.decodedData.user_employer }
             let customer = await this.model.Customer.findOne(filter)
 
             let params = {
                 family: req.body.customer.family,
-                mobile: req.body.customer.mobile,
+                phoneNumber: req.body.customer.phoneNumber,
                 user: req.decodedData.user_employer,
                 company: req.body.customer.company
             }
 
-            if (req.body.customer.birthday != TIME_FLAG)
-                params.birthday = req.body.customer.birthday
-
             if (!customer)
                 customer = await this.model.Customer.create(params)
-            if (customer && !customer.birthday && req.body.customer.birthday != TIME_FLAG)
-                customer.birthday = req.body.customer.birthday;
 
             if (req.body.notes.length > 0)
                 req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
@@ -203,26 +104,20 @@ module.exports = new class OrderController extends Controller {
                 notes: req.body.notes,
                 customer: customer._id,
                 provider: req.decodedData.user_employer,
-                financialApproval: { status: false }
+                financialApproval: { status: false },
+                status: 3
             }
 
             if (req.body.address != STRING_FLAG)
                 params.address = req.body.address
             if (req.body.duration != INT_FLAG) {
-                const event = new Date();
-                event.setMinutes(event.getMinutes() + parseInt(req.body.duration));
-                params.readyTime = event.toISOString()
+                params.readyTime = req.body.duration
             }
-            if (req.body.status === 3){
-                params.status = req.body.status  
                 params.sellers = [{id: req.decodedData.user_id, active : true}]
-            }
                 
-            if(req.body.status === "")
-                params.employee = req.decodedData.user_id        
 
             //remove lead
-            filter = { user: req.decodedData.user_employer, mobile: customer.mobile, status: 1 }
+            filter = { user: req.decodedData.user_employer, mobile: customer.phoneNumber, status: 1 }
             await this.model.Lead.update(filter, {status: 2, active: false}, { multi : true })
             filter.status = 0
             let lead = await this.model.Lead.findOneAndUpdate(filter, {status: 2, active: false}).populate('acceptUser', 'acceptedLeadCount')
@@ -257,30 +152,28 @@ module.exports = new class OrderController extends Controller {
 
             // add order to customer
             await customer.order.push(order._id)
-            if (req.body.status !== 3)
-                customer.successfullOrders = customer.successfullOrders + 1;
             if (req.body.address != STRING_FLAG)
                 customer.lastAddress = req.body.address
             customer.company = req.body.customer.company
             await customer.save()
 
              //reduce stock amount
-            if (req.body.status !== 3){
-                let update = []
-                req.body.products.map(product => {
-                    if (product.checkWareHouse){
-                        product.ingredients.map(ing => {
-                            update.push({
-                                updateOne : {
-                                    filter : { _id : ing.stock._id },
-                                    update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
-                                } 
-                            })
-                        })
-                    } 
-                })
-                await this.model.Stock.bulkWrite(update)
-            }
+            // if (req.body.status !== 3){
+            //     let update = []
+            //     req.body.products.map(product => {
+            //         if (product.checkWareHouse){
+            //             product.ingredients.map(ing => {
+            //                 update.push({
+            //                     updateOne : {
+            //                         filter : { _id : ing.stock._id },
+            //                         update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
+            //                     } 
+            //                 })
+            //             })
+            //         } 
+            //     })
+            //     await this.model.Stock.bulkWrite(update)
+            // }
            
             
             res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })

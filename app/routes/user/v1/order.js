@@ -44,7 +44,7 @@ const uploadMiddleware = require('../../middleware/upload')
  *      message: "سفارش شما با موفقیت ثبت شد"
  * }
  */
-router.post('/', OrderController.addOrder.bind(OrderController));
+// router.post('/', OrderController.addOrder.bind(OrderController));
 
 
 /**
@@ -93,7 +93,7 @@ router.post('/', OrderController.addOrder.bind(OrderController));
  *      message: "سفارش شما با موفقیت ثبت شد"
  * }
  */
-router.post('/v1', OrderController.addOrderV1.bind(OrderController));
+router.post('/', OrderController.addOrder.bind(OrderController));
 
 
 

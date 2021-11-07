@@ -102,56 +102,38 @@
             "address": "معلم 24"
         },
         "order": {
-            "products": [
-                {
-                    "_id": "60b72afa1f24b03fe4fc7b51",
-                    "quantity": 3,
-                    "sellingPrice": "30000"
-                }
-            ],
-            "customer": {
-                "family": "ریحانه شکوهی",
-                "mobile": "09307580142",
-                "birthday": "1900-01-01T05:42:13.845Z"
-            },
-            "description": "",
-            "reminder": 7,
-            "address": "معلم 24",
-            "duration": 40
-        },
-        "order_V1": {
-            "status":"",
             "force":1,
             "products": [
                 {
-                "_id": "61653322f4381d11fce2223b",
-                "name":"کافه",
+                "_id": "6183d40ae31477609c9ae820",
+                "name":"A4",
                 "quantity": 3,
-                "sellingPrice": "30000",
-                 "ingredients":[],
-                 "checkWareHouse":false
+                "sellingPrice": "10000",
+                "ingredients":[],
+                "checkWareHouse":true
                 },{
-                "_id":"616531bef4381d11fce22239",
-                "name":"لاته",
-                "quantity":300,
-                "sellingPrice":"15000",
-                "ingredients":[{"amount":1,"stock":{"amount":25,"_id":"616531bef4381d11fce22238"}}],
+                "_id":"6181364e7bc0343e6ede593c",
+                "name":"مداد رنگی",
+                "quantity":1,
+                "sellingPrice":"25000",
+                "ingredients":[{"amount":1,"stock":{"amount":0,"_id":"618144e37bc0343e6ee1e45c"}}],
                 "checkWareHouse":true
                 }
             ],
             "notes": [],
             "customer": {
-                "_id":"61586198ddb649aef8c74579",
                 "family": "محمد جواد حیدری",
-                "mobile": "09105044033",
-                "company":"مجید",
-                "birthday": "1900-01-01T05:42:13.845Z",
-                "lastAddress":"کلاهدوز 4",
-                "address":"کلاهدوز 4"
+                "phoneNumber": "05136045232",
+                "company":"مجید"
+            },
+            "seller": {
+                "family": "محمد جواد حیدری",
+                "mobile": "05136045232"
             },
             "address": "معلم 24",
-            "reminder":-1,
-            "duration":-1
+            "reminder": -1,
+            "duration":"2021-11-08T07:28:50.413Z",
+            "mobile": "09307580140"
         },
         "product": {
             "name": "لیموناد",

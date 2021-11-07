@@ -31,7 +31,7 @@ describe(`${sectionName}`, () => {
         console.log('Waiting to ensure database connection stablished ');
         order = appConfig.test.order;
         order_V1 = appConfig.test.order_V1;
-        user = appConfig.test.userMJH;
+        user = appConfig.test.user;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -125,16 +125,6 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(order);
-            res.should.have.status(200);
-        });
-
-        it('check add order V1', async () => {
-            const res = await chai
-                .request(server)
-                .post(`${baseRoute}/v1`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
-                .send(order_V1);
             res.should.have.status(200);
         });
 
