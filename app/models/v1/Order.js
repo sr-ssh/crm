@@ -42,6 +42,7 @@ let Order = new Schema({
         active: { type: Boolean }
     }],
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
+    seller: { type: Schema.Types.ObjectId, ref: 'Seller' },
     lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
     address: { type: String },
     readyTime: { type: Date },

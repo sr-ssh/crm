@@ -98,11 +98,28 @@ module.exports = new class OrderController extends Controller {
                 sellingPrice: pro.sellingPrice
             }})
 
+            //add seller
+            filter = { mobile: req.body.seller.mobile, user: req.decodedData.user_employer }
+            let seller = await this.model.Seller.findOne(filter)
+
+            params = {
+                family: req.body.seller.family,
+                mobile: req.body.seller.mobile,
+                user: req.decodedData.user_employer,
+                company: req.body.customer.company,
+                marketer: req.decodedData.user_id
+            }
+
+            if (!seller)
+                seller = await this.model.Seller.create(params)
+
+
             // add order
             params = {
                 products: trimProducts,
                 notes: req.body.notes,
                 customer: customer._id,
+                seller: seller._id,
                 provider: req.decodedData.user_employer,
                 financialApproval: { status: false },
                 status: 3
@@ -156,6 +173,10 @@ module.exports = new class OrderController extends Controller {
                 customer.lastAddress = req.body.address
             customer.company = req.body.customer.company
             await customer.save()
+
+            // add order to seller
+            seller.order.push(order._id)
+            await seller.save()
 
              //reduce stock amount
             // if (req.body.status !== 3){
