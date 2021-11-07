@@ -50,7 +50,8 @@ let User = new Schema({
       getStock: false,  // -> مواد خام
       financialConfirmationOrder : false,  // -> تایید مالی سفارش 
       purchaseConfirmationInvoice: false,   // -> تایید خرید فاکتور 
-      addSeller : false // ثبت فروشنده
+      addSeller : false, // ثبت فروشنده
+      getSellers: false //گرفتن لیست فروشنده ها  
     },
   },
 

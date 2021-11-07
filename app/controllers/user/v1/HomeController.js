@@ -119,7 +119,8 @@ module.exports = new class HomeController extends Controller {
                     getStock: true,
                     financialConfirmationOrder : true, 
                     purchaseConfirmationInvoice: true,
-                    addSeller: true 
+                    addSeller: true ,
+                    getSellers: true
                 }
             }
 
