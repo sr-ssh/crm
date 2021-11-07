@@ -51,7 +51,7 @@ let User = new Schema({
       financialConfirmationOrder : false,  // -> تایید مالی سفارش 
       purchaseConfirmationInvoice: false,   // -> تایید خرید فاکتور 
       addSeller : false, // ثبت فروشنده
-      getSellers: false //گرفتن لیست فروشنده ها  
+      getSellers: false // -> گرفتن لیست فرروشنده ها
     },
   },
 
