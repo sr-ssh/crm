@@ -12,80 +12,58 @@ const uploadMiddleware = require('../../middleware/upload')
 
 
 /**
- * @api {post} /api/user/v1/order/ add order 
- * @apiVersion 1.0.0
- * @apiName addOrder
- * @apiDescription add order: customer birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is "1900-01-01T05:42:13.845Z".reminder flag and duration flag are -1.address flag is " "
- * @apiGroup order
- * @apiParam {Object[]} products array of product objects
- * @apiParam {Object} customer customer information
- * @apiParam {int} reminder number of days for reminding
- * @apiParam {int} duration minutes to the order become ready
- * @apiParam {varchar} address number of days for reminding
- * @apiParamExample {json} Request-Example:
- *  {
- *      products: [...{
- *          _id: "60b72a70e353f0385c2fe5af",
- *          quantity: 2,
- *          sellingPrice: "30000"
- *      }],
- *      customer: {
- *          family: "شکوهی",
- *          mobile: "09307580142",
- *          birthday: "2021-05-31T05:42:13.845Z"
- *      },
- *      reminder: 7,
- *      duration: 40,
- *      address: "معلم 24"
- *  }
- * @apiSuccessExample {json} Success-Response:
- * {
- *      success: true,
- *      message: "سفارش شما با موفقیت ثبت شد"
- * }
- */
-// router.post('/', OrderController.addOrder.bind(OrderController));
-
-
-/**
- * @api {post} /api/user/v1/order/v1 add order 
+ * @api {post} /api/user/v1/order add order 
  * @apiVersion 1.1.0
  * @apiName addOrder
- * @apiDescription add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is "1900-01-01T05:42:13.845Z".reminder flag and duration flag are -1.address flag is " ". for set order to sale opprotunity send status 3 otherwise don't send status.
+ * @apiDescription add order
  * @apiGroup order
  * @apiParam {Object[]} products array of product objects
- * @apiParam {Object[]} notes array of notes objects
+ * @apiParam {Object[]} [notes] array of notes objects
  * @apiParam {Object} customer customer information
- * @apiParam {int} reminder number of days for reminding
- * @apiParam {int} duration minutes to the order become ready
- * @apiParam {varchar} address number of days for reminding
- * @apiParam {int} force if status was 3 it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.
+ * @apiParam {Object} [seller] seller information
+ * @apiParam {int} [reminder] number of days for reminding
+ * @apiParam {String} [duration] order duration in ISO type
+ * @apiParam {String} [address] number of days for reminding
+ * @apiParam {int} [mobile] customer guest mobile 
+ * @apiParam {int} force it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.
  * @apiParamExample {json} Request-Example:
  *  {
- *      products: [...{
- *          _id: "60b72a70e353f0385c2fe5af",
- *          quantity: 2,
- *          sellingPrice: "30000",
- *          ingredients: [...{
- *              stock: { _id: "dfuewkjdbafhewjfdjs3243"},
- *              amount: 2
- *          }],
- *          checkWareHouse: true
- *      }],
- *     notes: [...{
+ *      
+        "force":1,
+        "products": [
+            {
+            "_id": "6183d40ae31477609c9ae820",
+            "name":"A4",
+            "quantity": 3,
+            "sellingPrice": "10000",
+            "ingredients":[],
+            "checkWareHouse":true
+            },{
+            "_id":"6181364e7bc0343e6ede593c",
+            "name":"مداد رنگی",
+            "quantity":1,
+            "sellingPrice":"25000",
+            "ingredients":[{"amount":1,"stock":{"amount":0,"_id":"618144e37bc0343e6ee1e45c"}}],
+            "checkWareHouse":true
+            }
+        ],
+        "notes": [...{
  *          text: "مشتری خواهان کالاست",
  *          createdAt : "2020-05-31T05:42:13.845Z",
  *     }],
- *     status : 3,
- *      customer: {
- *          family: "شکوهی",
- *          mobile: "09307580142",
- *          birthday: "2021-05-31T05:42:13.845Z",
- *          company: "تیم ایکس"
- *      },
- *      reminder: 7,
- *      duration: 40,
- *      address: "معلم 24"
+        "customer": {
+            "family": "محمد جواد حیدری",
+            "phoneNumber": "05136045232",
+            "company":"مجید"
+        },
+        "seller": {
+            "family": "محمد جواد حیدری",
+            "mobile": "05136045232"
+        },
+        "address": "معلم 24",
+        "reminder": -1,
+        "duration":"2021-11-08T07:28:50.413Z",
+        "mobile": "09307580140"
  *  }
  * @apiSuccessExample {json} Success-Response:
  * {

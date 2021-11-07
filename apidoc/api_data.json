@@ -1269,11 +1269,11 @@
   },
   {
     "type": "post",
-    "url": "/api/user/v1/order/v1",
+    "url": "/api/user/v1/order",
     "title": "add order",
     "version": "1.1.0",
     "name": "addOrder",
-    "description": "<p>add order: customer companyname, notes , birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;. for set order to sale opprotunity send status 3 otherwise don't send status.</p>",
+    "description": "<p>add order</p>",
     "group": "order",
     "parameter": {
       "fields": {
@@ -1288,7 +1288,7 @@
           {
             "group": "Parameter",
             "type": "Object[]",
-            "optional": false,
+            "optional": true,
             "field": "notes",
             "description": "<p>array of notes objects</p>"
           },
@@ -1301,106 +1301,52 @@
           },
           {
             "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "seller",
+            "description": "<p>seller information</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "int",
-            "optional": false,
+            "optional": true,
             "field": "reminder",
             "description": "<p>number of days for reminding</p>"
           },
           {
             "group": "Parameter",
-            "type": "int",
-            "optional": false,
+            "type": "String",
+            "optional": true,
             "field": "duration",
-            "description": "<p>minutes to the order become ready</p>"
+            "description": "<p>order duration in ISO type</p>"
           },
           {
             "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
+            "type": "String",
+            "optional": true,
             "field": "address",
             "description": "<p>number of days for reminding</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": true,
+            "field": "mobile",
+            "description": "<p>customer guest mobile</p>"
           },
           {
             "group": "Parameter",
             "type": "int",
             "optional": false,
             "field": "force",
-            "description": "<p>if status was 3 it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.</p>"
+            "description": "<p>it will be checked if there are a number of products in stock. if you do not want to be checked set force to 1. default 0.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\",\n        ingredients: [...{\n            stock: { _id: \"dfuewkjdbafhewjfdjs3243\"},\n            amount: 2\n        }],\n        checkWareHouse: true\n    }],\n   notes: [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }],\n   status : 3,\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\",\n        company: \"تیم ایکس\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"سفارش شما با موفقیت ثبت شد\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user/v1/order.js",
-    "groupTitle": "order"
-  },
-  {
-    "type": "post",
-    "url": "/api/user/v1/order/",
-    "title": "add order",
-    "version": "1.0.0",
-    "name": "addOrder",
-    "description": "<p>add order: customer birthday and reminder are optional.all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.birthday flag is &quot;1900-01-01T05:42:13.845Z&quot;.reminder flag and duration flag are -1.address flag is &quot; &quot;</p>",
-    "group": "order",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Object[]",
-            "optional": false,
-            "field": "products",
-            "description": "<p>array of product objects</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Object",
-            "optional": false,
-            "field": "customer",
-            "description": "<p>customer information</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "int",
-            "optional": false,
-            "field": "reminder",
-            "description": "<p>number of days for reminding</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "int",
-            "optional": false,
-            "field": "duration",
-            "description": "<p>minutes to the order become ready</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "varchar",
-            "optional": false,
-            "field": "address",
-            "description": "<p>number of days for reminding</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Request-Example:",
-          "content": "{\n    products: [...{\n        _id: \"60b72a70e353f0385c2fe5af\",\n        quantity: 2,\n        sellingPrice: \"30000\"\n    }],\n    customer: {\n        family: \"شکوهی\",\n        mobile: \"09307580142\",\n        birthday: \"2021-05-31T05:42:13.845Z\"\n    },\n    reminder: 7,\n    duration: 40,\n    address: \"معلم 24\"\n}",
+          "content": "{\n    \n       \"force\":1,\n       \"products\": [\n           {\n           \"_id\": \"6183d40ae31477609c9ae820\",\n           \"name\":\"A4\",\n           \"quantity\": 3,\n           \"sellingPrice\": \"10000\",\n           \"ingredients\":[],\n           \"checkWareHouse\":true\n           },{\n           \"_id\":\"6181364e7bc0343e6ede593c\",\n           \"name\":\"مداد رنگی\",\n           \"quantity\":1,\n           \"sellingPrice\":\"25000\",\n           \"ingredients\":[{\"amount\":1,\"stock\":{\"amount\":0,\"_id\":\"618144e37bc0343e6ee1e45c\"}}],\n           \"checkWareHouse\":true\n           }\n       ],\n       \"notes\": [...{\n        text: \"مشتری خواهان کالاست\",\n        createdAt : \"2020-05-31T05:42:13.845Z\",\n   }],\n       \"customer\": {\n           \"family\": \"محمد جواد حیدری\",\n           \"phoneNumber\": \"05136045232\",\n           \"company\":\"مجید\"\n       },\n       \"seller\": {\n           \"family\": \"محمد جواد حیدری\",\n           \"mobile\": \"05136045232\"\n       },\n       \"address\": \"معلم 24\",\n       \"reminder\": -1,\n       \"duration\":\"2021-11-08T07:28:50.413Z\",\n       \"mobile\": \"09307580140\"\n}",
           "type": "json"
         }
       ]

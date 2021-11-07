@@ -13,172 +13,292 @@ module.exports = new class OrderController extends Controller {
 
     async addOrder(req, res) {
         try {
-            req.checkBody('products', 'please enter products').notEmpty();
-            req.checkBody('products.*._id', 'please enter product id').notEmpty();
-            req.checkBody('products.*.quantity', 'please enter product quantity').notEmpty();
-            req.checkBody('products.*.sellingPrice', 'please enter product sellingPrice').notEmpty();
-            req.checkBody('products.*.ingredients.*.stock', 'please enter product ingredients').notEmpty();
-            req.checkBody('products.*.ingredients.*.stock._id', 'please enter product ingredients').notEmpty();
-            req.checkBody('products.*.ingredients.*.amount', 'please enter product ingredients').notEmpty();
-            req.checkBody('products.*.checkWareHouse', 'please enter product checkWareHouse').notEmpty();
+            req.checkBody("products", "please enter products").notEmpty();
+            req
+              .checkBody("products.*._id", "please enter product id")
+              .notEmpty();
+            req
+              .checkBody("products.*.quantity", "please enter product quantity")
+              .notEmpty();
+            req
+              .checkBody(
+                "products.*.sellingPrice",
+                "please enter product sellingPrice"
+              )
+              .notEmpty();
+            req
+              .checkBody(
+                "products.*.ingredients.*.stock",
+                "please enter product ingredients"
+              )
+              .notEmpty();
+            req
+              .checkBody(
+                "products.*.ingredients.*.stock._id",
+                "please enter product ingredients"
+              )
+              .notEmpty();
+            req
+              .checkBody(
+                "products.*.ingredients.*.amount",
+                "please enter product ingredients"
+              )
+              .notEmpty();
+            req
+              .checkBody(
+                "products.*.checkWareHouse",
+                "please enter product checkWareHouse"
+              )
+              .notEmpty();
 
-            req.checkBody('customer', 'please enter customer').notEmpty();
-            req.checkBody('customer.family', 'please enter customer family').notEmpty();
-            req.checkBody('customer.company', 'please enter customer company').notEmpty();
-            req.checkBody('customer.phoneNumber', 'please enter customer mobile').notEmpty().isNumeric();
+            req.checkBody("customer", "please enter customer").notEmpty();
+            req
+              .checkBody("customer.family", "please enter customer family")
+              .notEmpty();
+            req
+              .checkBody("customer.company", "please enter customer company")
+              .optional({ nullable: true, checkFalsy: true })
+              .isString();
+            req
+              .checkBody("customer.phoneNumber", "please enter customer phoneNumber")
+              .notEmpty()
+              .isNumeric();
 
-            req.checkBody('reminder', 'please enter customer reminder').notEmpty().isInt({ min: -1 });
-            req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('duration', 'please enter order duration').notEmpty().isISO8601();
+            req
+              .checkBody("reminder", "please enter customer reminder")
+              .optional({ nullable: true, checkFalsy: true })
+              .isInt({ min: -1 });
+            req
+              .checkBody("address", "please enter address")
+              .optional({ nullable: true, checkFalsy: true })
+              .isString();
+            req
+              .checkBody("duration", "please enter order duration")
+              .optional({ nullable: true, checkFalsy: true })
+              .isISO8601();
 
-            req.checkBody('mobile', 'please enter order mobile').notEmpty().isInt({ min: -1 });
-            req.checkBody('seller', 'please enter customer').notEmpty();
+            req
+              .checkBody("mobile", "please enter order mobile")
+              .optional({ nullable: true, checkFalsy: true })
+              .isInt({ min: -1 });
+            req
+              .checkBody("seller", "please enter customer")
+              .optional({ nullable: true, checkFalsy: true });
 
-            req.checkBody('seller.family', 'please enter seller family').notEmpty();
-            req.checkBody('seller.mobile', 'please enter seller mobile').notEmpty();
+            req
+              .checkBody("seller.family", "please enter seller family")
+              .optional({ nullable: true, checkFalsy: true })
+              .isString();
+            req
+              .checkBody("seller.mobile", "please enter seller mobile")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
 
-            req.checkBody('force', 'please enter force').notEmpty();
-            req.checkBody('notes', 'please enter notes').optional({nullable: true,checkFalsy: true});
+            req.checkBody("force", "please enter force").notEmpty();
+            req
+              .checkBody("notes", "please enter notes")
+              .optional({ nullable: true, checkFalsy: true });
             if (this.showValidationErrors(req, res)) return;
 
             const TIME_FLAG = "1900-01-01T05:42:13.845Z";
             const INT_FLAG = "-1";
             const STRING_FLAG = " ";
-            let FORCE = 0
+            let FORCE = 0;
 
-         if (req.body.force == FORCE){
+            if (req.body.force == FORCE) {
+              let productsfilter = req.body.products.filter(
+                (item) => item.checkWareHouse == true
+              );
 
-            let productsfilter = req.body.products.filter(item => item.checkWareHouse == true )
-
-            let products = []
-            for (let index = 0; index < productsfilter.length; index++) {
-                for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
-                    products.push(productsfilter[index].ingredients[j].stock._id)
+              let products = [];
+              for (let index = 0; index < productsfilter.length; index++) {
+                for (
+                  let j = 0;
+                  j < productsfilter[index].ingredients.length;
+                  j++
+                ) {
+                  products.push(productsfilter[index].ingredients[j].stock._id);
                 }
-            }
-            let  filter = { _id: { $in: products } }
-            let  stocks = await this.model.Stock.find(filter, {name: 1, description: 1, active: 1, updatedAt: 1, amount: 1})
+              }
+              let filter = { _id: { $in: products } };
+              let stocks = await this.model.Stock.find(filter, {
+                name: 1,
+                description: 1,
+                active: 1,
+                updatedAt: 1,
+                amount: 1,
+              });
 
-            let isAmountOk=[]
+              let isAmountOk = [];
 
-            for (let index = 0; index < productsfilter.length; index++) {
-                for (let j = 0; j < productsfilter[index].ingredients.length; j++) {
-                   let stocksInfo = stocks.find(stocks => (stocks._id.toString() === productsfilter[index].ingredients[j].stock._id.toString() && stocks.amount < productsfilter[index].quantity )  )
-                    if (stocksInfo)                    
-                        isAmountOk.push({name : stocksInfo.name} )
+              for (let index = 0; index < productsfilter.length; index++) {
+                for (
+                  let j = 0;
+                  j < productsfilter[index].ingredients.length;
+                  j++
+                ) {
+                  let stocksInfo = stocks.find(
+                    (stocks) =>
+                      stocks._id.toString() ===
+                        productsfilter[index].ingredients[
+                          j
+                        ].stock._id.toString() &&
+                      stocks.amount < productsfilter[index].quantity
+                  );
+                  if (stocksInfo) isAmountOk.push({ name: stocksInfo.name });
                 }
-            }
-            if(isAmountOk.length > 0 ){
-                if(req.body.status === 3)
-                     return  res.json({ success: false, message: 'عملیات نا موفق' , data : isAmountOk , dialogTrigger : true  })
+              }
+              if (isAmountOk.length > 0) {
+                if (req.body.status === 3)
+                  return res.json({
+                    success: false,
+                    message: "عملیات نا موفق",
+                    data: isAmountOk,
+                    dialogTrigger: true,
+                  });
                 else if (req.body.status == "")
-                     return      res.json({ success: false, message: 'موجودی موارد انتخاب شده به اتمام رسیده است.' , dialogTrigger : false  })
+                  return res.json({
+                    success: false,
+                    message: "موجودی موارد انتخاب شده به اتمام رسیده است.",
+                    dialogTrigger: false,
+                  });
+              }
             }
-        }
             // add customer
-            let filter = { phoneNumber: req.body.customer.phoneNumber, user: req.decodedData.user_employer }
-            let customer = await this.model.Customer.findOne(filter)
+            let filter = {
+              phoneNumber: req.body.customer.phoneNumber,
+              user: req.decodedData.user_employer,
+            };
+            let customer = await this.model.Customer.findOne(filter);
 
             let params = {
-                family: req.body.customer.family,
-                phoneNumber: req.body.customer.phoneNumber,
-                user: req.decodedData.user_employer,
-                company: req.body.customer.company
-            }
+              family: req.body.customer.family,
+              phoneNumber: req.body.customer.phoneNumber,
+              user: req.decodedData.user_employer,
+              company: req.body.customer.company,
+            };
 
-            if (!customer)
-                customer = await this.model.Customer.create(params)
+            if (!customer) customer = await this.model.Customer.create(params);
 
-            if (req.body.notes.length > 0)
-                req.body.notes = req.body.notes.map(item => { return { ...item, writtenBy: req.decodedData.user_id, private: false } })
+            if (req.body.notes && req.body.notes.length > 0)
+              req.body.notes = req.body.notes.map((item) => {
+                return {
+                  ...item,
+                  writtenBy: req.decodedData.user_id,
+                  private: false,
+                };
+              });
 
-            let trimProducts = req.body.products.map(pro => {return {
+            let trimProducts = req.body.products.map((pro) => {
+              return {
                 _id: pro._id,
                 quantity: pro.quantity,
-                sellingPrice: pro.sellingPrice
-            }})
+                sellingPrice: pro.sellingPrice,
+              };
+            });
 
+            let seller;
             //add seller
-            filter = { mobile: req.body.seller.mobile, user: req.decodedData.user_employer }
-            let seller = await this.model.Seller.findOne(filter)
+            if (
+              req.body.seller &&
+              req.body.seller.family &&
+              req.body.seller.mobile
+            ) {
+              filter = {
+                mobile: req.body.seller.mobile,
+                user: req.decodedData.user_employer,
+              };
+              seller = await this.model.Seller.findOne(filter);
 
-            params = {
+              params = {
                 family: req.body.seller.family,
                 mobile: req.body.seller.mobile,
                 user: req.decodedData.user_employer,
                 company: req.body.customer.company,
-                marketer: req.decodedData.user_id
+                marketer: req.decodedData.user_id,
+              };
+
+              if (!seller) seller = await this.model.Seller.create(params);
             }
-
-            if (!seller)
-                seller = await this.model.Seller.create(params)
-
-
             // add order
             params = {
-                products: trimProducts,
-                notes: req.body.notes,
-                customer: customer._id,
-                seller: seller._id,
-                provider: req.decodedData.user_employer,
-                financialApproval: { status: false },
-                status: 3
-            }
+              products: trimProducts,
+              notes: req.body.notes || [],
+              customer: customer._id,
+              provider: req.decodedData.user_employer,
+              financialApproval: { status: false },
+              status: 3,
+            };
 
-            if (req.body.address != STRING_FLAG)
-                params.address = req.body.address
-            if (req.body.duration != INT_FLAG) {
-                params.readyTime = req.body.duration
+            if(req.body.mobile) params.mobile = req.body.mobile
+            if (seller) params.seller = seller._id;
+            if (req.body.address != STRING_FLAG && req.body.address)
+              params.address = req.body.address;
+            if (req.body.duration != INT_FLAG && req.body.duration) {
+              params.readyTime = req.body.duration;
             }
-                params.sellers = [{id: req.decodedData.user_id, active : true}]
-                
+            params.sellers = [{ id: req.decodedData.user_id, active: true }];
 
             //remove lead
-            filter = { user: req.decodedData.user_employer, mobile: customer.phoneNumber, status: 1 }
-            await this.model.Lead.update(filter, {status: 2, active: false}, { multi : true })
-            filter.status = 0
-            let lead = await this.model.Lead.findOneAndUpdate(filter, {status: 2, active: false}).populate('acceptUser', 'acceptedLeadCount')
-            if(lead){
-                params.lead = lead._id
-                if(lead.status == 0 && lead.accepted){
-                    await this.model.User.updateOne({_id: lead.acceptUser._id}, { $inc: { acceptedLeadCount: -1 }})
-                }
+            filter = {
+              user: req.decodedData.user_employer,
+              mobile: customer.phoneNumber,
+              status: 1
+            };
+            await this.model.Lead.update(
+              filter,
+              { status: 2, active: false },
+              { multi: true }
+            );
+            filter.status = 0;
+            let lead = await this.model.Lead.findOneAndUpdate(filter, {
+              status: 2,
+              active: false,
+            }).populate("acceptUser", "acceptedLeadCount");
+            if (lead) {
+              params.lead = lead._id;
+              if (lead.status == 0 && lead.accepted) {
+                await this.model.User.updateOne(
+                  { _id: lead.acceptUser._id },
+                  { $inc: { acceptedLeadCount: -1 } }
+                );
+              }
             }
 
-            let order = await this.model.Order.create(params)
-
+            let order = await this.model.Order.create(params);
 
             // add reminder
-            if (req.body.reminder !== INT_FLAG) {
+            if (req.body.reminder !== INT_FLAG && req.body.reminder) {
+              // calculate date
+              const event = new Date();
+              event.setDate(event.getDate() + parseInt(req.body.reminder));
 
-                // calculate date
-                const event = new Date();
-                event.setDate(event.getDate() + parseInt(req.body.reminder));
+              params = {
+                date: event.toISOString(),
+                user: req.decodedData.user_employer,
+                customer: customer._id,
+                order: order._id,
+              };
+              let reminder = await this.model.Reminder.create(params);
 
-                params = {
-                    date: event.toISOString(),
-                    user: req.decodedData.user_employer,
-                    customer: customer._id,
-                    order: order._id
-                }
-                let reminder = await this.model.Reminder.create(params)
-
-                // add reminder to customer
-                await customer.reminder.push(reminder._id)
+              // add reminder to customer
+              await customer.reminder.push(reminder._id);
             }
 
             // add order to customer
-            await customer.order.push(order._id)
-            if (req.body.address != STRING_FLAG)
-                customer.lastAddress = req.body.address
-            customer.company = req.body.customer.company
-            await customer.save()
+            await customer.order.push(order._id);
+            if (req.body.address != STRING_FLAG && req.body.address)
+              customer.lastAddress = req.body.address;
+            customer.company = req.body.customer.company;
+            await customer.save();
 
             // add order to seller
-            seller.order.push(order._id)
-            await seller.save()
+            if (seller) {
+              seller.order.push(order._id);
+              await seller.save();
+            }
 
-             //reduce stock amount
+            //reduce stock amount
             // if (req.body.status !== 3){
             //     let update = []
             //     req.body.products.map(product => {
@@ -187,27 +307,30 @@ module.exports = new class OrderController extends Controller {
             //                 update.push({
             //                     updateOne : {
             //                         filter : { _id : ing.stock._id },
-            //                         update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } } 
-            //                     } 
+            //                         update : { $inc : {  amount : 0-(parseInt(ing.amount) * product.quantity) } }
+            //                     }
             //                 })
             //             })
-            //         } 
+            //         }
             //     })
             //     await this.model.Stock.bulkWrite(update)
             // }
-           
-            
-            res.json({ success: true, message: 'سفارش شما با موفقیت ثبت شد' })
 
-            let user = await this.model.User.findOne({ _id: req.decodedData.user_employer }, 'setting company')
+            res.json({ success: true, message: "سفارش شما با موفقیت ثبت شد" });
+
+            let user = await this.model.User.findOne(
+              { _id: req.decodedData.user_employer },
+              "setting company"
+            );
             if (user.setting.order.preSms.status) {
-                let message = ""
-                if (user.company)
-                    message = user.setting.order.preSms.text + ` \n${req.decodedData.user_company}`
-                else
-                    message = user.setting.order.preSms.text
+              let message = "";
+              if (user.company)
+                message =
+                  user.setting.order.preSms.text +
+                  ` \n${req.decodedData.user_company}`;
+              else message = user.setting.order.preSms.text;
 
-                this.sendSms(req.body.customer.mobile, message)
+              this.sendSms(req.body.customer.mobile, message);
             }
         }
         catch (err) {

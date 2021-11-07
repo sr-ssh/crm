@@ -43,6 +43,7 @@ let Order = new Schema({
     }],
     customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
     seller: { type: Schema.Types.ObjectId, ref: 'Seller' },
+    mobile: { type: Number },
     lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
     address: { type: String },
     readyTime: { type: Date },
