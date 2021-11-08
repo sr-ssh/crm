@@ -104,7 +104,6 @@ module.exports = new class OrderController extends Controller {
             const INT_FLAG = "-1";
             const STRING_FLAG = " ";
             let FORCE = 0;
-
             if (req.body.force == FORCE) {
               let productsfilter = req.body.products.filter(
                 (item) => item.checkWareHouse == true
@@ -149,18 +148,11 @@ module.exports = new class OrderController extends Controller {
                 }
               }
               if (isAmountOk.length > 0) {
-                if (req.body.status === 3)
                   return res.json({
                     success: false,
                     message: "عملیات نا موفق",
                     data: isAmountOk,
                     dialogTrigger: true,
-                  });
-                else if (req.body.status == "")
-                  return res.json({
-                    success: false,
-                    message: "موجودی موارد انتخاب شده به اتمام رسیده است.",
-                    dialogTrigger: false,
                   });
               }
             }
