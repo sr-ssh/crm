@@ -95,6 +95,9 @@ router.post('/', OrderController.addOrder.bind(OrderController));
 
 
 
+
+
+
 /**
 * @api {get} /api/user/v1/order/ get orders 
 * @apiVersion 1.0.0
@@ -130,6 +133,9 @@ router.post('/', OrderController.addOrder.bind(OrderController));
 * }
 */
 router.get('/:customerName/:customerMobile/:startDate/:endDate', OrderController.getOrders.bind(OrderController));
+
+
+
 
 
 /**
@@ -168,6 +174,86 @@ router.get('/:customerName/:customerMobile/:startDate/:endDate', OrderController
 * }
 */
 router.get('/v1/:status/:customerName/:customerMobile/:startDate/:endDate', OrderController.getOrdersV1.bind(OrderController));
+
+
+
+
+
+/**
+* @api {get} /api/user/v1/order/:type/:value support
+* @apiVersion 1.0.0
+* @apiName support
+* @apiDescription support : each type is a kind of search: 
+            1 -> customer number, 
+            2 -> customer family, 
+            3 -> company, 
+            4 -> seller number, 
+            5 -> seller family
+* @apiGroup order
+* @apiParam {Number} type search type [1, 2, 3, 4, 5]
+* @apiParam {String} value search value
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سفارشات با موفقیت ارسال شد",
+*      data: [...{
+*          active: true,
+*          _id: "60b72a70e353f0385c2fe5af",
+*          address: "خیابان احمداباد",
+*          products: [...{
+*              _id: {
+*                   _id: "6183d40ae31477609c9ae820", 
+*                   name: "A4"
+*               },
+*              quantity: 2,
+*              sellingPrice: "30000"
+*          }],
+*          customer: {
+*              _id: "7465148754878",
+*              family: "مصطفایی",
+*              mobile: "09152631225",
+*              phoneNumber: "09307580142",
+*              company: "هتل رضوان"
+*          },
+*          financialApproval: {
+*               status: 1, 
+*               acceptedAt: "2021-11-08T12:46:34.702Z", 
+*               acceptedBy: { 
+*                   _id: "61614c019128741180e6e58f", 
+*                   family: "ریحانه شکوهی"
+*               }
+*           },
+*          mobile: "09307580120",
+*          notes: {
+*               Notes: [...{
+*                   text: "بدون انقضا", 
+*                   createdAt: "2021-11-08T12:58:02.117Z", 
+*                   writtenBy: "ریحانه شکوهی", 
+*                   private: false
+*               }], 
+*               isPrivate: false
+*          },
+*          readyTime: "2021-11-16T07:42:00.000Z",
+*          createdAt: "2021-06-01T06:54:01.691Z",
+*          updatedAt: "2021-06-01T06:54:01.691Z",
+*          seller: {
+*               _id: "6188d4ff675723337cff3d09",
+*               family: "رضایی", 
+*               mobile: '09307580121"
+*           },
+*          sellers: [...{
+*               id: {
+*                   _id: "61614c019128741180e6e58f", 
+*                   family: "ریحانه شکوهی"
+*               }, 
+*               active: true
+*           }],
+*           status: 0
+*      }]
+* }
+*/
+router.get('/:type/:value', OrderController.support.bind(OrderController));
+
 
 
 

@@ -1510,6 +1510,140 @@ module.exports = new class OrderController extends Controller {
             if (!res.headersSent) return res.status(500).json(handelError);
         }
     }
+
+
+    async support(req, res) {
+        try {
+
+            req
+              .checkParams("type", "please set search type")
+              .notEmpty()
+              .isInt({ min: 1, max: 5 });
+            // 1 -> customer number
+            // 2 -> customer family
+            // 3 -> company
+            // 4 -> seller number
+            // 5 -> seller family
+            req.checkParams("value", "please set search value").notEmpty();
+            if (this.showValidationErrors(req, res)) return;
+
+            let filter = { provider: req.decodedData.user_employer };
+
+            let orders = await this.model.Order.find(
+              filter,
+              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile"
+            )
+              .populate([
+                { path: "notes.writtenBy", model: "User", select: "family" },
+                { path: "sellers.id", model: "User", select: "family" },
+                { path: "products._id", model: "Product", select: "name" },
+                {
+                  path: "financialApproval.acceptedBy",
+                  model: "User",
+                  select: "family",
+                },
+              ])
+              .populate("seller", 'family mobile')
+              .populate("customer", 'mobile family company phoneNumber')
+              .populate("employee", 'family')
+              .sort({ createdAt: -1 })
+              .lean();
+
+            if (req.params.type == "1")
+              orders = orders.filter(
+                (param) => param.customer.phoneNumber === req.params.value
+              );
+
+            if (req.params.type == "2")
+              orders = orders.filter((param) => {
+                if (param.customer) {
+                  let re = new RegExp(req.params.value, "i");
+                  let find = param.customer.family.search(re);
+                  return find !== -1;
+                }
+              });
+
+            if (req.params.type == "3")
+              orders = orders.filter((param) => {
+                if (param.customer && param.customer.company) {
+                  let re = new RegExp(req.params.value, "i");
+                  let find = param.customer.company.search(re);
+                  return find !== -1;
+                }
+              });
+
+            if (req.params.type == "4")
+              orders = orders.filter((param) => {
+                if (param.seller)
+                  return param.seller.mobile === req.params.value;
+                return false;
+              });
+
+            if (req.params.type == "5")
+              orders = orders.filter((param) => {
+                if (param.seller) {
+                  let re = new RegExp(req.params.value, "i");
+                  let find = param.seller.family.search(re);
+                  return find !== -1;
+                }
+              });
+
+            let paramsNote;
+            let dataNote;
+            let isPrivate;
+
+            for (let noteIndex = 0; noteIndex < orders.length; noteIndex++) {
+              if (orders[noteIndex].notes.length > 0) {
+                dataNote = orders[noteIndex].notes.filter(
+                  (item) => item.private === false
+                );
+                paramsNote = orders[noteIndex].notes.filter(
+                  (item) =>
+                    item.private === true &&
+                    item.writtenBy._id.toString() === req.decodedData.user_id
+                );
+
+                if (paramsNote.length > 0) {
+                  isPrivate = true;
+                  paramsNote = paramsNote.reduce((result, item) => {
+                    result = item;
+                    dataNote.push(result);
+                  }, {});
+                } else {
+                  isPrivate = false;
+                }
+
+                dataNote.map((item) => {
+                  item.writtenBy = item.writtenBy?.family;
+                  return item;
+                });
+                orders[noteIndex].notes = {
+                  Notes: dataNote,
+                  isPrivate: isPrivate,
+                };
+              }
+            }
+
+            return res.json({
+              success: true,
+              message: "سفارشات با موفقیت ارسال شد",
+              data: orders,
+            });
+
+
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('support')
+                .inputParams(req.params)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
 }
 
 

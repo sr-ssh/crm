@@ -2158,6 +2158,46 @@ define({ "api": [
     "groupTitle": "order"
   },
   {
+    "type": "get",
+    "url": "/api/user/v1/order/:type/:value",
+    "title": "support",
+    "version": "1.0.0",
+    "name": "support",
+    "description": "<p>support : each type is a kind of search: 1 -&gt; customer number, 2 -&gt; customer family, 3 -&gt; company, 4 -&gt; seller number, 5 -&gt; seller family</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "type",
+            "description": "<p>search type [1, 2, 3, 4, 5]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "value",
+            "description": "<p>search value</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"سفارشات با موفقیت ارسال شد\",\n     data: [...{\n         active: true,\n         _id: \"60b72a70e353f0385c2fe5af\",\n         address: \"خیابان احمداباد\",\n         products: [...{\n             _id: {\n                  _id: \"6183d40ae31477609c9ae820\", \n                  name: \"A4\"\n              },\n             quantity: 2,\n             sellingPrice: \"30000\"\n         }],\n         customer: {\n             _id: \"7465148754878\",\n             family: \"مصطفایی\",\n             mobile: \"09152631225\",\n             phoneNumber: \"09307580142\",\n             company: \"هتل رضوان\"\n         },\n         financialApproval: {\n              status: 1, \n              acceptedAt: \"2021-11-08T12:46:34.702Z\", \n              acceptedBy: { \n                  _id: \"61614c019128741180e6e58f\", \n                  family: \"ریحانه شکوهی\"\n              }\n          },\n         mobile: \"09307580120\",\n         notes: {\n              Notes: [...{\n                  text: \"بدون انقضا\", \n                  createdAt: \"2021-11-08T12:58:02.117Z\", \n                  writtenBy: \"ریحانه شکوهی\", \n                  private: false\n              }], \n              isPrivate: false\n         },\n         readyTime: \"2021-11-16T07:42:00.000Z\",\n         createdAt: \"2021-06-01T06:54:01.691Z\",\n         updatedAt: \"2021-06-01T06:54:01.691Z\",\n         seller: {\n              _id: \"6188d4ff675723337cff3d09\",\n              family: \"رضایی\", \n              mobile: '09307580121\"\n          },\n         sellers: [...{\n              id: {\n                  _id: \"61614c019128741180e6e58f\", \n                  family: \"ریحانه شکوهی\"\n              }, \n              active: true\n          }],\n          status: 0\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
     "type": "post",
     "url": "/api/user/v1/order/doc",
     "title": "upload documents",

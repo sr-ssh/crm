@@ -17,6 +17,7 @@ let order,
   deleteOrder,
   editProductOrder,
   financialConfirmation,
+  support,
   addOrderPush;
 const axios = require('axios').default;
 const path = require('path')
@@ -28,8 +29,9 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
+        support = appConfig.test.support;
         order = appConfig.test.order;
-        user = appConfig.test.userMJH;
+        user = appConfig.test.user;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -88,8 +90,15 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-
-
+        it('check get support', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/${support.type}/${encodeURI(support.value)}`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+        });
 
         it('check get order details ', async () => {
             const res = await chai
