@@ -78,17 +78,6 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
-        it('check get orders V1', async () => {
-            const res = await chai
-                .request(server)
-                .get(`${baseRoute}/v1/${getOrderParams_V1.status}/${encodeURI(getOrderParams_V1.customerName)}/${getOrderParams_V1.customerMobile}/${getOrderParams_V1.startDate}/${getOrderParams_V1.endDate}`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
-                .send();
-            res.should.have.status(200);
-        });
-
-
         it('check get notes ', async () => {
             const res = await chai
                 .request(server)

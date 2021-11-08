@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.userMJH;
+        user = appConfig.test.user;
         customer = appConfig.test.customer;
         getCustomerParams = appConfig.test.getCustomerParams;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
@@ -45,7 +45,7 @@ describe(`${sectionName}`, () => {
         it('check get customers', async () => {
             const res = await chai
                 .request(server)
-                .get(`${baseRoute}/list/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}`)
+                .get(`${baseRoute}/list/${encodeURI(getCustomerParams.family)}/${encodeURI(getCustomerParams.mobile)}/${encodeURI(getCustomerParams.createdAtFrom)}/${encodeURI(getCustomerParams.createdAtTo)}/${encodeURI(getCustomerParams.lastBuyFrom)}/${encodeURI(getCustomerParams.lastBuyTo)}/${encodeURI(getCustomerParams.orderFrom)}/${encodeURI(getCustomerParams.orderTo)}/${encodeURI(getCustomerParams.totalFrom)}/${encodeURI(getCustomerParams.totalTo)}/1`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
