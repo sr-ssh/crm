@@ -1412,6 +1412,62 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/api/user/v1/order/trackingcode",
+    "title": "add tracking code",
+    "version": "1.0.0",
+    "name": "addTrackingCode",
+    "description": "<p>add tracking code</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "customerId",
+            "description": "<p>customer id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "trackingCode",
+            "description": "<p>order tracking code</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      success: true,\n      message: \"کد پیگیری با موفقیت ثبت شد\", \n        data: {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      success: true,\n      message: \"کد پیگیری تکراری است\", \n        data: { staus: false }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "post",
     "url": "/api/user/v1/order/details/sharelink",
     "title": "create share link",
     "version": "1.0.0",

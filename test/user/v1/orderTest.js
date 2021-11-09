@@ -18,7 +18,8 @@ let order,
   editProductOrder,
   financialConfirmation,
   support,
-  addOrderPush;
+  addOrderPush,
+  trackingCode;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -29,6 +30,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
+        trackingCode = appConfig.test.trackingCode;
         support = appConfig.test.support;
         order = appConfig.test.order;
         user = appConfig.test.user;
@@ -164,6 +166,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(addOrderPush);
+            res.should.have.status(200);
+        });
+
+        it('check order add trackingCode', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/trackingcode`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(trackingCode);
             res.should.have.status(200);
         });
 

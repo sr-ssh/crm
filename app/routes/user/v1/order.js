@@ -620,4 +620,30 @@ router.post('/doc', upload.single('file'), OrderController.uploadDocuments.bind(
 router.get('/doc/:orderId', upload.single('file'), OrderController.showDocuments.bind(OrderController));
 
 
+
+/**
+* @api {post} /api/user/v1/order/trackingcode add tracking code
+* @apiVersion 1.0.0
+* @apiName addTrackingCode
+* @apiDescription add tracking code
+* @apiGroup order
+* @apiParam {String} orderId order id
+* @apiParam {String} customerId customer id
+* @apiParam {Number} trackingCode order tracking code
+* @apiSuccessExample {json} Success-Response:
+* {
+*       success: true,
+*       message: "کد پیگیری با موفقیت ثبت شد", 
+        data: {}
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*       success: true,
+*       message: "کد پیگیری تکراری است", 
+        data: { staus: false }
+* }
+*/
+router.post('/trackingcode', OrderController.addTrackingCode.bind(OrderController));
+
+
 module.exports = router;

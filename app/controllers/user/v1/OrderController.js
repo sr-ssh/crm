@@ -1685,13 +1685,23 @@ module.exports = new class OrderController extends Controller {
 
             req.checkBody('trackingCode', 'please set trackingCode').notEmpty().isNumeric();
             req.checkBody('orderId', 'please set orderId').notEmpty().isMongoId()
+            req.checkBody('customerId', 'please set customerId').notEmpty().isMongoId()
             if (this.showValidationErrors(req, res)) return;
-            
-            let filter = { provider: req.decodedData.user_employer, _id: req.body.orderId }
-            let update = {$set : { trackingCode : req.body.trackingCode }}
-            let order = await this.model.Order.updateOne(filter)
 
-            return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
+            // check for duplicate tracking code
+            let customer = await this.model.Customer.findOne({ _id: req.body.customerId }).populate({path: 'order', model: 'Order'})
+            let duplicate = customer.order.some(order => order.trackingCode == req.body.trackingCode )
+
+            if(duplicate)
+                return res.json({ success: true, message: 'کد پیگیری تکراری است', data: {status: false} })
+
+            // add trackingCode
+            let filter = { provider: req.decodedData.user_employer, _id: req.body.orderId }
+            let update = { $set: { trackingCode : req.body.trackingCode }}
+
+            await this.model.Order.updateOne(filter, update)
+
+            return res.json({ success: true, message: 'کد پیگیری با موفقیت ثبت شد', data: {} })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
