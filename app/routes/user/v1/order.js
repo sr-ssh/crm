@@ -201,10 +201,8 @@ router.get('/v1/:status/:customerName/:customerMobile/:startDate/:endDate', Orde
 *          _id: "60b72a70e353f0385c2fe5af",
 *          address: "خیابان احمداباد",
 *          products: [...{
-*              _id: {
-*                   _id: "6183d40ae31477609c9ae820", 
-*                   name: "A4"
-*               },
+*              _id: "6183d40ae31477609c9ae820", 
+*              name: "A4"
 *              quantity: 2,
 *              sellingPrice: "30000"
 *          }],
@@ -218,10 +216,7 @@ router.get('/v1/:status/:customerName/:customerMobile/:startDate/:endDate', Orde
 *          financialApproval: {
 *               status: 1, 
 *               acceptedAt: "2021-11-08T12:46:34.702Z", 
-*               acceptedBy: { 
-*                   _id: "61614c019128741180e6e58f", 
-*                   family: "ریحانه شکوهی"
-*               }
+*               acceptedBy: "ریحانه شکوهی" 
 *           },
 *          mobile: "09307580120",
 *          notes: {
@@ -247,8 +242,9 @@ router.get('/v1/:status/:customerName/:customerMobile/:startDate/:endDate', Orde
 *                   family: "ریحانه شکوهی"
 *               }, 
 *               active: true
-*           }],
-*           status: 0
+*           }]
+*           status: 0,
+*           support: true
 *      }]
 * }
 */

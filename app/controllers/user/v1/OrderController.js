@@ -1624,6 +1624,41 @@ module.exports = new class OrderController extends Controller {
               }
             }
 
+
+            // edit data to be exactly like getOrders
+            orders = orders.map(order => {
+                return {
+                    id: order._id,
+                    active: order.active,
+                    address: order.address,
+                    products: order.products.map(product => {
+                        return {
+                            _id: product._id._id,
+                            name: product._id.name,
+                            quantity: product.quantity,
+                            sellingPrice: product.sellingPrice
+                        }
+                    }),
+                    customer: order.customer,
+                    financialApproval: {
+                        status: order.financialApproval.status,
+                        acceptedAt: order.financialApproval.acceptedAt,
+                        acceptedBy: order.financialApproval.acceptedBy.family
+                    },
+                    mobile: order.mobile,
+                    notes: order.notes,
+                    readyTime: order.readyTime,
+                    createdAt: order.createdAt,
+                    updatedAt: order.updatedAt,
+                    seller: order.seller,
+                    sellers: order.sellers,
+                    status: order.status,
+                    support: true
+                }
+            })
+
+
+
             return res.json({
               success: true,
               message: "سفارشات با موفقیت ارسال شد",
@@ -1638,6 +1673,30 @@ module.exports = new class OrderController extends Controller {
                 .class(TAG)
                 .method('support')
                 .inputParams(req.params)
+                .call();
+
+            if (!res.headersSent) return res.status(500).json(handelError);
+        }
+    }
+
+
+    async addTrackingCode(req, res) {
+        try {
+
+            req.checkBody('trackingCode', 'please set trackingCode').notEmpty().isNumeric();
+            req.checkBody('orderId', 'please set orderId').notEmpty().isMongoId()
+            if (this.showValidationErrors(req, res)) return;
+            
+            // let filter = 
+
+            return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
+        }
+        catch (err) {
+            let handelError = new this.transforms.ErrorTransform(err)
+                .parent(this.controllerTag)
+                .class(TAG)
+                .method('addTrackingCode')
+                .inputParams(req.body)
                 .call();
 
             if (!res.headersSent) return res.status(500).json(handelError);

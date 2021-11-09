@@ -49,6 +49,7 @@ let Order = new Schema({
     readyTime: { type: Date },
     documents: [{ _id: false, name: String, key: { type: String, unique: true }, location: String, size: Number, fileType: String }],
     status: { type: Number, default: 0 },
+    trackingCode: { type : Number, unique: true, sparse: true },
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Schema.Types.ObjectId, ref: 'User' },
     description: { type: String }
