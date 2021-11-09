@@ -1697,11 +1697,11 @@ module.exports = new class OrderController extends Controller {
 
             // add trackingCode
             let filter = { provider: req.decodedData.user_employer, _id: req.body.orderId }
-            let update = { $set: { trackingCode : req.body.trackingCode }}
+            let update = { $set: { trackingCode : req.body.trackingCode , status : 0 }}
 
             await this.model.Order.updateOne(filter, update)
 
-            return res.json({ success: true, message: 'کد پیگیری با موفقیت ثبت شد', data: {} })
+            return res.json({ success: true, message: 'کد پیگیری با موفقیت ثبت شد', data: { status: true } })
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)
