@@ -1642,8 +1642,8 @@ module.exports = new class OrderController extends Controller {
                     customer: order.customer,
                     financialApproval: {
                         status: order.financialApproval.status,
-                        acceptedAt: order.financialApproval.acceptedAt,
-                        acceptedBy: order.financialApproval.acceptedBy.family
+                        acceptedAt: order.financialApproval.acceptedAt && order.financialApproval.acceptedAt,
+                        acceptedBy: order.financialApproval.acceptedBy && order.financialApproval.acceptedBy.family
                     },
                     mobile: order.mobile,
                     notes: order.notes,
@@ -1687,7 +1687,9 @@ module.exports = new class OrderController extends Controller {
             req.checkBody('orderId', 'please set orderId').notEmpty().isMongoId()
             if (this.showValidationErrors(req, res)) return;
             
-            // let filter = 
+            let filter = { provider: req.decodedData.user_employer, _id: req.body.orderId }
+            let update = {$set : { trackingCode : req.body.trackingCode }}
+            let order = await this.model.Order.updateOne(filter)
 
             return res.json({ success: true, message: 'پیام سوکت با موفقیت ارسال شد' })
         }
