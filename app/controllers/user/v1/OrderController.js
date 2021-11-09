@@ -1531,7 +1531,7 @@ module.exports = new class OrderController extends Controller {
 
             let orders = await this.model.Order.find(
               filter,
-              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile"
+              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
             )
               .populate([
                 { path: "notes.writtenBy", model: "User", select: "family" },
@@ -1655,7 +1655,8 @@ module.exports = new class OrderController extends Controller {
                     seller: order.seller,
                     sellers: order.sellers,
                     status: order.status,
-                    support: true
+                    support: true,
+                    trackingCode: order.trackingCode
                 }
             })
 
