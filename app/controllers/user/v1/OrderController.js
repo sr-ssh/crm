@@ -1551,7 +1551,9 @@ module.exports = new class OrderController extends Controller {
 
             if (req.params.type == "1")
               orders = orders.filter(
-                (param) => param.customer.phoneNumber === req.params.value
+                (param) =>
+                  param.customer.phoneNumber === req.params.value ||
+                  param.customer.mobile === req.params.value
               );
 
             if (req.params.type == "2")
