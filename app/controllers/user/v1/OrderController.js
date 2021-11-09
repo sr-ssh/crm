@@ -1531,7 +1531,7 @@ module.exports = new class OrderController extends Controller {
 
             let orders = await this.model.Order.find(
               filter,
-              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile"
+              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
             )
               .populate([
                 { path: "notes.writtenBy", model: "User", select: "family" },
@@ -1551,7 +1551,9 @@ module.exports = new class OrderController extends Controller {
 
             if (req.params.type == "1")
               orders = orders.filter(
-                (param) => param.customer.phoneNumber === req.params.value
+                (param) =>
+                  param.customer.phoneNumber === req.params.value ||
+                  param.customer.mobile === req.params.value
               );
 
             if (req.params.type == "2")
@@ -1653,7 +1655,8 @@ module.exports = new class OrderController extends Controller {
                     seller: order.seller,
                     sellers: order.sellers,
                     status: order.status,
-                    support: true
+                    support: true,
+                    trackingCode: order.trackingCode
                 }
             })
 
