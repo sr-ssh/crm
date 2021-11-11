@@ -7,7 +7,7 @@ let Seller = new Schema({
     family: { type: String, required: true },
     phone: { type: String },
     mobile: { type: String, required: true, sparse: true },
-    company: { type: String, required: true, sparse: true },
+    company: { type: String },
     address: { type: String },
     order: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
     failOrders : { type: Number, default: 0 },
