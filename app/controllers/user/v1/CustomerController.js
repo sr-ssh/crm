@@ -357,16 +357,54 @@ module.exports = new class CustomerController extends Controller {
     async getCustomer(req, res) {
         try {
 
-            req.checkParams('mobile', 'please enter customer mobile').notEmpty().isNumeric();
+            req
+              .checkParams("phoneNumber", "please enter customer phoneNumber")
+              .notEmpty()
+              .isNumeric();
             if (this.showValidationErrors(req, res)) return;
 
-            let filter = { active: true, user: req.decodedData.user_employer, mobile: req.params.mobile };
+            let filter = {
+              active: true,
+              user: req.decodedData.user_employer,
+              $or: [
+                { mobile: req.params.phoneNumber },
+                { phoneNumber: req.params.phoneNumber },
+              ]
+            };
 
-            let customer = await this.model.Customer.findOne(filter, { family: 1, mobile: 1, birthday: 1, company: 1, lastAddress: 1 });
-            if (!customer)
-                return res.json({ success: false, message: 'مشتری موجود نیست', data: {} })
+            let customer = await this.model.Customer.findOne(filter, {
+              family: 1,
+              mobile: 1,
+              phoneNumber: 1,
+              company: 1,
+              lastAddress: 1,
+            });
 
-            return res.json({ success: true, message: 'اطلاعات مشتری با موفقیت ارسال شد', data: customer })
+            filter = {
+                active: true,
+                user: req.decodedData.user_employer,
+                $or: [
+                  { mobile: req.params.phoneNumber },
+                  { phone: req.params.phoneNumber },
+                ]
+            }
+            let seller = await this.model.Seller.findOne(filter, {
+              family: 1,
+              mobile: 1
+            });
+
+            if (!seller && !customer)
+              return res.json({
+                success: true,
+                message: "اطلاعاتی موجود نیست",
+                data: { status: false },
+              });
+
+            return res.json({
+              success: true,
+              message: "اطلاعات با موفقیت ارسال شد",
+              data: { customer: customer || false, seller: seller || false },
+            });
         }
         catch (err) {
             let handelError = new this.transforms.ErrorTransform(err)

@@ -62,30 +62,54 @@ router.get('/list/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:last
 router.get('/excel/:family/:mobile/:createdAtFrom/:createdAtTo/:lastBuyFrom/:lastBuyTo/:orderFrom/:orderTo/:totalFrom/:totalTo', CustomerController.getExcelCustomers.bind(CustomerController));
 
 /**
- * @api {get} /api/user/v1/customer/ get customer
+ * @api {get} /api/user/v1/customer get customer
  * @apiVersion 1.0.0
  * @apiName getCustomer
- * @apiDescription get customer .It gives you the customer information of the mobile you sent , if there is no customer with that mobile number it sends false
+ * @apiDescription get customer .It gives you the customer or seller information of the phone number you sent , if there is no customer or no seller with that phone number it sends false instead of customer or seller information
  * @apiGroup customer
- * @apiParam {Number} mobile customer mobile 
- * @apiSuccessExample {json} Success-Response:
+ * @apiParam {Number} phoneNumber customer or seller phone number 
+ * @apiSuccessExample {json} Success-Response 1 :
  * {
  *      success: true,
- *      message: "اطلاعات مشتری با موفقیت ارسال شد",
+ *      message: "اطلاعات با موفقیت ارسال شد",
  *      data: {
- *          family: "مصطفایی",
- *          mobile: "09625846122",
- *          birthday: "1990-12-18T23:59:00.798Z"
+ *          customer: {
+ *              _id: "617925b1c601dd6ba7185fa7"
+ *              family: "مصطفایی",
+ *              mobile: "09625846122",
+ *              phoneNumber: "09625846122",
+ *              lastAddress: "کلاهدوز ۴"
+ *          },
+ *          seller: {
+ *              _id: "6188d4ff675723337cff3d09"
+ *              family: "رضایی",
+ *              mobile: "09307580121"
+ *          }
+ *       }
+ * }
+ * @apiSuccessExample {json} Success-Response 2 :
+ * {
+ *      success: true,
+ *      message: "اطلاعات با موفقیت ارسال شد",
+ *      data: {
+ *          customer: {
+ *              _id: "617925b1c601dd6ba7185fa7"
+ *              family: "مصطفایی",
+ *              mobile: "09625846122",
+ *              phoneNumber: "09625846122",
+ *              lastAddress: "کلاهدوز ۴"
+ *          },
+ *          seller: false
  *       }
  * }
  * @apiErrorExample {json} Error-Response:
  * {
- *      success: false,
- *      message: "مشتری موجود نیست",
- *      data: {}
+ *      success: true,
+ *      message: "اطلاعاتی موجود نیست",
+ *      data: { status: false }
  * }
  */
-router.get('/:mobile', CustomerController.getCustomer.bind(CustomerController));
+router.get("/:phoneNumber", CustomerController.getCustomer.bind(CustomerController));
 
 
 

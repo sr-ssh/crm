@@ -166,11 +166,11 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/api/user/v1/customer/",
+    "url": "/api/user/v1/customer",
     "title": "get customer",
     "version": "1.0.0",
     "name": "getCustomer",
-    "description": "<p>get customer .It gives you the customer information of the mobile you sent , if there is no customer with that mobile number it sends false</p>",
+    "description": "<p>get customer .It gives you the customer or seller information of the phone number you sent , if there is no customer or no seller with that phone number it sends false instead of customer or seller information</p>",
     "group": "customer",
     "parameter": {
       "fields": {
@@ -179,8 +179,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": false,
-            "field": "mobile",
-            "description": "<p>customer mobile</p>"
+            "field": "phoneNumber",
+            "description": "<p>customer or seller phone number</p>"
           }
         ]
       }
@@ -188,8 +188,13 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"اطلاعات مشتری با موفقیت ارسال شد\",\n     data: {\n         family: \"مصطفایی\",\n         mobile: \"09625846122\",\n         birthday: \"1990-12-18T23:59:00.798Z\"\n      }\n}",
+          "title": "Success-Response 1 :",
+          "content": "{\n     success: true,\n     message: \"اطلاعات با موفقیت ارسال شد\",\n     data: {\n         customer: {\n             _id: \"617925b1c601dd6ba7185fa7\"\n             family: \"مصطفایی\",\n             mobile: \"09625846122\",\n             phoneNumber: \"09625846122\",\n             lastAddress: \"کلاهدوز ۴\"\n         },\n         seller: {\n             _id: \"6188d4ff675723337cff3d09\"\n             family: \"رضایی\",\n             mobile: \"09307580121\"\n         }\n      }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response 2 :",
+          "content": "{\n     success: true,\n     message: \"اطلاعات با موفقیت ارسال شد\",\n     data: {\n         customer: {\n             _id: \"617925b1c601dd6ba7185fa7\"\n             family: \"مصطفایی\",\n             mobile: \"09625846122\",\n             phoneNumber: \"09625846122\",\n             lastAddress: \"کلاهدوز ۴\"\n         },\n         seller: false\n      }\n}",
           "type": "json"
         }
       ]
@@ -198,7 +203,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n     success: false,\n     message: \"مشتری موجود نیست\",\n     data: {}\n}",
+          "content": "{\n     success: true,\n     message: \"اطلاعاتی موجود نیست\",\n     data: { status: false }\n}",
           "type": "json"
         }
       ]
@@ -1498,7 +1503,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"لینک اشتراک گذاری با موفقیت ارسال شد\",\n     data:{\n         orderId:\"5435435435865419685\",\n         keyLink:\"KTH7527AIC8QB\"    \n         } \n}",
+          "content": "{\n     success: true,\n     message: \"لینک اشتراک گذاری با موفقیت ارسال شد\",\n     data:{\n         orderId:\"5435435435865419685\",\n         keyLink:\"KTH7527AIC8QB\"\n         }\n}",
           "type": "json"
         }
       ]
@@ -1984,7 +1989,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"یادداشت ها با موفقیت ارسال شد\",\n     data: {    \n        isPrivate : true,\n        data:[...{\n           text: \"خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت\",\n           writtenBy: \"محمد جواد حیدری\",\n           createdAt: \"2021-06-01T06:54:01.691Z\"\n        }]\n     }\n}",
+          "content": "{\n     success: true,\n     message: \"یادداشت ها با موفقیت ارسال شد\",\n     data: {\n        isPrivate : true,\n        data:[...{\n           text: \"خواستار همکاری های بیشتر بود فقط کمی با قیمت مشکل داشت\",\n           writtenBy: \"محمد جواد حیدری\",\n           createdAt: \"2021-06-01T06:54:01.691Z\"\n        }]\n     }\n}",
           "type": "json"
         }
       ]
