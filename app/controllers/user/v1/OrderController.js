@@ -166,6 +166,7 @@ module.exports = new class OrderController extends Controller {
             let params = {
               family: req.body.customer.family,
               phoneNumber: req.body.customer.phoneNumber,
+              mobile: req.body.mobile,
               user: req.decodedData.user_employer,
               company: req.body.customer.company,
             };
