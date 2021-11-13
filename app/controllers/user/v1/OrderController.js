@@ -494,7 +494,6 @@ module.exports = new class OrderController extends Controller {
                       seller: order.seller,
                       sellers: order.sellers,
                       status: order.status,
-                      support: true,
                       trackingCode: order.trackingCode
                   }
               })
