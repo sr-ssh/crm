@@ -1613,14 +1613,13 @@ module.exports = new class OrderController extends Controller {
                 id: req.body.unsuccessfulReason.id,
                 text: req.body.unsuccessfulReason.text,
               },
-              'order.status': req.body.status
+              status: 4
             }
           };
           let order = await this.model.Order.findOneAndUpdate(filter, update);
 
           let employer = await this.model.User.findOne(
-            { _id: req.decodedData.user_employer },
-            "setting.order"
+            { _id: req.decodedData.user_employer }
           );
           if (!employer.setting.order.failureReasons) {
             employer.setting.order.failureReasons = [update.$set.failureReason];
@@ -1628,15 +1627,12 @@ module.exports = new class OrderController extends Controller {
             let index = employer.setting.order.failureReasons.findIndex(
               (reason) => reason.id == req.body.unsuccessfulReason.id
             );
-            if (index !== -1) {
-              employer.setting.order.failureReasons[index].text =
-                req.body.unsuccessfulReason.text;
-            } else {
-              employer.setting.order.failureReasons.push(update.failureReason);
+            if (index === -1) {
+              employer.setting.order.failureReasons.push(update.$set.failureReason);
             }
           }
-          employer.markModified('setting.order')
-          await order.save()
+          employer.markModified('setting.order.failureReasons')
+          await employer.save()
           
 
           filter = {

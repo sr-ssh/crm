@@ -398,10 +398,10 @@
             "phoneNumber": "09307580121"
         },
         "failSaleOpportunity": {
-            "orderId": "618cd0068a6eb5e63801bd6e",
+            "orderId": "618cce7f8a6eb5e63801bd6d",
             "unsuccessfulReason": {
-                "text": "مشتری از قیمت کالا ناراضی بود",
-                "id": 1
+                "text": "شماره اشتباه",
+                "id": 2
             }
         }
     }

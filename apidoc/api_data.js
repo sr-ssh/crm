@@ -1916,6 +1916,53 @@ define({ "api": [
     "groupTitle": "order"
   },
   {
+    "type": "delete",
+    "url": "/api/user/v1/order/opportunity",
+    "title": "fail sale opportunity",
+    "version": "1.0.0",
+    "name": "failSaleOpportunity",
+    "description": "<p>fail sale opportunity</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>order id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "unsuccessfulReason",
+            "description": "<p>order unsuccessful reason</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"orderId\": \"618cd0068a6eb5e63801bd6e\",\n    \"unsuccessfulReason\": {\n        \"text\": \"شماره اشتباه\",\n        \"id\": 2\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"وضعیت فرصت فروش با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
     "type": "post",
     "url": "/api/user/v1/order/financial/confirm",
     "title": "confirmation Financial",
