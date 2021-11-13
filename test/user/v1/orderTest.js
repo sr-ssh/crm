@@ -19,6 +19,7 @@ let order,
   financialConfirmation,
   support,
   addOrderPush,
+  editPriorityOrder,
   trackingCode;
 const axios = require('axios').default;
 const path = require('path')
@@ -50,6 +51,7 @@ describe(`${sectionName}`, () => {
         getOrderDetails = appConfig.test.getOrderDetails
         financialConfirmation = appConfig.test.financialConfirmation;
         addOrderPush = appConfig.test.addOrderPush;
+        editPriorityOrder = appConfig.test.editPriorityOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -270,6 +272,15 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
+        it('check edit priority order  ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/edit/priority`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editPriorityOrder);
+            res.should.have.status(200);
+        });
     });
 
     after(async () => {

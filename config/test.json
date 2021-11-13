@@ -396,6 +396,10 @@
         },
         "getCustomer": {
             "phoneNumber": "09307580121"
+        },
+        "editPriorityOrder": {
+            "orderId": "6187f6e9be9b9ae3a887d1fe",
+            "priority": 5
         }
     }
 }

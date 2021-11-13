@@ -649,4 +649,35 @@ router.get(
   OrderController.getOrders.bind(OrderController)
 );
 
+
+
+/**
+ * @api {put} /api/user/v1/order/edit/priority edit priority order
+ * @apiVersion 1.0.0
+ * @apiName editPriorityOrder
+ * @apiDescription edit Priority Order : all params are necessary.
+ * @apiGroup order
+ * @apiParam {varchar} orderId  orderId
+ * @apiParam {int} priority  0 -> default , 1 -> veryLow , 2 -> low , 3 -> medium  , 4 -> hight  , 5 -> veryHight
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     orderId : "60b72a70e353f0385c2fe5af",
+ *     priority : 1
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "اولویت فرصت فروش با موفقیت تغییر کرد",
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "خطا در ویرایش اولویت فرصت فروش"
+ * }
+ */
+ router.put(
+  "/edit/priority",
+  OrderController.editPriority.bind(OrderController)
+);
+
 module.exports = router;

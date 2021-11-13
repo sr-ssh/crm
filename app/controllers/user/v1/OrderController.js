@@ -1581,6 +1581,38 @@ module.exports = new class OrderController extends Controller {
         }
     }
 
-}
+    async editPriority(req, res) {
+      try {
+
+          req.checkBody('orderId', 'please set orderId').notEmpty().isMongoId();
+          req.checkBody('priority', 'please set order priority').notEmpty().isIn[0, 1, 2, 3, 4, 5];
+          if (this.showValidationErrors(req, res)) return;
+
+
+          await this.model.Order.findOneAndUpdate({ _id : req.body.orderId }, { $set:{ priority: req.body.priority }} , {new: true}, (err, doc) => {
+            if (err) {
+                throw Error(err)
+            }
+            if(doc.priority == req.body.priority ){
+              return res.json({ success: true, message: 'اولویت فرصت فروش با موفقیت تغییر کرد'})
+            }else{
+              return res.json({ success: false, message: 'خطا در ویرایش اولویت فرصت فروش'})
+            }
+        });
+
+      }
+      catch (err) {
+          let handelError = new this.transforms.ErrorTransform(err)
+              .parent(this.controllerTag)
+              .class(TAG)
+              .method('editPriority')
+              .inputParams(req.body)
+              .call();
+
+          if (!res.headersSent) return res.status(500).json(handelError);
+      }
+  }
+
+    }
 
 
