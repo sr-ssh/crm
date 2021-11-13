@@ -223,6 +223,7 @@ module.exports = new class OrderController extends Controller {
               provider: req.decodedData.user_employer,
               financialApproval: { status: false },
               status: 3,
+              priority : req.body.priority
             };
 
             if(req.body.mobile) params.mobile = req.body.mobile
@@ -397,7 +398,7 @@ module.exports = new class OrderController extends Controller {
 
             let orders = await this.model.Order.find(
                 filter,
-                "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
+                "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode priority"
               )
                 .populate([
                   { path: "notes.writtenBy", model: "User", select: "family" },
@@ -495,13 +496,17 @@ module.exports = new class OrderController extends Controller {
                       sellers: order.sellers,
                       status: order.status,
                       support: true,
-                      trackingCode: order.trackingCode
+                      trackingCode: order.trackingCode,
+                      priority: order.priority
                   }
+              }).sort((obj1, obj2) => {
+                return obj2.priority - obj1.priority;
               })
-  
-  
 
 
+
+
+  
             return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: orders })
 
 
