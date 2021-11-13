@@ -4,6 +4,8 @@ const path = require('path')
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = 'v1_Order';
 const axios = require('axios').default;
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = new class OrderController extends Controller {
 
@@ -340,131 +342,6 @@ module.exports = new class OrderController extends Controller {
 
     async getOrders(req, res) {
         try {
-            req.checkParams('customerName', 'please set customerName').notEmpty();
-            req.checkParams('customerMobile', 'please set customerMobile').notEmpty();
-            req.checkParams('startDate', 'please set startDate').notEmpty().isISO8601();
-            req.checkParams('endDate', 'please set endDate').notEmpty().isISO8601();
-
-            if (this.showValidationErrors(req, res)) return;
-
-            const TIME_FLAG = "1900-01-01T05:42:13.845Z";
-
-            if (req.params.endDate !== TIME_FLAG) {
-                let nextDay = new Date(req.params.endDate).setDate(new Date(req.params.endDate).getDate() + 1);
-                req.params.endDate = nextDay
-            }
-
-            let filter;
-            if (req.params.startDate != TIME_FLAG && req.params.endDate === TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $gt: req.params.startDate } }] }
-            if (req.params.startDate === TIME_FLAG && req.params.endDate != TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }] }
-            if (req.params.startDate === TIME_FLAG && req.params.endDate === TIME_FLAG)
-                filter = { provider: req.decodedData.user_employer }
-            if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
-
-            let orders = await this.model.Order.find(filter).sort({ createdAt: -1 });
-
-            let params = [];
-            for (let index = 0; index < orders.length; index++) {
-                let param = {
-                    id: orders[index]._id,
-                    active: orders[index].active,
-                    status: orders[index].status,
-                    products: orders[index].products,
-                    customer: orders[index].customer,
-                    address: orders[index].address,
-                    readyTime: orders[index].readyTime,
-                    createdAt: orders[index].createdAt,
-                    updatedAt: orders[index].updatedAt,
-                    employee: orders[index].employee,
-                    description: orders[index].description
-                }
-                params.push(param)
-            }
-
-            let customers = []
-            for (let index = 0; index < orders.length; index++) {
-                customers.push(orders[index].customer)
-            }
-
-            filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, createdAt: 1, nationalCard: 1, financialCode: 1, postalCode: 1, registerNo: 1 })
-
-
-            let customerInfo;
-            for (let index = 0; index < orders.length; index++) {
-                customerInfo = customers.find(user => user._id.toString() == orders[index].customer)
-                params[index].customer = customerInfo;
-            }
-
-
-            let employees = []
-            for (let index = 0; index < orders.length; index++) {
-                employees.push(orders[index].employee)
-            }
-
-            filter = { _id: { $in: employees } }
-            employees = await this.model.User.find(filter, { _id: 1, family: 1 })
-
-            let employeeInfo;
-            for (let index = 0; index < orders.length; index++) {
-                employeeInfo = employees.find(user => user._id.toString() == orders[index].employee)
-                params[index].employee = employeeInfo;
-            }
-
-
-            if (req.params.customerMobile !== "0")
-                params = params.filter(param => param.customer.mobile === req.params.customerMobile)
-
-            if (req.params.customerName !== " ")
-                params = params.filter(param => {
-                    if (param.customer) {
-                        let re = new RegExp(req.params.customerName, "i");
-                        let find = param.customer.family.search(re);
-                        return find !== -1;
-                    }
-                })
-
-            let products = []
-            for (let index = 0; index < params.length; index++) {
-                for (let j = 0; j < params[index].products.length; j++) {
-                    products.push(params[index].products[j]._id)
-                }
-            }
-            filter = { _id: { $in: products } }
-            products = await this.model.Product.find(filter, { _id: 1, name: 1 })
-
-
-            for (let index = 0; index < params.length; index++) {
-                let productInfo;
-                for (let j = 0; j < params[index].products.length; j++) {
-                    productInfo = products.find(product => product._id.toString() === params[index].products[j]._id.toString())
-                    if (productInfo)
-                        params[index].products[j].name = productInfo.name;
-                }
-            }
-
-
-
-            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: params })
-        }
-        catch (err) {
-            let handelError = new this.transforms.ErrorTransform(err)
-                .parent(this.controllerTag)
-                .class(TAG)
-                .method('getOrders')
-                .inputParams(req.params)
-                .call();
-
-            if (!res.headersSent) return res.status(500).json(handelError);
-        }
-    }
-
-
-    async getOrdersV1(req, res) {
-        try {
 
             req.checkParams('status', 'please set status').exists();
             req.checkParams('customerName', 'please set customerName').notEmpty();
@@ -483,169 +360,149 @@ module.exports = new class OrderController extends Controller {
                 req.params.endDate = nextDay
             }
 
-            let filter;
-
-            if (req.params.startDate != TIME_FLAG && req.params.endDate === TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $gt: req.params.startDate } }] }
-            if (req.params.startDate === TIME_FLAG && req.params.endDate != TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }] }
-            if (req.params.startDate === TIME_FLAG && req.params.endDate === TIME_FLAG)
-                filter = { provider: req.decodedData.user_employer }
-            if (req.params.startDate != TIME_FLAG && req.params.endDate != TIME_FLAG)
-                filter = { $and: [{ provider: req.decodedData.user_employer }, { createdAt: { $lt: req.params.endDate } }, { createdAt: { $gt: req.params.startDate } }] }
-
-            if (req.params.status == 3){
-                if(permission.permission.getAllSaleOpprotunity)
-                    filter = { status: 3, ...filter };
-                else
-                    filter = { $and:[  {...filter, status: 3}, { $or: [{'sellers.active': { $ne: true }},{sellers: {id: req.decodedData.user_id, active: true}}]  }] };
+            let filter = { provider: ObjectId(req.decodedData.user_employer) }
+            if(req.params.endDate !== TIME_FLAG){
+                if(!filter.$and)
+                    filter.$and = []
+                filter.$and.push({ createdAt: { $lt: req.params.endDate } })
             }
-                
-            else
-                filter = { status: 0, ...filter };
-
-            let orders = await this.model.Order.find(filter).populate([
-                { path: 'notes.writtenBy', model: 'User', select: 'family' },
-                { path: 'sellers.id', model: 'User', select: 'family' }
-            ]).sort({ createdAt: -1 });
-
-        
-            // getOrderParams_V1.status
-            let params = [];
-            for (let index = 0; index < orders.length; index++) {
-                let param = {
-                    id: orders[index]._id,
-                    active: orders[index].active,
-                    status: orders[index].status,
-                    products: orders[index].products,
-                    notes: orders[index].notes,
-                    customer: orders[index].customer,
-                    address: orders[index].address,
-                    readyTime: orders[index].readyTime,
-                    createdAt: orders[index].createdAt,
-                    updatedAt: orders[index].updatedAt,
-                    employee: orders[index].employee,
-                    financialApproval: orders[index].financialApproval,
-                    sellers: orders[index].sellers
-                }
-                params.push(param)
-            }
-
-            let customers = []
-            for (let index = 0; index < orders.length; index++) {
-                customers.push(orders[index].customer)
-            }
-
-            filter = { _id: { $in: customers } }
-            customers = await this.model.Customer.find(filter, { _id: 1, family: 1, mobile: 1, company: 1, nationalCard: 1, financialCode: 1, postalCode: 1, registerNo: 1, createdAt: 1 })
-
-            let customerInfo;
-            for (let index = 0; index < orders.length; index++) {
-                customerInfo = customers.find(user => user._id.toString() == orders[index].customer)
-                params[index].customer = customerInfo;
+            if(req.params.startDate !== TIME_FLAG){
+                if(!filter.$and)
+                    filter.$and = []
+                filter.$and.push({ createdAt: { $gt: req.params.startDate } })
             }
 
 
-            let employees = []
-            for (let index = 0; index < orders.length; index++) {
-                employees.push(orders[index].employee)
-            }
+            if (req.params.status == 3) {
+              if (permission.permission.getAllSaleOpprotunity)
+                filter = { status: 3, ...filter };
+              else
+                filter = {
+                  $and: [
+                    { ...filter, status: 3 },
+                    {
+                      $or: [
+                        { "sellers.active": { $ne: true } },
+                        {
+                          sellers: {
+                            id: req.decodedData.user_id,
+                            active: true,
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                };
+            } else filter = { status: 0, ...filter };
 
-            filter = { _id: { $in: employees } }
-            employees = await this.model.User.find(filter, { _id: 1, family: 1 })
+            let orders = await this.model.Order.find(
+                filter,
+                "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
+              )
+                .populate([
+                  { path: "notes.writtenBy", model: "User", select: "family" },
+                  { path: "sellers.id", model: "User", select: "family" },
+                  { path: "products._id", model: "Product", select: "name" },
+                  {
+                    path: "financialApproval.acceptedBy",
+                    model: "User",
+                    select: "family",
+                  },
+                ])
+                .populate("seller", 'family mobile')
+                .populate("customer", 'mobile family company phoneNumber')
+                .populate("employee", 'family')
+                .sort({ createdAt: -1 })
+                .lean();
 
-            let employeeInfo;
-            for (let index = 0; index < orders.length; index++) {
-                employeeInfo = employees.find(user => user._id.toString() == orders[index].employee)
-                params[index].employee = employeeInfo;
-            }
-
-
-            if (req.params.customerMobile !== "0")
-                params = params.filter(param => param.customer.mobile === req.params.customerMobile)
+                if (req.params.customerMobile !== "0")
+                orders = orders.filter(param => param.customer.phoneNumber === req.params.customerMobile ||
+                    param.customer.mobile === req.params.customerMobile)
 
             if (req.params.customerName !== " ")
-                params = params.filter(param => {
+            orders = orders.filter(param => {
                     if (param.customer) {
                         let re = new RegExp(req.params.customerName, "i");
                         let find = param.customer.family.search(re);
                         return find !== -1;
                     }
                 })
-
-
-
-            let products = []
-            for (let index = 0; index < params.length; index++) {
-                for (let j = 0; j < params[index].products.length; j++) {
-                    products.push(params[index].products[j]._id)
-                }
-            }
-            filter = { _id: { $in: products } }
-            products = await this.model.Product.find(filter, { _id: 1, name: 1 })
-
-
-            for (let index = 0; index < params.length; index++) {
-                let productInfo;
-                for (let j = 0; j < params[index].products.length; j++) {
-                    productInfo = products.find(product => product._id.toString() === params[index].products[j]._id.toString())
-                    if (productInfo)
-                        params[index].products[j].name = productInfo.name;
-                }
-            }
-
-            let financialApproval = []
-            for (let index = 0; index < params.length; index++) {
-                if (params[index].financialApproval.status !== 0)
-                    financialApproval.push(params[index].financialApproval.acceptedBy)
-                else
-                    financialApproval.push(null)
-
-            }
-            filter = { _id: { $in: financialApproval } }
-            financialApproval = await this.model.User.find(filter, { _id: 1, family: 1 })
-
-            for (let index = 0; index < params.length; index++) {
-                let financialApprovalInfo;
-                if (params[index].financialApproval.status !== 0) {
-                    let data = financialApproval.filter(item => item._id.toString() === params[index].financialApproval.acceptedBy)
-                    if (data.length > 0)
-                        financialApprovalInfo = data[0]
-                    if (financialApprovalInfo)
-                        params[index].financialApproval.acceptedBy = financialApprovalInfo.family
-                }
-            }
+  
             let paramsNote;
             let dataNote;
             let isPrivate;
 
-            for (let noteIndex = 0; noteIndex < params.length; noteIndex++) {
-                if (params[noteIndex].notes.length > 0) {
-                    dataNote = params[noteIndex].notes.filter(item => item.private === false)
-                    paramsNote = params[noteIndex].notes.filter(item => (item.private === true && item.writtenBy._id.toString() === req.decodedData.user_id))
-
-                    if (paramsNote.length > 0) {
-                        isPrivate = true;
-                        paramsNote = paramsNote.reduce((result, item) => {
-                            result = item;
-                            dataNote.push(result)
-                        }, {});
-                    } else {
-                        isPrivate = false;
-                    }
-
-                    dataNote.map(item => {
-                        item.writtenBy = item.writtenBy?.family
-                        return item
-                    })
-                    params[noteIndex].notes = { Notes: dataNote, isPrivate: isPrivate };
+            for (let noteIndex = 0; noteIndex < orders.length; noteIndex++) {
+                if (orders[noteIndex].notes.length > 0) {
+                  dataNote = orders[noteIndex].notes.filter(
+                    (item) => item.private === false
+                  );
+                  paramsNote = orders[noteIndex].notes.filter(
+                    (item) =>
+                      item.private === true &&
+                      item.writtenBy._id.toString() === req.decodedData.user_id
+                  );
+  
+                  if (paramsNote.length > 0) {
+                    isPrivate = true;
+                    paramsNote = paramsNote.reduce((result, item) => {
+                      result = item;
+                      dataNote.push(result);
+                    }, {});
+                  } else {
+                    isPrivate = false;
+                  }
+  
+                  dataNote.map((item) => {
+                    item.writtenBy = item.writtenBy?.family;
+                    return item;
+                  });
+                  orders[noteIndex].notes = {
+                    Notes: dataNote,
+                    isPrivate: isPrivate,
+                  };
                 }
+              }
+  
+  
+              // edit data to be exactly like getOrders
+              orders = orders.map(order => {
+                  return {
+                      id: order._id,
+                      active: order.active,
+                      address: order.address,
+                      products: order.products.map(product => {
+                        if(product._id)return {
+                              _id: product._id._id,
+                              name: product._id.name,
+                              quantity: product.quantity,
+                              sellingPrice: product.sellingPrice
+                          }
+                        return{}
+                      }),
+                      customer: order.customer,
+                      financialApproval: {
+                          status: order.financialApproval.status,
+                          acceptedAt: order.financialApproval.acceptedAt && order.financialApproval.acceptedAt,
+                          acceptedBy: order.financialApproval.acceptedBy && order.financialApproval.acceptedBy.family
+                      },
+                      mobile: order.mobile,
+                      notes: order.notes,
+                      readyTime: order.readyTime,
+                      createdAt: order.createdAt,
+                      updatedAt: order.updatedAt,
+                      seller: order.seller,
+                      sellers: order.sellers,
+                      status: order.status,
+                      support: true,
+                      trackingCode: order.trackingCode
+                  }
+              })
+  
+  
 
-            }
 
-
-
-            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: params })
+            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: orders })
 
 
         }
@@ -653,7 +510,7 @@ module.exports = new class OrderController extends Controller {
             let handelError = new this.transforms.ErrorTransform(err)
                 .parent(this.controllerTag)
                 .class(TAG)
-                .method('getOrdersV1')
+                .method('getOrders')
                 .inputParams(req.params)
                 .call();
 

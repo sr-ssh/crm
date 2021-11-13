@@ -645,8 +645,8 @@ router.get(
  * }
  */
 router.get(
-  "/v1/:status/:customerName/:customerMobile/:startDate/:endDate",
-  OrderController.getOrdersV1.bind(OrderController)
+  "/:status/:customerName/:customerMobile/:startDate/:endDate",
+  OrderController.getOrders.bind(OrderController)
 );
 
 module.exports = router;

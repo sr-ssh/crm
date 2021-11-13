@@ -74,11 +74,17 @@ describe(`${sectionName}`, () => {
 
         it('check get orders', async () => {
             const res = await chai
-                .request(server)
-                .get(`${baseRoute}/${encodeURI(getOrderParams.customerName)}/09307580142/${getOrderParams.startDate}/${getOrderParams.endDate}`)
-                .set('Authorization', accessToken)
-                .set('idToken', idToken)
-                .send();
+              .request(server)
+              .get(
+                `${baseRoute}/${encodeURI(
+                  getOrderParams.status
+                )}/${encodeURI(getOrderParams.customerName)}/${encodeURI(
+                  getOrderParams.customerMobile
+                )}/${getOrderParams.startDate}/${getOrderParams.endDate}`
+              )
+              .set("Authorization", accessToken)
+              .set("idToken", idToken)
+              .send();
             res.should.have.status(200);
         });
 
