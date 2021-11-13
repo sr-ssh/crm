@@ -523,7 +523,7 @@ module.exports = new class OrderController extends Controller {
 
             req.checkBody('orderId', 'please set order id').notEmpty();
             req.checkBody('status', 'please set order status').notEmpty().isIn[0, 1, 2, 4];
-            // 0 -> successfull order, 4 -> fail sale opprtunity, 2 -> cancel order 
+            // 0 -> successful order, 4 -> fail sale opprtunity, 2 -> cancel order 
             if (this.showValidationErrors(req, res)) return;
 
             console.time('test editOrderStatus')
@@ -1575,7 +1575,97 @@ module.exports = new class OrderController extends Controller {
             if (!res.headersSent) return res.status(500).json(handelError);
         }
     }
+    
+    async failSaleOpportunity(req, res) {
+      try {
+
+          req.checkBody("orderId", "please set order id").notEmpty();
+          req
+            .checkBody(
+              "unsuccessfulReason",
+              "please set order unsuccessfulReason"
+            )
+            .notEmpty();
+          req
+            .checkBody(
+              "unsuccessfulReason.text",
+              "please set order unsuccessfulReason text"
+            )
+            .notEmpty()
+            .isString();
+          req
+            .checkBody(
+              "unsuccessfulReason.id",
+              "please set order unsuccessfulReason id"
+            )
+            .notEmpty()
+            .isNumeric();
+          if (this.showValidationErrors(req, res)) return;
+
+          let filter = {
+            active: true,
+            _id: req.body.orderId,
+            provider: req.decodedData.user_employer,
+          };
+          let update = {
+            $set: {
+              failureReason: {
+                id: req.body.unsuccessfulReason.id,
+                text: req.body.unsuccessfulReason.text,
+              },
+              'order.status': req.body.status
+            }
+          };
+          let order = await this.model.Order.findOneAndUpdate(filter, update);
+
+          let employer = await this.model.User.findOne(
+            { _id: req.decodedData.user_employer },
+            "setting.order"
+          );
+          if (!employer.setting.order.failureReasons) {
+            employer.setting.order.failureReasons = [update.$set.failureReason];
+          } else {
+            let index = employer.setting.order.failureReasons.findIndex(
+              (reason) => reason.id == req.body.unsuccessfulReason.id
+            );
+            if (index !== -1) {
+              employer.setting.order.failureReasons[index].text =
+                req.body.unsuccessfulReason.text;
+            } else {
+              employer.setting.order.failureReasons.push(update.failureReason);
+            }
+          }
+          employer.markModified('setting.order')
+          await order.save()
+          
+
+          filter = {
+            active: true,
+            _id: order.customer,
+            user: req.decodedData.user_employer,
+          };
+          update = { $inc: { failOrders: 1 }}
+          await this.model.Customer.findOneAndUpdate(filter, update);
+
+          res.json({
+            success: true,
+            message: "وضعیت فرصت فروش با موفقیت ویرایش شد",
+          });
+      }
+      catch (err) {
+          let handelError = new this.transforms.ErrorTransform(err)
+              .parent(this.controllerTag)
+              .class(TAG)
+              .method('failSaleOpportunity')
+              .inputParams(req.body)
+              .call();
+
+          if (!res.headersSent) return res.status(500).json(handelError);
+      }
+  }
+
+
+
+
 
 }
-
-

@@ -190,6 +190,32 @@ router.put("/product", OrderController.editProductOrder.bind(OrderController));
 router.put("/status", OrderController.editOrderStatus.bind(OrderController));
 
 /**
+* @api {post} /api/user/v1/order/financial/confirm  confirmation Financial 
+* @apiVersion 1.0.0
+* @apiName financialApproval
+* @apiDescription Financial confirmation of the order.for 'status' enter 1 for approving and 2 for dening
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiParam {Number} status order confirm financial status [1, 2]
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "سفارش مورد تایید مالی قرار گرفت", 
+    data: { status: true } 
+* }
+* @apiErrorExample {json} Error-Response:
+* {
+*      success: true,
+*      message: "خطا در تایید مالی سفارش",
+    data: { status: false } 
+* }
+*/
+router.delete(
+  "/opportunity",
+  OrderController.failSaleOpportunity.bind(OrderController)
+);
+
+/**
  * @api {put} /api/user/v1/order/notes add Notes to order
  * @apiVersion 1.0.0
  * @apiName addNotes

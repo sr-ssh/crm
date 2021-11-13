@@ -19,7 +19,8 @@ let order,
   financialConfirmation,
   support,
   addOrderPush,
-  trackingCode;
+  trackingCode,
+  failSaleOpportunity;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -29,7 +30,8 @@ describe(`${sectionName}`, () => {
 
 
     before((done) => {
-        console.log('Waiting to ensure database connection stablished ');
+        console.log('Waiting to ensure database connection established ');
+        failSaleOpportunity = appConfig.test.failSaleOpportunity;
         trackingCode = appConfig.test.trackingCode;
         support = appConfig.test.support;
         order = appConfig.test.order;
@@ -267,6 +269,20 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(financialConfirmation);
+            res.should.have.status(200);
+        });
+
+    });
+
+    describe('Check Delete Apis', () => {
+
+        it('check fail sale opportunity ', async () => {
+            const res = await chai
+                .request(server)
+                .delete(`${baseRoute}/opportunity`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(failSaleOpportunity);
             res.should.have.status(200);
         });
 
