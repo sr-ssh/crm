@@ -334,6 +334,15 @@ module.exports = new (class OrderController extends Controller {
         .isISO8601();
       req.checkParams("endDate", "please set endDate").notEmpty().isISO8601();
 
+      req
+        .checkParams("startTrackingTime", "please set startTrackingTime")
+        .notEmpty()
+        .isISO8601();
+      req
+        .checkParams("endTrackingTime", "please set endTrackingTime")
+        .notEmpty()
+        .isISO8601();
+
       if (this.showValidationErrors(req, res)) return;
 
       const TIME_FLAG = "1900-01-01T05:42:13.845Z";
@@ -350,6 +359,13 @@ module.exports = new (class OrderController extends Controller {
         req.params.endDate = nextDay;
       }
 
+      if (req.params.endTrackingTime !== TIME_FLAG) {
+        let nextDay = new Date(req.params.endTrackingTime).setDate(
+          new Date(req.params.endTrackingTime).getDate() + 1
+        );
+        req.params.endTrackingTime = nextDay;
+      }
+
       let filter = { provider: ObjectId(req.decodedData.user_employer) };
       if (req.params.endDate !== TIME_FLAG) {
         if (!filter.$and) filter.$and = [];
@@ -358,6 +374,14 @@ module.exports = new (class OrderController extends Controller {
       if (req.params.startDate !== TIME_FLAG) {
         if (!filter.$and) filter.$and = [];
         filter.$and.push({ createdAt: { $gt: req.params.startDate } });
+      }
+      if (req.params.startTrackingTime !== TIME_FLAG) {
+        if (!filter.$and) filter.$and = [];
+        filter.$and.push({ trackingTime: { $gt: req.params.startTrackingTime } });
+      }
+      if (req.params.endTrackingTime !== TIME_FLAG) {
+        if (!filter.$and) filter.$and = [];
+        filter.$and.push({ trackingTime: { $lt: req.params.endTrackingTime } });
       }
 
       if (req.params.status == 3) {
@@ -1896,12 +1920,15 @@ module.exports = new (class OrderController extends Controller {
   async editTrackingTime(req, res) {
     try {
       req.checkBody("orderId", "please set orderId").notEmpty().isMongoId();
-      req.checkBody("trackingTime", "please set order trackingTime").notEmpty().isISO8601()
+      req
+        .checkBody("trackingTime", "please set order trackingTime")
+        .notEmpty()
+        .isISO8601();
       if (this.showValidationErrors(req, res)) return;
 
       await this.model.Order.findOneAndUpdate(
         { _id: req.body.orderId },
-        { $set: { trackingTime : req.body.trackingTime } },
+        { $set: { trackingTime: req.body.trackingTime } },
         { new: true },
         (err, doc) => {
           if (err) {

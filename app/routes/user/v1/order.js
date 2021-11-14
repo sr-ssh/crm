@@ -71,23 +71,22 @@ const uploadMiddleware = require("../../middleware/upload");
  */
 router.post("/", OrderController.addOrder.bind(OrderController));
 
-
 /**
-* @api {get} /api/user/v1/order/failurereasons get failure reasons
-* @apiVersion 1.0.0
-* @apiName getFailureReasons
-* @apiDescription get failure reasons
-* @apiGroup order
-* @apiSuccessExample {json} Success-Response:
-* {
-*      success: true,
-*      message: "دلایل ناموفق فرصت فروش ارسال شد",
-*      data: [...{
-*         id: 1, 
-*         text: "مشتری از قیمت کالا ناراضی بود"
-*      }]
-* }
-*/
+ * @api {get} /api/user/v1/order/failurereasons get failure reasons
+ * @apiVersion 1.0.0
+ * @apiName getFailureReasons
+ * @apiDescription get failure reasons
+ * @apiGroup order
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "دلایل ناموفق فرصت فروش ارسال شد",
+ *      data: [...{
+ *         id: 1,
+ *         text: "مشتری از قیمت کالا ناراضی بود"
+ *      }]
+ * }
+ */
 router.get(
   "/failurereasons",
   OrderController.getFailureReasons.bind(OrderController)
@@ -629,6 +628,8 @@ router.get(
  * @apiParam {varchar} customerMobile customer mobile number ("0")
  * @apiParam {varchar} startDate get orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} endTrackingTime get tracking time orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -654,7 +655,7 @@ router.get(
  * }
  */
 router.get(
-  "/:customerName/:customerMobile/:startDate/:endDate",
+  "/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime",
   OrderController.getOrders.bind(OrderController)
 );
 
@@ -698,8 +699,6 @@ router.get(
   OrderController.getOrders.bind(OrderController)
 );
 
-
-
 /**
  * @api {put} /api/user/v1/order/edit/priority edit priority order
  * @apiVersion 1.0.0
@@ -724,12 +723,10 @@ router.get(
  *      message: "خطا در ویرایش اولویت فرصت فروش"
  * }
  */
- router.put(
+router.put(
   "/edit/priority",
   OrderController.editPriority.bind(OrderController)
 );
-
-
 
 /**
  * @api {put} /api/user/v1/order/edit/trackingTime edit Tracking Time order
@@ -755,10 +752,9 @@ router.get(
  *      message: "خطا در ویرایش تاریخ پیگیری سفارش"
  * }
  */
- router.put(
+router.put(
   "/edit/trackingTime",
   OrderController.editTrackingTime.bind(OrderController)
 );
-
 
 module.exports = router;
