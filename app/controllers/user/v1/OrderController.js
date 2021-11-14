@@ -499,10 +499,25 @@ module.exports = new class OrderController extends Controller {
                   }
               })
   
-  
+            
+            // get orders failure reasons
+            let reasons = await this.model.User.findOne(
+              { _id: req.decodedData.user_employer },
+              "setting.order"
+            );
 
+            let data = {
+              orders
+            };
+            if(req.params.status == 3)
+              data.failureReasons = reasons.setting.order.failureReasons || []
+            
 
-            return res.json({ success: true, message: 'سفارشات با موفقیت ارسال شد', data: orders })
+            return res.json({
+              success: true,
+              message: "سفارشات با موفقیت ارسال شد",
+              data: data,
+            });
 
 
         }
