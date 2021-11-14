@@ -8,7 +8,6 @@ let server = require('../../../server');
 let appConfig = require('config');
 let order,
   user,
-  userMJH,
   getOrderParams,
   editOrderStatus,
   deliverySms,
@@ -36,7 +35,7 @@ describe(`${sectionName}`, () => {
         trackingCode = appConfig.test.trackingCode;
         support = appConfig.test.support;
         order = appConfig.test.order;
-        user = appConfig.test.userMJH;
+        user = appConfig.test.user;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;

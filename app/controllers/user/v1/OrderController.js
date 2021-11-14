@@ -342,200 +342,196 @@ module.exports = new class OrderController extends Controller {
 
     async getOrders(req, res) {
         try {
+          req.checkParams("status", "please set status").exists();
+          req.checkParams("customerName", "please set customerName").notEmpty();
+          req
+            .checkParams("customerMobile", "please set customerMobile")
+            .notEmpty();
+          req
+            .checkParams("startDate", "please set startDate")
+            .notEmpty()
+            .isISO8601();
+          req
+            .checkParams("endDate", "please set endDate")
+            .notEmpty()
+            .isISO8601();
 
-            req.checkParams("status", "please set status").exists();
-            req
-              .checkParams("customerName", "please set customerName")
-              .notEmpty();
-            req
-              .checkParams("customerMobile", "please set customerMobile")
-              .notEmpty();
-            req
-              .checkParams("startDate", "please set startDate")
-              .notEmpty()
-              .isISO8601();
-            req
-              .checkParams("endDate", "please set endDate")
-              .notEmpty()
-              .isISO8601();
+          if (this.showValidationErrors(req, res)) return;
 
-            if (this.showValidationErrors(req, res)) return;
+          const TIME_FLAG = "1900-01-01T05:42:13.845Z";
 
-            const TIME_FLAG = "1900-01-01T05:42:13.845Z";
+          let permission = await this.model.User.findOne(
+            { _id: req.decodedData.user_id },
+            "permission"
+          );
 
-            let permission = await this.model.User.findOne(
-              { _id: req.decodedData.user_id },
-              "permission"
+          if (req.params.endDate !== TIME_FLAG) {
+            let nextDay = new Date(req.params.endDate).setDate(
+              new Date(req.params.endDate).getDate() + 1
             );
+            req.params.endDate = nextDay;
+          }
 
-            if (req.params.endDate !== TIME_FLAG) {
-              let nextDay = new Date(req.params.endDate).setDate(
-                new Date(req.params.endDate).getDate() + 1
-              );
-              req.params.endDate = nextDay;
-            }
+          let filter = { provider: ObjectId(req.decodedData.user_employer) };
+          if (req.params.endDate !== TIME_FLAG) {
+            if (!filter.$and) filter.$and = [];
+            filter.$and.push({ createdAt: { $lt: req.params.endDate } });
+          }
+          if (req.params.startDate !== TIME_FLAG) {
+            if (!filter.$and) filter.$and = [];
+            filter.$and.push({ createdAt: { $gt: req.params.startDate } });
+          }
 
-            let filter = { provider: ObjectId(req.decodedData.user_employer) };
-            if (req.params.endDate !== TIME_FLAG) {
-              if (!filter.$and) filter.$and = [];
-              filter.$and.push({ createdAt: { $lt: req.params.endDate } });
-            }
-            if (req.params.startDate !== TIME_FLAG) {
-              if (!filter.$and) filter.$and = [];
-              filter.$and.push({ createdAt: { $gt: req.params.startDate } });
-            }
-
-            if (req.params.status == 3) {
-              if (permission.permission.getAllSaleOpprotunity)
-                filter = { status: 3, ...filter };
-              else
-                filter = {
-                  $and: [
-                    { ...filter, status: 3 },
-                    {
-                      $or: [
-                        { "sellers.active": { $ne: true } },
-                        {
-                          sellers: {
-                            id: req.decodedData.user_id,
-                            active: true,
-                          },
+          if (req.params.status == 3) {
+            if (permission.permission.getAllSaleOpprotunity)
+              filter = { status: 3, ...filter };
+            else
+              filter = {
+                $and: [
+                  { ...filter, status: 3 },
+                  {
+                    $or: [
+                      { "sellers.active": { $ne: true } },
+                      {
+                        sellers: {
+                          id: req.decodedData.user_id,
+                          active: true,
                         },
-                      ],
-                    },
-                  ],
-                };
-            } else filter = { status: 0, ...filter };
-
-            let orders = await this.model.Order.find(
-              filter,
-              "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
-            )
-              .populate([
-                { path: "notes.writtenBy", model: "User", select: "family" },
-                { path: "sellers.id", model: "User", select: "family" },
-                { path: "products._id", model: "Product", select: "name" },
-                {
-                  path: "financialApproval.acceptedBy",
-                  model: "User",
-                  select: "family",
-                },
-              ])
-              .populate("seller", "family mobile")
-              .populate("customer", "mobile family company phoneNumber")
-              .populate("employee", "family")
-              .sort({ createdAt: -1 })
-              .lean();
-
-            if (req.params.customerMobile !== "0")
-              orders = orders.filter(
-                (param) =>
-                  param.customer.phoneNumber === req.params.customerMobile ||
-                  param.customer.mobile === req.params.customerMobile
-              );
-
-            if (req.params.customerName !== " ")
-              orders = orders.filter((param) => {
-                if (param.customer) {
-                  let re = new RegExp(req.params.customerName, "i");
-                  let find = param.customer.family.search(re);
-                  return find !== -1;
-                }
-              });
-
-            let paramsNote;
-            let dataNote;
-            let isPrivate;
-
-            for (let noteIndex = 0; noteIndex < orders.length; noteIndex++) {
-              if (orders[noteIndex].notes.length > 0) {
-                dataNote = orders[noteIndex].notes.filter(
-                  (item) => item.private === false
-                );
-                paramsNote = orders[noteIndex].notes.filter(
-                  (item) =>
-                    item.private === true &&
-                    item.writtenBy._id.toString() === req.decodedData.user_id
-                );
-
-                if (paramsNote.length > 0) {
-                  isPrivate = true;
-                  paramsNote = paramsNote.reduce((result, item) => {
-                    result = item;
-                    dataNote.push(result);
-                  }, {});
-                } else {
-                  isPrivate = false;
-                }
-
-                dataNote.map((item) => {
-                  item.writtenBy = item.writtenBy?.family;
-                  return item;
-                });
-                orders[noteIndex].notes = {
-                  Notes: dataNote,
-                  isPrivate: isPrivate,
-                };
-              }
-            }
-
-            // edit data to be exactly like getOrders
-            orders = orders.map((order) => {
-              return {
-                id: order._id,
-                active: order.active,
-                address: order.address,
-                products: order.products.map((product) => {
-                  if (product._id)
-                    return {
-                      _id: product._id._id,
-                      name: product._id.name,
-                      quantity: product.quantity,
-                      sellingPrice: product.sellingPrice,
-                    };
-                  return {};
-                }),
-                customer: order.customer,
-                financialApproval: {
-                  status: order.financialApproval.status,
-                  acceptedAt:
-                    order.financialApproval.acceptedAt &&
-                    order.financialApproval.acceptedAt,
-                  acceptedBy:
-                    order.financialApproval.acceptedBy &&
-                    order.financialApproval.acceptedBy.family,
-                },
-                mobile: order.mobile,
-                notes: order.notes,
-                readyTime: order.readyTime,
-                createdAt: order.createdAt,
-                updatedAt: order.updatedAt,
-                seller: order.seller,
-                sellers: order.sellers,
-                status: order.status,
-                support: true,
-                trackingCode: order.trackingCode,
+                      },
+                    ],
+                  },
+                ],
               };
-            });
+          } else filter = { status: 0, ...filter };
 
-            // get orders failure reasons
-            let reasons = await this.model.User.findOne(
-              { _id: req.decodedData.user_employer },
-              "setting.order"
+          let orders = await this.model.Order.find(
+            filter,
+            "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode"
+          )
+            .populate([
+              { path: "notes.writtenBy", model: "User", select: "family" },
+              { path: "sellers.id", model: "User", select: "family" },
+              { path: "products._id", model: "Product", select: "name" },
+              {
+                path: "financialApproval.acceptedBy",
+                model: "User",
+                select: "family",
+              },
+            ])
+            .populate("seller", "family mobile")
+            .populate("customer", "mobile family company phoneNumber")
+            .populate("employee", "family")
+            .sort({ createdAt: -1 })
+            .lean();
+
+          if (req.params.customerMobile !== "0")
+            orders = orders.filter(
+              (param) =>
+                param.customer.phoneNumber === req.params.customerMobile ||
+                param.customer.mobile === req.params.customerMobile
             );
 
-            let data = {
-              orders
-            };
-            if(req.params.status == 3)
-              data.failureReasons = reasons.setting.order.failureReasons || []
-            
-
-            return res.json({
-              success: true,
-              message: "سفارشات با موفقیت ارسال شد",
-              data: data,
+          if (req.params.customerName !== " ")
+            orders = orders.filter((param) => {
+              if (param.customer) {
+                let re = new RegExp(req.params.customerName, "i");
+                let find = param.customer.family.search(re);
+                return find !== -1;
+              }
             });
+
+          let paramsNote;
+          let dataNote;
+          let isPrivate;
+
+          for (let noteIndex = 0; noteIndex < orders.length; noteIndex++) {
+            if (orders[noteIndex].notes.length > 0) {
+              dataNote = orders[noteIndex].notes.filter(
+                (item) => item.private === false
+              );
+              paramsNote = orders[noteIndex].notes.filter(
+                (item) =>
+                  item.private === true &&
+                  item.writtenBy._id.toString() === req.decodedData.user_id
+              );
+
+              if (paramsNote.length > 0) {
+                isPrivate = true;
+                paramsNote = paramsNote.reduce((result, item) => {
+                  result = item;
+                  dataNote.push(result);
+                }, {});
+              } else {
+                isPrivate = false;
+              }
+
+              dataNote.map((item) => {
+                item.writtenBy = item.writtenBy?.family;
+                return item;
+              });
+              orders[noteIndex].notes = {
+                Notes: dataNote,
+                isPrivate: isPrivate,
+              };
+            }
+          }
+
+          // edit data to be exactly like getOrders
+          orders = orders.map((order) => {
+            return {
+              id: order._id,
+              active: order.active,
+              address: order.address,
+              products: order.products.map((product) => {
+                if (product._id)
+                  return {
+                    _id: product._id._id,
+                    name: product._id.name,
+                    quantity: product.quantity,
+                    sellingPrice: product.sellingPrice,
+                  };
+                return {};
+              }),
+              customer: order.customer,
+              financialApproval: {
+                status: order.financialApproval.status,
+                acceptedAt:
+                  order.financialApproval.acceptedAt &&
+                  order.financialApproval.acceptedAt,
+                acceptedBy:
+                  order.financialApproval.acceptedBy &&
+                  order.financialApproval.acceptedBy.family,
+              },
+              mobile: order.mobile,
+              notes: order.notes,
+              readyTime: order.readyTime,
+              createdAt: order.createdAt,
+              updatedAt: order.updatedAt,
+              seller: order.seller,
+              sellers: order.sellers,
+              status: order.status,
+              support: true,
+              trackingCode: order.trackingCode,
+            };
+          });
+
+          // get orders failure reasons
+          let reasons = await this.model.User.findOne(
+            { _id: req.decodedData.user_employer },
+            "setting.order"
+          );
+
+          let data = {
+            orders,
+          };
+          if (req.params.status == 3)
+            data.failureReasons = reasons.setting.order.failureReasons || [];
+
+          return res.json({
+            success: true,
+            message: "سفارشات با موفقیت ارسال شد",
+            data: data,
+          });
 
         }
         catch (err) {
