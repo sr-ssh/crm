@@ -655,7 +655,7 @@ router.get(
  * }
  */
 router.get(
-  "/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime",
+  "/:customerName/:customerMobile/:startDate/:endDate",
   OrderController.getOrders.bind(OrderController)
 );
 
@@ -670,6 +670,8 @@ router.get(
  * @apiParam {varchar} customerMobile customer mobile number ("0")
  * @apiParam {varchar} startDate get orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} endTrackingTime get tracking time orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -695,7 +697,7 @@ router.get(
  * }
  */
 router.get(
-  "/:status/:customerName/:customerMobile/:startDate/:endDate",
+  "/:status/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime",
   OrderController.getOrders.bind(OrderController)
 );
 
