@@ -71,6 +71,28 @@ const uploadMiddleware = require("../../middleware/upload");
  */
 router.post("/", OrderController.addOrder.bind(OrderController));
 
+
+/**
+* @api {get} /api/user/v1/order/failurereasons get failure reasons
+* @apiVersion 1.0.0
+* @apiName getFailureReasons
+* @apiDescription get failure reasons
+* @apiGroup order
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "دلایل ناموفق فرصت فروش ارسال شد",
+*      data: [...{
+*         id: 1, 
+*         text: "مشتری از قیمت کالا ناراضی بود"
+*      }]
+* }
+*/
+router.get(
+  "/failurereasons",
+  OrderController.getFailureReasons.bind(OrderController)
+);
+
 /**
  * @api {post} /api/user/v1/order/ add order
  * @apiVersion 1.0.0

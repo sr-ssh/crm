@@ -90,6 +90,16 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
+        it('check get failure reasons', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/failurereasons`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
+            res.should.have.status(200);
+        });
+
         it('check get notes ', async () => {
             const res = await chai
                 .request(server)

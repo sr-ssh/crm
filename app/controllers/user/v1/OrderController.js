@@ -498,27 +498,12 @@ module.exports = new class OrderController extends Controller {
                       trackingCode: order.trackingCode
                   }
               })
-  
-            
-            // get orders failure reasons
-            let reasons = await this.model.User.findOne(
-              { _id: req.decodedData.user_employer },
-              "setting.order"
-            );
-
-            let data = {
-              orders
-            };
-            if(req.params.status == 3)
-              data.failureReasons = reasons.setting.order.failureReasons || []
-            
 
             return res.json({
               success: true,
               message: "سفارشات با موفقیت ارسال شد",
-              data: data,
+              data: orders,
             });
-
 
         }
         catch (err) {
@@ -1675,8 +1660,30 @@ module.exports = new class OrderController extends Controller {
       }
   }
 
+async getFailureReasons(req, res) {
+    try {
 
+      let reasons = await this.model.User.findOne(
+        { _id: req.decodedData.user_employer },
+        "setting.order"
+      );
 
+      res.json({
+        success: true,
+        message: "دلایل ناموفق فرصت فروش ارسال شد",
+        data: reasons.setting.order.failureReasons || [],
+      });
+    }
+    catch (err) {
+        let handelError = new this.transforms.ErrorTransform(err)
+            .parent(this.controllerTag)
+            .class(TAG)
+            .method('getFailureReasons')
+            .inputParams(req.body)
+            .call();
 
+        if (!res.headersSent) return res.status(500).json(handelError);
+    }
+}
 
 }

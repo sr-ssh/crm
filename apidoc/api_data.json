@@ -2013,6 +2013,26 @@
   },
   {
     "type": "get",
+    "url": "/api/user/v1/order/failurereasons",
+    "title": "get failure reasons",
+    "version": "1.0.0",
+    "name": "getFailureReasons",
+    "description": "<p>get failure reasons</p>",
+    "group": "order",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"دلایل ناموفق فرصت فروش ارسال شد\",\n     data: [...{\n        id: 1, \n        text: \"مشتری از قیمت کالا ناراضی بود\"\n     }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "get",
     "url": "/api/user/v1/order/notes",
     "title": "get notes of order",
     "version": "1.0.0",
