@@ -19,7 +19,9 @@ let order,
   financialConfirmation,
   support,
   addOrderPush,
-  trackingCode;
+  trackingCode,
+  failSaleOpportunity,
+  editPriorityOrder;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -29,11 +31,12 @@ describe(`${sectionName}`, () => {
 
 
     before((done) => {
-        console.log('Waiting to ensure database connection stablished ');
+        console.log('Waiting to ensure database connection established ');
+        failSaleOpportunity = appConfig.test.failSaleOpportunity;
         trackingCode = appConfig.test.trackingCode;
         support = appConfig.test.support;
         order = appConfig.test.order;
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -50,6 +53,7 @@ describe(`${sectionName}`, () => {
         getOrderDetails = appConfig.test.getOrderDetails
         financialConfirmation = appConfig.test.financialConfirmation;
         addOrderPush = appConfig.test.addOrderPush;
+        editPriorityOrder = appConfig.test.editPriorityOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -85,6 +89,16 @@ describe(`${sectionName}`, () => {
               .set("Authorization", accessToken)
               .set("idToken", idToken)
               .send();
+            res.should.have.status(200);
+        });
+
+        it('check get failure reasons', async () => {
+            const res = await chai
+                .request(server)
+                .get(`${baseRoute}/failurereasons`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send();
             res.should.have.status(200);
         });
 
@@ -267,6 +281,29 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(financialConfirmation);
+            res.should.have.status(200);
+        });
+
+        it('check edit priority order  ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/edit/priority`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editPriorityOrder);
+            res.should.have.status(200);
+        });
+    });
+
+    describe('Check Delete Apis', () => {
+
+        it('check fail sale opportunity ', async () => {
+            const res = await chai
+                .request(server)
+                .delete(`${baseRoute}/opportunity`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(failSaleOpportunity);
             res.should.have.status(200);
         });
 

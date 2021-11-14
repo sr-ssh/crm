@@ -59,7 +59,8 @@ let User = new Schema({
   // order: {
   //     preSms: { text: config.addOrderSms, status: false },
   //     postDeliverySms: { text: "" , status: false },
-  //     postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false }
+  //     postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false },
+  //     unsuccessfulReasons: [ {id: 1, text: ""} ]
   // }
 });
 

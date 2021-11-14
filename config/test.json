@@ -1,403 +1,414 @@
 {
-    "appPort": 4000,
-    "mongo": {
-        "host": "mongodb://172.16.2.215/crm"
+  "appPort": 4000,
+  "mongo": {
+    "host": "mongodb://172.16.2.215/crm"
+  },
+  "sms": {
+    "negin": {
+      "user": "",
+      "password": "",
+      "host": "http://sms.3300.ir/services/wsSend.ashx"
     },
-    "sms": {
-        "negin": {
-            "user": "",
-            "password": "",
-            "host": "http://sms.3300.ir/services/wsSend.ashx"
-        },
-        "KavenegarApi": {
-            "apikey": "36792F47687237546569536A4F56303472794A6F50673D3D",
-            "sender": "100018801880"
-        }
-    },
-    "push": {
-        "host": "http://turbotaxi.ir:6061",
-        "userId": 3,
-        "user": {
-            "projectId": 3,
-            "apiKey": "turboAABMohsen"
-        }
-    },
-    "test": {
-        "user": {
-            "password": "1234",
-            "family": "ریحانه شکوهی",
-            "email": "m.min@gmail.com",
-            "mobile": "09307580142",
-            "companyName": "شکوه",
-            "companyAddress": "راهنمایی 23",
-            "mobileOrEmail": "09307580142",
-            "code": "7386",
-            "position": 1
-        },
-        "userMJH": {
-            "password": "123456",
-            "family": "محمد جواد حیدری",
-            "email": "mohmadjavadheidari9@gmail.com",
-            "mobile": "09105044033",
-            "companyName": "محمد",
-            "companyAddress": "موسوی 25",
-            "mobileOrEmail": "09105044033",
-            "code": "7386",
-            "position": 1
-        },
-        "userMBH": {
-            "password": "123456",
-            "family": "محمد باقر حیدری",
-            "email": "MBH@gmail.com",
-            "mobile": "09900199471",
-            "mobileOrEmail": "09900199471",
-            "code": "7386",
-            "position":2
-        },
-        "userMRH": {
-            "password": "123456",
-            "family": "محمد رضا حیدری",
-            "email": "MRH@gmail.com",
-            "mobile": "09155044033",
-            "mobileOrEmail": "09155044033",
-            "code": "7386",
-            "position":2
-        },
-        "userMH": {
-            "password": "123456",
-            "family": "مجید حیدری ",
-            "email": "mh1355@gmail.com",
-            "mobile": "09155247046",
-            "mobileOrEmail": "09155247046",
-            "code": "7386",
-            "position":2
-        },
-        "userMohsen": {
-            "password": "474210",
-            "family": "محسن",
-            "email": "",
-            "mobile": "09376148583",
-            "companyName": "تیم ایکس",
-            "companyAddress": "کلاهدوز",
-            "mobileOrEmail": "09376148583",
-            "code": "7386",
-            "position": 1
-        },
-        "newUser": {
-            "password": "1234",
-            "family": "علی محمودی",
-            "email": "a.mhm@gmail.com",
-            "mobile": "09927961998",
-            "code": "7469",
-            "position": 2,
-            "companyName": "mhmnejad",
-            "companyAddress": "راهنمایی 24222",
-            "employerMobile": "09105044033"
-        },
-        "userScope": "user",
-        "customer": {
-            "family": "هاشمی",
-            "mobile": "09527841262",
-            "birthday": "2021-05-31T05:42:13.845Z",
-            "address": "معلم 24"
-        },
-        "order": {
-            "force":0,
-            "products": [
-                {
-                "_id": "6182a00703be8215d2419996",
-                "name":"کیک پرتقال ",
-                "quantity": 150000,
-                "sellingPrice": "15000",
-                "ingredients":[{
-                    "amount" : 1,
-                    "stock":{
-                        "amount": 0,    
-                        "_id": "6182a00703be8215d2419995"
-                    }
-                }],
-                "checkWareHouse":true
-                }
-            ],
-            "customer": {
-                "family": "محمد جواد حیدری",
-                "phoneNumber": "05136045232"
-            }
-        },
-        "product": {
-            "name": "لیموناد",
-            "description": "دورچین لیمو",
-            "sellingPrice": "20000"
-        },
-        "editedProduct": {
-            "_id": "60c98bbbfa4cab1dd8c70d77",
-            "active": true,
-            "name": "موهیتو عربی",
-            "description": "نعنا تازه",
-            "sellingPrice": "20000"
-        },
-        "appInfo": {
-            "versionCode": 1,
-            "os": "android"
-        },
-        "Bill": {
-            "name": "اجاره",
-            "cost": "2000000"
-        },
-        "employee": {
-            "usernameOrMobile": "09105044033"
-        },
-        "getOrderParams": {
-            "status" : 3,
-            "customerName": " ",
-            "customerMobile": "0",
-            "startDate": "1900-01-01T05:42:13.845Z",
-            "endDate": "1900-01-01T05:42:13.845Z"
-        },
-        "getOrderParams_V1": {
-            "status": " ",
-            "customerName": " ",
-            "customerMobile": "0",
-            "startDate": "1900-01-01T05:42:13.845Z",
-            "endDate": "1900-01-01T05:42:13.845Z"
-        },
-        "getCustomerParams": {
-            "family": " ",
-            "mobile":"0",
-            "createdAtFrom": "1900-01-01T05:42:13.845Z",
-            "createdAtTo": "1900-01-01T05:42:13.845Z",
-            "lastBuyFrom": "1900-01-01T05:42:13.845Z",
-            "lastBuyTo": "1900-01-01T05:42:13.845Z",
-            "orderFrom": "0",
-            "orderTo": "0",
-            "totalFrom": "0",
-            "totalTo": "0"
-        },
-        "discount": {
-            "name": "تولد",
-            "type": 0,
-            "customer": "0935",
-            "percentage": 5,
-            "sms": true
-        },
-        "editedEmployee": {
-            "_id": "61768fa3e40f79f3708d2b44",
-            "voipNo": "222",
-            "permissions": {
-                "addOrder": true,
-                "getOrders": true,
-                "reminder": true,
-                "getProducts": true,
-                "finance": true,
-                "getCustomers": true,
-                "getEmployees": true,
-                "getDiscounts": true
-            }
-        },
-        "deleteEmployee": {
-            "_id": "60f523f57a68a84600beb524"
-        },
-        "editOrderStatus": {
-            "orderId": "616914f5b125147910f36c9b",
-            "status": 0
-        },
-        "deliverySms": {
-            "orderId": "60e1b387cef3a81c70726ede",
-            "mobile": "09307580142"
-        },
-        "editApplicationByEmployer": {
-            "applicationId": "60e555fd9637c83760618ac9",
-            "status": 3
-        },
-        "editApplicationByEmployee": {
-            "employeeId": "60e555fd9637c83760618ac8",
-            "status": 3
-        },
-        "editAccount": {
-            "company": "mohaddes"
-        },
-        "editOrderPrice": {
-            "orderId": "60f69fcac2ef642cfc2ce6b6",
-            "productId": "60f2bff24ca7f01d68ad6da7",
-            "price": "50000" 
-        },
-        "editOrderQuantity": {
-            "orderId": "60f2c0374ca7f01d68ad6da9",
-            "productId": "60f2bff24ca7f01d68ad6da7",
-            "quantity": 10
-        },
-        "deleteOrder": {
-            "orderId": "60f2d9b4b2357e24ec08e9d1",
-            "productId": "60f2d919b2357e24ec08e9cd"
-        },
-        "editProductOrder": {
-            "orderId": "614d9525472d8a24dcaa8404",
-            "products" : [
-                {
-                    "_id": "614b4f2a6a33e815f539bf14",
-                    "quantity": 50,
-                    "sellingPrice": "10"
-                }
-            ],
-            "address": "اولین کوچه پلاک 50",
-            "companyName": "MJH99"
-        },
-        "getNotes":"6110d6f29e5663816cbdc616",
-        "addOrderNotes":{
-            "orderId": "6110d6f29e5663816cbdc616",
-            "notes": [
-                {
-                    "text": "مشتری خواهان همکاری های بیشتر بود",
-                    "createdAt":"1900-01-01T05:42:13.845Z"
-                }
-            ]
-        },
-        "editeStatusNotes":{
-            "orderId":"6110d6f29e5663816cbdc616",
-            "status": "0"
-        },
-        "createShareLinkOrder":{
-            "orderId":"614d9f0984b0cd2d747afce7",
-            "type":0
-        },
-        "getOrderDetails":{
-            "orderId":"614d9f0984b0cd2d747afce7",
-            "keylink":"KTYADOYP4HGE4"
-        },
-        "stock": {
-            "name": "شیر",
-            "description": "شیر کیلویی"
-        },
-        "stockEdited": {
-            "_id": "61496c4aae54f6336075f4e1",
-            "name": "قهوه",
-            "active": true,
-            "description": "کلمبیا"
-        },
-        "receipt": {
-            "stock": [
-                {
-                    "_id": "61496c4aae54f6336075f4e1",
-                    "quantity": 3,
-                    "price": "30000"
-                }
-            ],
-            "note": {
-                "text": "مشتری از قیمت کالا ناراضی بود",
-                "createdAt":"1900-01-01T05:42:13.845Z"
-            },
-            "supplier": {
-                "family": "ریحانه شکوهی",
-                "mobile": "09307580142",
-                "company":"تیم ایکس"
-            },
-            "address": "معلم 24"
-        },
-        "supplier": {
-            "mobile": "09307580142"
-        },
-        "financialConfirmation":{
-            "orderId":"614b5634514e5c161df60ca6"
-        },
-        "getReceipts":{
-                "supplierName": " ",
-                "supplierMobile": "0",
-                "startDate": "1900-01-01T05:42:13.845Z",
-                "endDate": "1900-01-01T05:42:13.845Z"
-        },
-        "shopConfirmation":{
-            "receiptId":"616bbb8881b174262d810f56",
-            "status":1
-        },
-        "getSuppliersParams": {
-            "family": " ",
-            "mobile": "0",
-            "createdAtFrom": "1900-01-01T05:42:13.845Z",
-            "createdAtTo": "1900-01-01T05:42:13.845Z",
-            "lastBuyFrom": "1900-01-01T05:42:13.845Z",
-            "lastBuyTo": "1900-01-01T05:42:13.845Z",
-            "receiptFrom": "0",
-            "receiptTo": "0"
-        },
-        "editReceiptStatus":{
-            "receiptId":"61498eae80f72304a00c0cfe",
-            "status":1
-        },
-        "editReceipt":{
-            "receiptId": "61498eae80f72304a00c0cfe",
-            "stocks" : [
-                {
-                    "_id": "61496c4aae54f6336075f4e1",
-                    "quantity": 50,
-                    "price": "15000000"
-                }
-            ],
-            "address": "کلاهدوز 4 اولین کوچه پلاک 50"
-        },
-        "editSettingOrder":{
-            "share": {
-                "time": 123 ,
-                "unitTime": "H"
-              },
-              "preSms": {
-                "text": "سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم",
-                "status": false
-              },
-              "postDeliverySms": {
-                "text": "",
-                "status": false
-              },
-              "postCustomerSms": {
-                "text": "سفارش شما به راننده تحویل داده شد",
-                "status": false
-              }
-        },
-        "lead": {
-            "family":"ریحانه شکوهی",
-            "mobile": "09307580142"
-        },
-        "addOrderPush": {
-            "voipId": "504",
-            "baseCall": "09105044033",
-            "distinationCall": "1280"
-        },
-        "editEmployerAccount": {
-            "family":"ریحانه شکوهی",
-            "address":"معلم 24",
-            "sip": 500
-        },
-        "editReceiptNoteStatus":{
-            "status": 1,
-            "receiptId": "617e7cc1c1fc44a80a7ed0d9"
-        },
-        "seller":{
-            "family": "سارا بنی اسدی",
-            "phone": 36041849,
-            "mobile": "09307580142",
-            "company": "هتل ابان",
-            "address": "بلوار پیروزی.بین پیروزی ۶۲و ۶۴",
-            "cardNumber": 5846253665328596,
-            "description": "استقبال شدید شد"
-        },
-        "getSellers":{
-            "address": " ",
-            "phone": " ",
-            "mobile": "09307580142",
-            "company": " "
-        },
-        "support": {
-            "type": "1",
-            "value": "س"
-        },
-        "trackingCode": {
-            "orderId": "6188e54fa0aaa27f7a1de03c",
-            "trackingCode": "236529",
-            "customerId": "6188e54fa0aaa27f7a1de03b"
-        },
-        "getCustomer": {
-            "phoneNumber": "09307580121"
-        }
+    "KavenegarApi": {
+      "apikey": "36792F47687237546569536A4F56303472794A6F50673D3D",
+      "sender": "100018801880"
     }
+  },
+  "push": {
+    "host": "http://turbotaxi.ir:6061",
+    "userId": 3,
+    "user": {
+      "projectId": 3,
+      "apiKey": "turboAABMohsen"
+    }
+  },
+  "test": {
+    "user": {
+      "password": "1234",
+      "family": "ریحانه شکوهی",
+      "email": "m.min@gmail.com",
+      "mobile": "09307580142",
+      "companyName": "شکوه",
+      "companyAddress": "راهنمایی 23",
+      "mobileOrEmail": "09307580142",
+      "code": "7386",
+      "position": 1
+    },
+    "userMJH": {
+      "password": "123456",
+      "family": "محمد جواد حیدری",
+      "email": "mohmadjavadheidari9@gmail.com",
+      "mobile": "09105044033",
+      "companyName": "محمد",
+      "companyAddress": "موسوی 25",
+      "mobileOrEmail": "09105044033",
+      "code": "7386",
+      "position": 1
+    },
+    "userMBH": {
+      "password": "123456",
+      "family": "محمد باقر حیدری",
+      "email": "MBH@gmail.com",
+      "mobile": "09900199471",
+      "mobileOrEmail": "09900199471",
+      "code": "7386",
+      "position": 2
+    },
+    "userMRH": {
+      "password": "123456",
+      "family": "محمد رضا حیدری",
+      "email": "MRH@gmail.com",
+      "mobile": "09155044033",
+      "mobileOrEmail": "09155044033",
+      "code": "7386",
+      "position": 2
+    },
+    "userMH": {
+      "password": "123456",
+      "family": "مجید حیدری ",
+      "email": "mh1355@gmail.com",
+      "mobile": "09155247046",
+      "mobileOrEmail": "09155247046",
+      "code": "7386",
+      "position": 2
+    },
+    "userMohsen": {
+      "password": "474210",
+      "family": "محسن",
+      "email": "",
+      "mobile": "09376148583",
+      "companyName": "تیم ایکس",
+      "companyAddress": "کلاهدوز",
+      "mobileOrEmail": "09376148583",
+      "code": "7386",
+      "position": 1
+    },
+    "newUser": {
+      "password": "1234",
+      "family": "علی محمودی",
+      "email": "a.mhm@gmail.com",
+      "mobile": "09927961998",
+      "code": "7469",
+      "position": 2,
+      "companyName": "mhmnejad",
+      "companyAddress": "راهنمایی 24222",
+      "employerMobile": "09105044033"
+    },
+    "userScope": "user",
+    "customer": {
+      "family": "هاشمی",
+      "mobile": "09527841262",
+      "birthday": "2021-05-31T05:42:13.845Z",
+      "address": "معلم 24"
+    },
+    "order": {
+      "force": 0,
+      "products": [
+        {
+          "_id": "6182a00703be8215d2419996",
+          "name": "کیک پرتقال ",
+          "quantity": 150000,
+          "sellingPrice": "15000",
+          "ingredients": [
+            {
+              "amount": 1,
+              "stock": {
+                "amount": 0,
+                "_id": "6182a00703be8215d2419995"
+              }
+            }
+          ],
+          "checkWareHouse": true
+        }
+      ],
+      "customer": {
+        "family": "محمد جواد حیدری",
+        "phoneNumber": "05136045232"
+      }
+    },
+    "product": {
+      "name": "لیموناد",
+      "description": "دورچین لیمو",
+      "sellingPrice": "20000"
+    },
+    "editedProduct": {
+      "_id": "60c98bbbfa4cab1dd8c70d77",
+      "active": true,
+      "name": "موهیتو عربی",
+      "description": "نعنا تازه",
+      "sellingPrice": "20000"
+    },
+    "appInfo": {
+      "versionCode": 1,
+      "os": "android"
+    },
+    "Bill": {
+      "name": "اجاره",
+      "cost": "2000000"
+    },
+    "employee": {
+      "usernameOrMobile": "09105044033"
+    },
+    "getOrderParams": {
+      "status": " ",
+      "customerName": " ",
+      "customerMobile": "0",
+      "startDate": "1900-01-01T05:42:13.845Z",
+      "endDate": "1900-01-01T05:42:13.845Z"
+    },
+    "getOrderParams_V1": {
+      "status": " ",
+      "customerName": " ",
+      "customerMobile": "0",
+      "startDate": "1900-01-01T05:42:13.845Z",
+      "endDate": "1900-01-01T05:42:13.845Z"
+    },
+    "getCustomerParams": {
+      "family": " ",
+      "mobile": "0",
+      "createdAtFrom": "1900-01-01T05:42:13.845Z",
+      "createdAtTo": "1900-01-01T05:42:13.845Z",
+      "lastBuyFrom": "1900-01-01T05:42:13.845Z",
+      "lastBuyTo": "1900-01-01T05:42:13.845Z",
+      "orderFrom": "0",
+      "orderTo": "0",
+      "totalFrom": "0",
+      "totalTo": "0"
+    },
+    "discount": {
+      "name": "تولد",
+      "type": 0,
+      "customer": "0935",
+      "percentage": 5,
+      "sms": true
+    },
+    "editedEmployee": {
+      "_id": "61768fa3e40f79f3708d2b44",
+      "voipNo": "222",
+      "permissions": {
+        "addOrder": true,
+        "getOrders": true,
+        "reminder": true,
+        "getProducts": true,
+        "finance": true,
+        "getCustomers": true,
+        "getEmployees": true,
+        "getDiscounts": true
+      }
+    },
+    "deleteEmployee": {
+      "_id": "60f523f57a68a84600beb524"
+    },
+    "editOrderStatus": {
+      "orderId": "616914f5b125147910f36c9b",
+      "status": 0
+    },
+    "deliverySms": {
+      "orderId": "60e1b387cef3a81c70726ede",
+      "mobile": "09307580142"
+    },
+    "editApplicationByEmployer": {
+      "applicationId": "60e555fd9637c83760618ac9",
+      "status": 3
+    },
+    "editApplicationByEmployee": {
+      "employeeId": "60e555fd9637c83760618ac8",
+      "status": 3
+    },
+    "editAccount": {
+      "company": "mohaddes"
+    },
+    "editOrderPrice": {
+      "orderId": "60f69fcac2ef642cfc2ce6b6",
+      "productId": "60f2bff24ca7f01d68ad6da7",
+      "price": "50000"
+    },
+    "editOrderQuantity": {
+      "orderId": "60f2c0374ca7f01d68ad6da9",
+      "productId": "60f2bff24ca7f01d68ad6da7",
+      "quantity": 10
+    },
+    "deleteOrder": {
+      "orderId": "60f2d9b4b2357e24ec08e9d1",
+      "productId": "60f2d919b2357e24ec08e9cd"
+    },
+    "editProductOrder": {
+      "orderId": "614d9525472d8a24dcaa8404",
+      "products": [
+        {
+          "_id": "614b4f2a6a33e815f539bf14",
+          "quantity": 50,
+          "sellingPrice": "10"
+        }
+      ],
+      "address": "اولین کوچه پلاک 50",
+      "companyName": "MJH99"
+    },
+    "getNotes": "6110d6f29e5663816cbdc616",
+    "addOrderNotes": {
+      "orderId": "6110d6f29e5663816cbdc616",
+      "notes": [
+        {
+          "text": "مشتری خواهان همکاری های بیشتر بود",
+          "createdAt": "1900-01-01T05:42:13.845Z"
+        }
+      ]
+    },
+    "editeStatusNotes": {
+      "orderId": "6110d6f29e5663816cbdc616",
+      "status": "0"
+    },
+    "createShareLinkOrder": {
+      "orderId": "614d9f0984b0cd2d747afce7",
+      "type": 0
+    },
+    "getOrderDetails": {
+      "orderId": "614d9f0984b0cd2d747afce7",
+      "keylink": "KTYADOYP4HGE4"
+    },
+    "stock": {
+      "name": "شیر",
+      "description": "شیر کیلویی"
+    },
+    "stockEdited": {
+      "_id": "61496c4aae54f6336075f4e1",
+      "name": "قهوه",
+      "active": true,
+      "description": "کلمبیا"
+    },
+    "receipt": {
+      "stock": [
+        {
+          "_id": "61496c4aae54f6336075f4e1",
+          "quantity": 3,
+          "price": "30000"
+        }
+      ],
+      "note": {
+        "text": "مشتری از قیمت کالا ناراضی بود",
+        "createdAt": "1900-01-01T05:42:13.845Z"
+      },
+      "supplier": {
+        "family": "ریحانه شکوهی",
+        "mobile": "09307580142",
+        "company": "تیم ایکس"
+      },
+      "address": "معلم 24"
+    },
+    "supplier": {
+      "mobile": "09307580142"
+    },
+    "financialConfirmation": {
+      "orderId": "614b5634514e5c161df60ca6"
+    },
+    "getReceipts": {
+      "supplierName": " ",
+      "supplierMobile": "0",
+      "startDate": "1900-01-01T05:42:13.845Z",
+      "endDate": "1900-01-01T05:42:13.845Z"
+    },
+    "shopConfirmation": {
+      "receiptId": "616bbb8881b174262d810f56",
+      "status": 1
+    },
+    "getSuppliersParams": {
+      "family": " ",
+      "mobile": "0",
+      "createdAtFrom": "1900-01-01T05:42:13.845Z",
+      "createdAtTo": "1900-01-01T05:42:13.845Z",
+      "lastBuyFrom": "1900-01-01T05:42:13.845Z",
+      "lastBuyTo": "1900-01-01T05:42:13.845Z",
+      "receiptFrom": "0",
+      "receiptTo": "0"
+    },
+    "editReceiptStatus": {
+      "receiptId": "61498eae80f72304a00c0cfe",
+      "status": 1
+    },
+    "editReceipt": {
+      "receiptId": "61498eae80f72304a00c0cfe",
+      "stocks": [
+        {
+          "_id": "61496c4aae54f6336075f4e1",
+          "quantity": 50,
+          "price": "15000000"
+        }
+      ],
+      "address": "کلاهدوز 4 اولین کوچه پلاک 50"
+    },
+    "editSettingOrder": {
+      "share": {
+        "time": 123,
+        "unitTime": "H"
+      },
+      "preSms": {
+        "text": "سفارش شما با موفقیت ثبت شد. از اینکه مارا انتخاب کرده اید متشکریم",
+        "status": false
+      },
+      "postDeliverySms": {
+        "text": "",
+        "status": false
+      },
+      "postCustomerSms": {
+        "text": "سفارش شما به راننده تحویل داده شد",
+        "status": false
+      }
+    },
+    "lead": {
+      "family": "ریحانه شکوهی",
+      "mobile": "09307580142"
+    },
+    "addOrderPush": {
+      "voipId": "504",
+      "baseCall": "09105044033",
+      "distinationCall": "1280"
+    },
+    "editEmployerAccount": {
+      "family": "ریحانه شکوهی",
+      "address": "معلم 24",
+      "sip": 500
+    },
+    "editReceiptNoteStatus": {
+      "status": 1,
+      "receiptId": "617e7cc1c1fc44a80a7ed0d9"
+    },
+    "seller": {
+      "family": "سارا بنی اسدی",
+      "phone": 36041849,
+      "mobile": "09307580142",
+      "company": "هتل ابان",
+      "address": "بلوار پیروزی.بین پیروزی ۶۲و ۶۴",
+      "cardNumber": 5846253665328596,
+      "description": "استقبال شدید شد"
+    },
+    "getSellers": {
+      "address": " ",
+      "phone": " ",
+      "mobile": "09307580142",
+      "company": " "
+    },
+    "support": {
+      "type": "1",
+      "value": "س"
+    },
+    "trackingCode": {
+      "orderId": "6188e54fa0aaa27f7a1de03c",
+      "trackingCode": "236529",
+      "customerId": "6188e54fa0aaa27f7a1de03b"
+    },
+    "getCustomer": {
+      "phoneNumber": "09307580121"
+    },
+    "failSaleOpportunity": {
+      "orderId": "618cce7f8a6eb5e63801bd6d",
+      "unsuccessfulReason": {
+        "text": "شماره اشتباه",
+        "id": 2
+      }
+    },
+    "editPriorityOrder": {
+      "orderId": "6187f6e9be9b9ae3a887d1fe",
+      "priority": 5
+    }
+  }
 }
-
-

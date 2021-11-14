@@ -71,6 +71,28 @@ const uploadMiddleware = require("../../middleware/upload");
  */
 router.post("/", OrderController.addOrder.bind(OrderController));
 
+
+/**
+* @api {get} /api/user/v1/order/failurereasons get failure reasons
+* @apiVersion 1.0.0
+* @apiName getFailureReasons
+* @apiDescription get failure reasons
+* @apiGroup order
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "دلایل ناموفق فرصت فروش ارسال شد",
+*      data: [...{
+*         id: 1, 
+*         text: "مشتری از قیمت کالا ناراضی بود"
+*      }]
+* }
+*/
+router.get(
+  "/failurereasons",
+  OrderController.getFailureReasons.bind(OrderController)
+);
+
 /**
  * @api {post} /api/user/v1/order/ add order
  * @apiVersion 1.0.0
@@ -188,6 +210,33 @@ router.put("/product", OrderController.editProductOrder.bind(OrderController));
  * }
  */
 router.put("/status", OrderController.editOrderStatus.bind(OrderController));
+
+/**
+* @api {delete} /api/user/v1/order/opportunity  fail sale opportunity 
+* @apiVersion 1.0.0
+* @apiName failSaleOpportunity
+* @apiDescription fail sale opportunity 
+* @apiGroup order
+* @apiParam {varchar} orderId order id
+* @apiParam {Object} unsuccessfulReason order unsuccessful reason
+* @apiParamExample {json} Request-Example:
+*{
+    "orderId": "618cd0068a6eb5e63801bd6e",
+    "unsuccessfulReason": {
+        "text": "شماره اشتباه",
+        "id": 2
+    }
+}
+* @apiSuccessExample {json} Success-Response:
+* {
+*      success: true,
+*      message: "وضعیت فرصت فروش با موفقیت ویرایش شد"
+* }
+*/
+router.delete(
+  "/opportunity",
+  OrderController.failSaleOpportunity.bind(OrderController)
+);
 
 /**
  * @api {put} /api/user/v1/order/notes add Notes to order
@@ -647,6 +696,37 @@ router.get(
 router.get(
   "/:status/:customerName/:customerMobile/:startDate/:endDate",
   OrderController.getOrders.bind(OrderController)
+);
+
+
+
+/**
+ * @api {put} /api/user/v1/order/edit/priority edit priority order
+ * @apiVersion 1.0.0
+ * @apiName editPriorityOrder
+ * @apiDescription edit Priority Order : all params are necessary.
+ * @apiGroup order
+ * @apiParam {varchar} orderId  orderId
+ * @apiParam {int} priority  0 -> default , 1 -> veryLow , 2 -> low , 3 -> medium  , 4 -> hight  , 5 -> veryHight
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     orderId : "60b72a70e353f0385c2fe5af",
+ *     priority : 1
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "اولویت فرصت فروش با موفقیت تغییر کرد",
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "خطا در ویرایش اولویت فرصت فروش"
+ * }
+ */
+ router.put(
+  "/edit/priority",
+  OrderController.editPriority.bind(OrderController)
 );
 
 module.exports = router;
