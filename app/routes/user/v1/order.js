@@ -725,7 +725,7 @@ router.get(
  * }
  */
  router.put(
-  "/edit/priority",
+  "/priority",
   OrderController.editPriority.bind(OrderController)
 );
 

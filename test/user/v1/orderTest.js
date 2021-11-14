@@ -287,7 +287,7 @@ describe(`${sectionName}`, () => {
         it('check edit priority order  ', async () => {
             const res = await chai
                 .request(server)
-                .put(`${baseRoute}/edit/priority`)
+                .put(`${baseRoute}/priority`)
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editPriorityOrder);
