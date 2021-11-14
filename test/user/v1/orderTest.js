@@ -20,7 +20,8 @@ let order,
   support,
   addOrderPush,
   trackingCode,
-  failSaleOpportunity;
+  failSaleOpportunity,
+  editPriorityOrder;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -35,7 +36,7 @@ describe(`${sectionName}`, () => {
         trackingCode = appConfig.test.trackingCode;
         support = appConfig.test.support;
         order = appConfig.test.order;
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
         getOrderParams = appConfig.test.getOrderParams;
         getOrderParams_V1 = appConfig.test.getOrderParams_V1;
         editOrderStatus = appConfig.test.editOrderStatus;
@@ -52,6 +53,7 @@ describe(`${sectionName}`, () => {
         getOrderDetails = appConfig.test.getOrderDetails
         financialConfirmation = appConfig.test.financialConfirmation;
         addOrderPush = appConfig.test.addOrderPush;
+        editPriorityOrder = appConfig.test.editPriorityOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -282,6 +284,15 @@ describe(`${sectionName}`, () => {
             res.should.have.status(200);
         });
 
+        it('check edit priority order  ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/edit/priority`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editPriorityOrder);
+            res.should.have.status(200);
+        });
     });
 
     describe('Check Delete Apis', () => {

@@ -53,6 +53,7 @@ let Order = new Schema({
     trackingCode: { type : Number, unique: true, sparse: true },
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Schema.Types.ObjectId, ref: 'User' },
+    priority: { type: Number, default: 0 },
     description: { type: String }
 });
 
