@@ -54,7 +54,8 @@ let Order = new Schema({
     provider: { type: Schema.Types.ObjectId, ref: 'User' },
     employee: { type: Schema.Types.ObjectId, ref: 'User' },
     priority: { type: Number, default: 0 },
-    description: { type: String }
+    description: { type: String },
+    trackingTime: { type: Date }
 });
 
 Order.plugin(timestamps);

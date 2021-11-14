@@ -729,4 +729,36 @@ router.get(
   OrderController.editPriority.bind(OrderController)
 );
 
+
+
+/**
+ * @api {put} /api/user/v1/order/edit/trackingTime edit Tracking Time order
+ * @apiVersion 1.0.0
+ * @apiName editTrackingTime
+ * @apiDescription edit TrackingTime Order : all params are necessary.
+ * @apiGroup order
+ * @apiParam {varchar} orderId  orderId
+ * @apiParam {String} trackingTime  order trackingTime in ISO type
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     orderId : "60b72a70e353f0385c2fe5af",
+ *     trackingTime : "2021-11-08T07:28:50.413Z"
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "خطا در ویرایش تاریخ پیگیری سفارش"
+ * }
+ */
+ router.put(
+  "/edit/trackingTime",
+  OrderController.editTrackingTime.bind(OrderController)
+);
+
+
 module.exports = router;

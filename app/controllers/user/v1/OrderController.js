@@ -1892,4 +1892,43 @@ module.exports = new (class OrderController extends Controller {
       if (!res.headersSent) return res.status(500).json(handelError);
     }
   }
+
+  async editTrackingTime(req, res) {
+    try {
+      req.checkBody("orderId", "please set orderId").notEmpty().isMongoId();
+      req.checkBody("trackingTime", "please set order trackingTime").notEmpty().isISO8601()
+      if (this.showValidationErrors(req, res)) return;
+
+      await this.model.Order.findOneAndUpdate(
+        { _id: req.body.orderId },
+        { $set: { trackingTime : req.body.trackingTime } },
+        { new: true },
+        (err, doc) => {
+          if (err) {
+            throw err;
+          }
+          if (doc.trackingTime == req.body.trackingTime) {
+            return res.json({
+              success: true,
+              message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",
+            });
+          } else {
+            return res.json({
+              success: false,
+              message: "خطا در ویرایش تاریخ پیگیری سفارش",
+            });
+          }
+        }
+      );
+    } catch (err) {
+      let handelError = new this.transforms.ErrorTransform(err)
+        .parent(this.controllerTag)
+        .class(TAG)
+        .method("editTrackingTime")
+        .inputParams(req.body)
+        .call();
+
+      if (!res.headersSent) return res.status(500).json(handelError);
+    }
+  }
 })();

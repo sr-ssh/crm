@@ -21,7 +21,8 @@ let order,
   addOrderPush,
   trackingCode,
   failSaleOpportunity,
-  editPriorityOrder;
+  editPriorityOrder,
+  editTrackingTimeOrder;
 const axios = require('axios').default;
 const path = require('path')
 
@@ -54,6 +55,7 @@ describe(`${sectionName}`, () => {
         financialConfirmation = appConfig.test.financialConfirmation;
         addOrderPush = appConfig.test.addOrderPush;
         editPriorityOrder = appConfig.test.editPriorityOrder;
+        editTrackingTimeOrder = appConfig.test.editTrackingTimeOrder;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -291,6 +293,16 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send(editPriorityOrder);
+            res.should.have.status(200);
+        });
+
+        it('check edit tracking time  order  ', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/edit/trackingTime`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(editTrackingTimeOrder);
             res.should.have.status(200);
         });
     });
