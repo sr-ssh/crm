@@ -292,7 +292,7 @@ describe(`${sectionName}`, () => {
     it("check edit tracking time  order  ", async () => {
       const res = await chai
         .request(server)
-        .put(`${baseRoute}/edit/trackingTime`)
+        .put(`${baseRoute}/trackingTime`)
         .set("Authorization", accessToken)
         .set("idToken", idToken)
         .send(editTrackingTimeOrder);

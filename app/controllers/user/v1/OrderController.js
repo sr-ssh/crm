@@ -1961,7 +1961,8 @@ module.exports = new (class OrderController extends Controller {
           if (err) {
             throw err;
           }
-          if (doc.trackingTime == req.body.trackingTime) {
+          console.log(new Date(doc.trackingTime).toISOString())
+          if (new Date(doc.trackingTime).toISOString() == req.body.trackingTime) {
             return res.json({
               success: true,
               message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",

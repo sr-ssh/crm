@@ -731,7 +731,7 @@ router.put(
 );
 
 /**
- * @api {put} /api/user/v1/order/edit/trackingTime edit Tracking Time order
+ * @api {put} /api/user/v1/order/trackingTime edit Tracking Time order
  * @apiVersion 1.0.0
  * @apiName editTrackingTime
  * @apiDescription edit TrackingTime Order : all params are necessary.
@@ -755,7 +755,7 @@ router.put(
  * }
  */
 router.put(
-  "/edit/trackingTime",
+  "/trackingTime",
   OrderController.editTrackingTime.bind(OrderController)
 );
 
