@@ -4,8 +4,7 @@ const path = require("path");
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = "v1_Order";
 const axios = require("axios").default;
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
+const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = new (class OrderController extends Controller {
   async index(req, res) {
@@ -343,13 +342,20 @@ module.exports = new (class OrderController extends Controller {
         .notEmpty()
         .isISO8601();
 
+      req
+        .checkParams("sort", "please set order sort")
+        .notEmpty()
+        .isInt({ min: 0, max: 3 });
+
       if (this.showValidationErrors(req, res)) return;
+
+      console.time("test getOrders");
 
       const TIME_FLAG = "1900-01-01T05:42:13.845Z";
 
-      let permission = await this.model.User.findOne(
+      let { permission, setting } = await this.model.User.findOne(
         { _id: req.decodedData.user_id },
-        "permission"
+        "permission setting.order"
       );
 
       if (req.params.endDate !== TIME_FLAG) {
@@ -412,8 +418,7 @@ module.exports = new (class OrderController extends Controller {
             }
           );
         }
-        if (permission.permission.getAllSaleOpprotunity)
-          filter = { status: 3, ...filter };
+        if (permission.getAllSaleOpprotunity) filter = { status: 3, ...filter };
         else
           filter = {
             $and: [
@@ -433,23 +438,36 @@ module.exports = new (class OrderController extends Controller {
           };
       } else filter = { status: 0, ...filter };
 
-
       let sortStatement;
       switch (req.params.sort) {
+        case "0":
+          switch (setting.order.sortGetOrder) {
+            case "0":
+            case "1":
+              sortStatement = { createdAt: -1 };
+              break;
+            case "2":
+              sortStatement = { priority: -1 };
+              break;
+            case "3":
+              sortStatement = { trackingTime: -1 };
+              break;
+            default:
+              break;
+          }
+          break;
         case "1":
-          sortStatement = { createdAt: -1 }
+          sortStatement = { createdAt: -1 };
           break;
         case "2":
-          sortStatement = { priority: -1 }
+          sortStatement = { priority: -1 };
           break;
         case "3":
-          sortStatement = { trackingTime: -1 }
+          sortStatement = { trackingTime: -1 };
           break;
         default:
-          console.log(1);
           break;
       }
-
 
       let orders = await this.model.Order.find(
         filter,
@@ -565,6 +583,17 @@ module.exports = new (class OrderController extends Controller {
         .sort((obj1, obj2) => {
           return obj2.priority - obj1.priority;
         });
+
+      let update = {};
+
+      if (req.params.sort !== "0") {
+        await this.model.User.findOneAndUpdate(
+          { _id: req.decodedData.user_id },
+          { $set: { "setting.order.sortGetOrder": req.params.sort } }
+        );
+      }
+
+      console.timeEnd("test getOrders");
 
       return res.json({
         success: true,
@@ -1923,7 +1952,7 @@ module.exports = new (class OrderController extends Controller {
   async editPriority(req, res) {
     try {
       req.checkBody("orderId", "please set orderId").notEmpty().isMongoId();
-      req.checkBody("priority", "please set order priority").notEmpty().isIn[
+      req.checkBody("priority", "please set order priority").notEmpty().isInt[
         (0, 1, 2, 3, 4, 5)
       ];
       if (this.showValidationErrors(req, res)) return;
