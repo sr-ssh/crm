@@ -334,6 +334,15 @@ module.exports = new (class OrderController extends Controller {
         .isISO8601();
       req.checkParams("endDate", "please set endDate").notEmpty().isISO8601();
 
+      req
+        .checkParams("startTrackingTime", "please set startTrackingTime")
+        .notEmpty()
+        .isISO8601();
+      req
+        .checkParams("endTrackingTime", "please set endTrackingTime")
+        .notEmpty()
+        .isISO8601();
+
       if (this.showValidationErrors(req, res)) return;
 
       const TIME_FLAG = "1900-01-01T05:42:13.845Z";
@@ -350,6 +359,13 @@ module.exports = new (class OrderController extends Controller {
         req.params.endDate = nextDay;
       }
 
+      if (req.params.endTrackingTime !== TIME_FLAG) {
+        let nextDay = new Date(req.params.endTrackingTime).setDate(
+          new Date(req.params.endTrackingTime).getDate() + 1
+        );
+        req.params.endTrackingTime = new Date(nextDay).toISOString();
+      }
+
       let filter = { provider: ObjectId(req.decodedData.user_employer) };
       if (req.params.endDate !== TIME_FLAG) {
         if (!filter.$and) filter.$and = [];
@@ -361,6 +377,41 @@ module.exports = new (class OrderController extends Controller {
       }
 
       if (req.params.status == 3) {
+        if (req.params.startTrackingTime !== TIME_FLAG) {
+          if (!filter.$and) filter.$and = [];
+
+          filter.$and.push({
+            trackingTime: { $gt: req.params.startTrackingTime },
+          });
+        } 
+        if (req.params.endTrackingTime !== TIME_FLAG) {
+          if (!filter.$and) filter.$and = [];
+
+          filter.$and.push({
+            trackingTime: { $lt: req.params.endTrackingTime },
+          });
+        }
+         if (
+          req.params.startTrackingTime == TIME_FLAG &&
+          req.params.endTrackingTime == TIME_FLAG
+        ) {
+          if (!filter.$or) filter.$or = [];
+
+          let d = new Date();
+          let gtTime = d.setHours(0, 0, 0);
+          let ltTime = new Date(d.setHours(0, 0, 0)).setDate(d.getDate() + 1);
+
+          filter.$or.push(
+            { trackingTime: { $exists: false } },
+            {
+              trackingTime: { $exists: true },
+              trackingTime: {
+                $gt: new Date(gtTime).toISOString(),
+                $lt: new Date(ltTime).toISOString(),
+              },
+            }
+          );
+        }
         if (permission.permission.getAllSaleOpprotunity)
           filter = { status: 3, ...filter };
         else
@@ -384,7 +435,7 @@ module.exports = new (class OrderController extends Controller {
 
       let orders = await this.model.Order.find(
         filter,
-        "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode priority"
+        "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode priority trackingTime"
       )
         .populate([
           { path: "notes.writtenBy", model: "User", select: "family" },
@@ -1885,6 +1936,49 @@ module.exports = new (class OrderController extends Controller {
         .parent(this.controllerTag)
         .class(TAG)
         .method("editPriority")
+        .inputParams(req.body)
+        .call();
+
+      if (!res.headersSent) return res.status(500).json(handelError);
+    }
+  }
+
+  async editTrackingTime(req, res) {
+    try {
+      req.checkBody("orderId", "please set orderId").notEmpty().isMongoId();
+      req
+        .checkBody("trackingTime", "please set order trackingTime")
+        .notEmpty()
+        .isISO8601();
+      if (this.showValidationErrors(req, res)) return;
+
+      await this.model.Order.findOneAndUpdate(
+        { _id: req.body.orderId },
+        { $set: { trackingTime: req.body.trackingTime } },
+        { new: true },
+        (err, doc) => {
+          if (err) {
+            throw err;
+          }
+          console.log(new Date(doc.trackingTime).toISOString())
+          if (new Date(doc.trackingTime).toISOString() == req.body.trackingTime) {
+            return res.json({
+              success: true,
+              message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",
+            });
+          } else {
+            return res.json({
+              success: false,
+              message: "خطا در ویرایش تاریخ پیگیری سفارش",
+            });
+          }
+        }
+      );
+    } catch (err) {
+      let handelError = new this.transforms.ErrorTransform(err)
+        .parent(this.controllerTag)
+        .class(TAG)
+        .method("editTrackingTime")
         .inputParams(req.body)
         .call();
 

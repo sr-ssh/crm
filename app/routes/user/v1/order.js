@@ -71,23 +71,22 @@ const uploadMiddleware = require("../../middleware/upload");
  */
 router.post("/", OrderController.addOrder.bind(OrderController));
 
-
 /**
-* @api {get} /api/user/v1/order/failurereasons get failure reasons
-* @apiVersion 1.0.0
-* @apiName getFailureReasons
-* @apiDescription get failure reasons
-* @apiGroup order
-* @apiSuccessExample {json} Success-Response:
-* {
-*      success: true,
-*      message: "دلایل ناموفق فرصت فروش ارسال شد",
-*      data: [...{
-*         id: 1, 
-*         text: "مشتری از قیمت کالا ناراضی بود"
-*      }]
-* }
-*/
+ * @api {get} /api/user/v1/order/failurereasons get failure reasons
+ * @apiVersion 1.0.0
+ * @apiName getFailureReasons
+ * @apiDescription get failure reasons
+ * @apiGroup order
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "دلایل ناموفق فرصت فروش ارسال شد",
+ *      data: [...{
+ *         id: 1,
+ *         text: "مشتری از قیمت کالا ناراضی بود"
+ *      }]
+ * }
+ */
 router.get(
   "/failurereasons",
   OrderController.getFailureReasons.bind(OrderController)
@@ -629,6 +628,8 @@ router.get(
  * @apiParam {varchar} customerMobile customer mobile number ("0")
  * @apiParam {varchar} startDate get orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} endTrackingTime get tracking time orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -669,6 +670,8 @@ router.get(
  * @apiParam {varchar} customerMobile customer mobile number ("0")
  * @apiParam {varchar} startDate get orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} endTrackingTime get tracking time orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -694,11 +697,9 @@ router.get(
  * }
  */
 router.get(
-  "/:status/:customerName/:customerMobile/:startDate/:endDate",
+  "/:status/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime",
   OrderController.getOrders.bind(OrderController)
 );
-
-
 
 /**
  * @api {put} /api/user/v1/order/edit/priority edit priority order
@@ -727,6 +728,35 @@ router.get(
  router.put(
   "/priority",
   OrderController.editPriority.bind(OrderController)
+);
+
+/**
+ * @api {put} /api/user/v1/order/trackingTime edit Tracking Time order
+ * @apiVersion 1.0.0
+ * @apiName editTrackingTime
+ * @apiDescription edit TrackingTime Order : all params are necessary.
+ * @apiGroup order
+ * @apiParam {varchar} orderId  orderId
+ * @apiParam {String} trackingTime  order trackingTime in ISO type
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     orderId : "60b72a70e353f0385c2fe5af",
+ *     trackingTime : "2021-11-08T07:28:50.413Z"
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "خطا در ویرایش تاریخ پیگیری سفارش"
+ * }
+ */
+router.put(
+  "/trackingTime",
+  OrderController.editTrackingTime.bind(OrderController)
 );
 
 module.exports = router;
