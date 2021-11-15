@@ -439,7 +439,12 @@ module.exports = new class EmployeeController extends Controller {
                         addSeller : false,
                         getSellers: false
                     },
-                    voipNumber: null
+                    voipNumber: null,
+                    setting : {
+                        order: {
+                            sortGetOrder: "0"
+                        }
+                    }
                 }
 
                 await this.model.User.findOneAndUpdate(filter, update)
