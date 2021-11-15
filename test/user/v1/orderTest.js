@@ -85,7 +85,7 @@ describe(`${sectionName}`, () => {
             getOrderParams.startDate
           }/${getOrderParams.endDate}/${encodeURI(
             getOrderParams.startTrackingTime
-          )}/${encodeURIComponent(getOrderParams.endTrackingTime)}`
+          )}/${encodeURIComponent(getOrderParams.endTrackingTime)}/${getOrderParams.sort}`
         )
         .set("Authorization", accessToken)
         .set("idToken", idToken)

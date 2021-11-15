@@ -383,7 +383,7 @@ module.exports = new (class OrderController extends Controller {
           filter.$and.push({
             trackingTime: { $gt: req.params.startTrackingTime },
           });
-        } 
+        }
         if (req.params.endTrackingTime !== TIME_FLAG) {
           if (!filter.$and) filter.$and = [];
 
@@ -391,7 +391,7 @@ module.exports = new (class OrderController extends Controller {
             trackingTime: { $lt: req.params.endTrackingTime },
           });
         }
-         if (
+        if (
           req.params.startTrackingTime == TIME_FLAG &&
           req.params.endTrackingTime == TIME_FLAG
         ) {
@@ -433,6 +433,24 @@ module.exports = new (class OrderController extends Controller {
           };
       } else filter = { status: 0, ...filter };
 
+
+      let sortStatement;
+      switch (req.params.sort) {
+        case "1":
+          sortStatement = { createdAt: -1 }
+          break;
+        case "2":
+          sortStatement = { priority: -1 }
+          break;
+        case "3":
+          sortStatement = { trackingTime: -1 }
+          break;
+        default:
+          console.log(1);
+          break;
+      }
+
+
       let orders = await this.model.Order.find(
         filter,
         "active status products notes customer address readyTime createdAt updatedAt employee financialApproval sellers seller mobile trackingCode priority trackingTime"
@@ -450,7 +468,7 @@ module.exports = new (class OrderController extends Controller {
         .populate("seller", "family mobile")
         .populate("customer", "mobile family company phoneNumber")
         .populate("employee", "family")
-        .sort({ createdAt: -1 })
+        .sort(sortStatement)
         .lean();
 
       if (req.params.customerMobile !== "0")
@@ -1960,8 +1978,10 @@ module.exports = new (class OrderController extends Controller {
           if (err) {
             throw err;
           }
-          console.log(new Date(doc.trackingTime).toISOString())
-          if (new Date(doc.trackingTime).toISOString() == req.body.trackingTime) {
+          console.log(new Date(doc.trackingTime).toISOString());
+          if (
+            new Date(doc.trackingTime).toISOString() == req.body.trackingTime
+          ) {
             return res.json({
               success: true,
               message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",

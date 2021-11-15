@@ -672,6 +672,7 @@ router.get(
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endTrackingTime get tracking time orders to this date ("1900-01-01T05:42:13.845Z")
+ * @apiParam {varchar} sort get arranged orders base on created At or priority or trackingTime. 1 -> created At , 2 -> priority, 3 -> trackingTime. 0 -> default
  * @apiSuccessExample {json} Success-Response:
  * {
  *      success: true,
@@ -697,7 +698,7 @@ router.get(
  * }
  */
 router.get(
-  "/:status/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime",
+  "/:status/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime/:sort",
   OrderController.getOrders.bind(OrderController)
 );
 
