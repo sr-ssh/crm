@@ -598,7 +598,13 @@ module.exports = new (class OrderController extends Controller {
       return res.json({
         success: true,
         message: "سفارشات با موفقیت ارسال شد",
-        data: orders,
+        data: {
+          orders,
+          sort:
+            req.params.sort !== "0"
+              ? setting.order.sortGetOrder
+              : req.params.sort,
+        },
       });
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
@@ -1082,8 +1088,7 @@ module.exports = new (class OrderController extends Controller {
         .isNumeric();
       req
         .checkBody("priority", "please enter priority")
-        .optional({ nullable: true, checkFalsy: true })
-        .isIn[0, 1, 2, 3];
+        .optional({ nullable: true, checkFalsy: true }).isIn[(0, 1, 2, 3)];
       // 0 -> no priority, 1 -> low priority, 2 -> medium priority, 3 -> high priority
       if (this.showValidationErrors(req, res)) return;
 
@@ -1111,7 +1116,7 @@ module.exports = new (class OrderController extends Controller {
         financialCode: req.body.financialCode,
         postalCode: req.body.postalCode,
         registerNo: req.body.registerNo,
-        company: req.body.companyName
+        company: req.body.companyName,
       };
 
       await this.model.Customer.update(filter, update);
