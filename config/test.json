@@ -413,9 +413,16 @@
       "orderId": "6187f6e9be9b9ae3a887d1fe",
       "priority": 5
     },
-    "editTrackingTimeOrder":{
+    "editTrackingTimeOrder": {
       "orderId": "618a71353abfb88db2f31f80",
       "trackingTime": "2021-11-20T09:11:41.216Z"
+    },
+    "addReminder": {
+      "name": "تست برنامه نویسی",
+      "description": "تست برای برنامه نویسیه",
+      "date": "2021-11-18T14:25:42.753Z",
+      "typeReminder": 3,
+      "referenceId": "61951964ec8a66cffa60ad2f"
     }
   }
 }

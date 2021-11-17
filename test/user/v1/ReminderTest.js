@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/reminder';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let user, accessToken, idToken;
+let user,addReminder, accessToken, idToken;
 const axios = require('axios').default;
 
 
@@ -17,7 +17,8 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.user;
+        user = appConfig.test.userMJH;
+        addReminder = appConfig.test.addReminder
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
             .then(function (response) {
                 response = response.data;
@@ -47,6 +48,21 @@ describe(`${sectionName}`, () => {
                 .set('Authorization', accessToken)
                 .set('idToken', idToken)
                 .send();
+            res.should.have.status(200);
+        });
+
+    });
+
+
+    describe('Check post Apis', () => {
+
+        it('check add reminder', async () => {
+            const res = await chai
+                .request(server)
+                .post(`${baseRoute}/`)
+                .set('Authorization', accessToken)
+                .set('idToken', idToken)
+                .send(addReminder);
             res.should.have.status(200);
         });
 
