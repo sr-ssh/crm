@@ -578,6 +578,7 @@ module.exports = new (class OrderController extends Controller {
             status: order.status,
             trackingCode: order.trackingCode,
             priority: order.priority,
+            trackingTime: order.trackingTime
           };
         })
         .sort((obj1, obj2) => {
@@ -2006,6 +2007,8 @@ module.exports = new (class OrderController extends Controller {
         .isISO8601();
       if (this.showValidationErrors(req, res)) return;
 
+      console.time("test editTrackingTime");
+
       await this.model.Order.findOneAndUpdate(
         { _id: req.body.orderId },
         { $set: { trackingTime: req.body.trackingTime } },
@@ -2018,11 +2021,13 @@ module.exports = new (class OrderController extends Controller {
           if (
             new Date(doc.trackingTime).toISOString() == req.body.trackingTime
           ) {
+            console.time("test editTrackingTime");
             return res.json({
               success: true,
               message: "تاریخ پیگیری سفارش با موفقیت تغییر کرد",
             });
           } else {
+            console.time("test editTrackingTime");
             return res.json({
               success: false,
               message: "خطا در ویرایش تاریخ پیگیری سفارش",
