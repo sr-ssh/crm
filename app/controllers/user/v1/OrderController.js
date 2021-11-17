@@ -1080,6 +1080,11 @@ module.exports = new (class OrderController extends Controller {
         .checkBody("registerNo", "please enter customer registerNumber")
         .optional({ nullable: true, checkFalsy: true })
         .isNumeric();
+      req
+        .checkBody("priority", "please enter priority")
+        .optional({ nullable: true, checkFalsy: true })
+        .isIn[0, 1, 2, 3];
+      // 0 -> no priority, 1 -> low priority, 2 -> medium priority, 3 -> high priority
       if (this.showValidationErrors(req, res)) return;
 
       let filter = {
@@ -1095,6 +1100,7 @@ module.exports = new (class OrderController extends Controller {
       order.products = req.body.products;
 
       if (req.body.address) order.address = req.body.address;
+      if (req.body.priority) order.priority = req.body.priority;
 
       order.markModified("products");
       await order.save();
@@ -1105,14 +1111,10 @@ module.exports = new (class OrderController extends Controller {
         financialCode: req.body.financialCode,
         postalCode: req.body.postalCode,
         registerNo: req.body.registerNo,
-        company: req.body.companyName,
+        company: req.body.companyName
       };
 
       await this.model.Customer.update(filter, update);
-      // let customer = await this.model.Customer.findOne(filter)
-
-      // customer.markModified('company')
-      // await customer.save()
 
       res.json({ success: true, message: "سفارش با موفقیت ویرایش شد" });
     } catch (err) {
