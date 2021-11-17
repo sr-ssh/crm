@@ -599,7 +599,13 @@ module.exports = new (class OrderController extends Controller {
       return res.json({
         success: true,
         message: "سفارشات با موفقیت ارسال شد",
-        data: orders,
+        data: {
+          orders,
+          sort:
+            req.params.sort !== "0"
+              ? setting.order.sortGetOrder
+              : req.params.sort,
+        },
       });
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
@@ -1081,6 +1087,10 @@ module.exports = new (class OrderController extends Controller {
         .checkBody("registerNo", "please enter customer registerNumber")
         .optional({ nullable: true, checkFalsy: true })
         .isNumeric();
+      req
+        .checkBody("priority", "please enter priority")
+        .optional({ nullable: true, checkFalsy: true }).isIn[(0, 1, 2, 3)];
+      // 0 -> no priority, 1 -> low priority, 2 -> medium priority, 3 -> high priority
       if (this.showValidationErrors(req, res)) return;
 
       let filter = {
@@ -1096,6 +1106,7 @@ module.exports = new (class OrderController extends Controller {
       order.products = req.body.products;
 
       if (req.body.address) order.address = req.body.address;
+      if (req.body.priority) order.priority = req.body.priority;
 
       order.markModified("products");
       await order.save();
@@ -1110,10 +1121,6 @@ module.exports = new (class OrderController extends Controller {
       };
 
       await this.model.Customer.update(filter, update);
-      // let customer = await this.model.Customer.findOne(filter)
-
-      // customer.markModified('company')
-      // await customer.save()
 
       res.json({ success: true, message: "سفارش با موفقیت ویرایش شد" });
     } catch (err) {

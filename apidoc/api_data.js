@@ -1723,6 +1723,62 @@ define({ "api": [
   },
   {
     "type": "put",
+    "url": "/api/user/v1/order/edit/priority",
+    "title": "edit priority order",
+    "version": "1.0.0",
+    "name": "editPriorityOrder",
+    "description": "<p>edit Priority Order : all params are necessary.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "priority",
+            "description": "<p>0 -&gt; default , 1 -&gt; veryLow , 2 -&gt; low , 3 -&gt; medium  , 4 -&gt; hight  , 5 -&gt; veryHight</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   orderId : \"60b72a70e353f0385c2fe5af\",\n   priority : 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"اولویت فرصت فروش با موفقیت تغییر کرد\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"خطا در ویرایش اولویت فرصت فروش\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "put",
     "url": "/api/user/v1/order/seller/status",
     "title": "edit sale opportunity seler status",
     "version": "1.0.0",
@@ -1754,6 +1810,62 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "{\n     success: true,\n     message: \"وضعیت سفارش با موفقیت ویرایش شد\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user/v1/order.js",
+    "groupTitle": "order"
+  },
+  {
+    "type": "put",
+    "url": "/api/user/v1/order/trackingTime",
+    "title": "edit Tracking Time order",
+    "version": "1.0.0",
+    "name": "editTrackingTime",
+    "description": "<p>edit TrackingTime Order : all params are necessary.</p>",
+    "group": "order",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "orderId",
+            "description": "<p>orderId</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "trackingTime",
+            "description": "<p>order trackingTime in ISO type</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n   orderId : \"60b72a70e353f0385c2fe5af\",\n   trackingTime : \"2021-11-08T07:28:50.413Z\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     success: true,\n     message: \"تاریخ پیگیری سفارش با موفقیت تغییر کرد\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n     success: false,\n     message: \"خطا در ویرایش تاریخ پیگیری سفارش\"\n}",
           "type": "json"
         }
       ]
@@ -2023,7 +2135,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n     success: true,\n     message: \"دلایل ناموفق فرصت فروش ارسال شد\",\n     data: [...{\n        id: 1, \n        text: \"مشتری از قیمت کالا ناراضی بود\"\n     }]\n}",
+          "content": "{\n     success: true,\n     message: \"دلایل ناموفق فرصت فروش ارسال شد\",\n     data: [...{\n        id: 1,\n        text: \"مشتری از قیمت کالا ناراضی بود\"\n     }]\n}",
           "type": "json"
         }
       ]
@@ -2142,6 +2254,27 @@ define({ "api": [
             "optional": false,
             "field": "endDate",
             "description": "<p>get orders to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "startTrackingTime",
+            "description": "<p>get tracking time orders from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "endTrackingTime",
+            "description": "<p>get tracking time orders to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>get arranged orders base on created At or priority or trackingTime. 1 -&gt; created At , 2 -&gt; priority, 3 -&gt; trackingTime. 0 -&gt; default</p>"
           }
         ]
       }
@@ -2196,6 +2329,20 @@ define({ "api": [
             "optional": false,
             "field": "endDate",
             "description": "<p>get orders to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "startTrackingTime",
+            "description": "<p>get tracking time orders from this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "varchar",
+            "optional": false,
+            "field": "endTrackingTime",
+            "description": "<p>get tracking time orders to this date (&quot;1900-01-01T05:42:13.845Z&quot;)</p>"
           }
         ]
       }
