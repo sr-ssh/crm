@@ -132,12 +132,12 @@ module.exports = new (class ReminderController extends Controller {
         ],
       };
 
-      let reminders = await this.model.Reminder.find(filter)
-        //   .populate([
-        //     { path: "orderReference", model: "Order" },
-        //     { path: "leadReference", model: "Lead" },
-        //     { path: "factorReference", model: "Receipt"}
-        //   ])
+      let reminders = await this.model.Reminder.find(filter , { _id: 0 , __v : 0 , user : 0 })
+          .populate([
+            { path: "orderReference", model: "Order" , select : "status" },
+            // { path: "leadReference", model: "Lead" },
+            // { path: "factorReference", model: "Receipt"}
+          ])
         .sort({ createdAt: -1 });
 
       return res.json({
