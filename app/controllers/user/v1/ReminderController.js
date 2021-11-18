@@ -118,75 +118,39 @@ module.exports = new (class ReminderController extends Controller {
 
   async getReminders(req, res) {
     try {
-      let today = new Date().toISOString();
-      today = today.substr(0, 10) + "T00:00:00.000Z";
-      let tomorrow = new Date();
-      tomorrow.setDate(new Date().getDate() + 1);
-      tomorrow = tomorrow.toISOString().substr(0, 10) + "T00:00:00.000Z";
+      let today = new Date(new Date().setHours(0, 0, 0)).toISOString();
+      let tomorrow = new Date(
+        new Date(new Date().setDate(new Date().getDate() + 1)).setHours(0, 0, 0)
+      ).toISOString();
 
       let filter = {
         $and: [
           { active: true },
-          { user: req.decodedData.user_employer },
+          { user: req.decodedData.user_id },
           { date: { $gt: today } },
           { date: { $lt: tomorrow } },
         ],
       };
 
-      let reminders = await this.model.Reminder.find(filter);
-
-      let params = [];
-      for (let index = 0; index < reminders.length; index++) {
-        let param = {
-          date: reminders[index].date,
-          customer: reminders[index].customer,
-          order: reminders[index].order,
-        };
-        params.push(param);
-      }
-
-      let customers = [];
-      let orders = [];
-      for (let index = 0; index < reminders.length; index++) {
-        customers.push(reminders[index].customer);
-        orders.push(reminders[index].order);
-      }
-
-      filter = { _id: { $in: customers } };
-      customers = await this.model.Customer.find(filter, {
-        _id: 1,
-        family: 1,
-        mobile: 1,
-        birthday: 1,
-      });
-
-      filter = { _id: { $in: orders } };
-      orders = await this.model.Order.find(filter);
-
-      let customerInfo;
-      let orderInfo;
-      for (let index = 0; index < reminders.length; index++) {
-        customerInfo = customers.find(
-          (user) => user._id.toString() == reminders[index].customer
-        );
-        params[index].customer = customerInfo;
-        orderInfo = orders.find(
-          (order) => order._id.toString() == reminders[index].order
-        );
-        params[index].order = orderInfo;
-      }
+      let reminders = await this.model.Reminder.find(filter)
+        //   .populate([
+        //     { path: "orderReference", model: "Order" },
+        //     { path: "leadReference", model: "Lead" },
+        //     { path: "factorReference", model: "Receipt"}
+        //   ])
+        .sort({ createdAt: -1 });
 
       return res.json({
         success: true,
         message: "لیست یادآوری با موفقیت ارسال شد",
-        data: params,
+        data: reminders,
       });
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
         .class(TAG)
         .method("getReminders")
-        .inputParams(req.body)
+        .inputParams(req.params)
         .call();
 
       if (!res.headersSent) return res.status(500).json(handelError);
