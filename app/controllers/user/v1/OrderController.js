@@ -1398,7 +1398,7 @@ module.exports = new (class OrderController extends Controller {
         );
         let zarinRes = await zarinpal.PaymentRequest({
           Amount: total, // In Tomans
-          CallbackURL: "http://localhost:3001/dashboard",
+          CallbackURL: "http://localhost:3000/api/user/v1/order/pay/online",
           Description: "از خرید شما ممنونیم",
         });
         if (zarinRes.status != 100)
