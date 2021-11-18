@@ -118,6 +118,8 @@ module.exports = new (class ReminderController extends Controller {
 
   async getReminders(req, res) {
     try {
+
+      console.time("test getReminders")
       let today = new Date(new Date().setHours(0, 0, 0)).toISOString();
       let tomorrow = new Date(
         new Date(new Date().setDate(new Date().getDate() + 1)).setHours(0, 0, 0)
@@ -139,6 +141,8 @@ module.exports = new (class ReminderController extends Controller {
             // { path: "factorReference", model: "Receipt"}
           ])
         .sort({ createdAt: -1 });
+
+        console.timeEnd("test getReminders")
 
       return res.json({
         success: true,
