@@ -77,7 +77,7 @@ module.exports = new class CustomerController extends Controller {
                 let param = {
                     active: true,
                     family: customers[index].family,
-                    mobile: customers[index].mobile,
+                    mobile: customers[index].mobile || customers[index].phoneNumber,
                     birthday: customers[index].birthday,
                     createdAt: customers[index].createdAt,
                     failOrders: customers[index].failOrders,
