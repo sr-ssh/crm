@@ -42,7 +42,8 @@
     "multer-s3": "^2.9.0",
     "nodemon": "^2.0.7",
     "shorthash": "0.0.2",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "zarinpal-checkout": "^0.2.7"
   },
   "directories": {
     "test": "test"

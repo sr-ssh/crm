@@ -1,10 +1,8 @@
-const { filterSeries } = require("async");
-const { param } = require("../../../routes");
 const path = require("path");
 const Controller = require(`${config.path.controllers.user}/Controller`);
 const TAG = "v1_Order";
-const axios = require("axios").default;
 const ObjectId = require("mongoose").Types.ObjectId;
+const ZarinpalCheckout = require("zarinpal-checkout");
 
 module.exports = new (class OrderController extends Controller {
   async index(req, res) {
@@ -578,7 +576,7 @@ module.exports = new (class OrderController extends Controller {
             status: order.status,
             trackingCode: order.trackingCode,
             priority: order.priority,
-            trackingTime: order.trackingTime
+            trackingTime: order.trackingTime,
           };
         })
         .sort((obj1, obj2) => {
@@ -1330,7 +1328,7 @@ module.exports = new (class OrderController extends Controller {
       let timeExpire;
 
       let filter = { _id: req.decodedData.user_employer };
-      let employer = await this.model.User.findOne(filter, "setting.order");
+      let employer = await this.model.User.findOne(filter, "setting.order paymentGateway");
 
       let { time, unitTime } = employer.setting.order.share;
       if (unitTime == "M") timeExpire = time * Minutes;
@@ -1380,11 +1378,55 @@ module.exports = new (class OrderController extends Controller {
       order.markModified("sharelink");
       await order.save();
 
+      let total = 0;
+      order.products.map((item) => {
+        total += item.sellingPrice * item.quantity;
+      });
+
+      let data = {
+        status: true,
+        orderId: req.body.orderId,
+        keyLink: params._id
+      }
+
+      //pay link
+      if(employer.paymentGateway){
+        const zarinpal = ZarinpalCheckout.create(
+          employer.paymentGateway || "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          true
+        );
+        let zarinRes = await zarinpal.PaymentRequest({
+          Amount: total, // In Tomans
+          CallbackURL: "http://localhost:3001/dashboard",
+          Description: "از خرید شما ممنونیم",
+        });
+        if (zarinRes.status != 100)
+          return res.json({
+            success: true,
+            message: "پرداخت ناموفق",
+            data: { status: zarinRes.status },
+          });
+  
+        params = {
+          amount: total,
+          authority: zarinRes.authority,
+          order: order._id
+        };
+        let onlinePay = await this.model.OrderPay.create(params);
+
+        order.onlinePay = onlinePay._id
+        order.save()
+  
+        data.payStatus = zarinRes.status
+        data.payURL = zarinRes.url
+      }
+
       return res.json({
         success: true,
         message: "لینک اشتراک گذاری با موفقیت ارسال شد",
-        data: { status: true, orderId: req.body.orderId, keyLink: params._id },
+        data: data
       });
+      
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)

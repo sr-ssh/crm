@@ -62,6 +62,7 @@ let User = new Schema({
   //     postCustomerSms: { text: config.deliveryAcknowledgeSms , status: false },
   //     unsuccessfulReasons: [ {id: 1, text: ""} ]
   // }
+  paymentGateway: { type: String }
 });
 
 User.pre("validate", function (next) {

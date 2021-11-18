@@ -55,7 +55,8 @@ let Order = new Schema({
     employee: { type: Schema.Types.ObjectId, ref: 'User' },
     priority: { type: Number, default: 0 },
     description: { type: String },
-    trackingTime: { type: Date }
+    trackingTime: { type: Date },
+    onlinePay: { type: Schema.Types.ObjectId, ref: 'OrderPay' }
 });
 
 Order.plugin(timestamps);

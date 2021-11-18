@@ -33,7 +33,8 @@ module.exports = new class AccountController extends Controller {
                 params.financialCode = user.financialCode
                 params.registerNo = user.registerNo
                 params.postalCode = user.postalCode
-                params.voipNumbers = user.voipNumbers            
+                params.voipNumbers = user.voipNumbers 
+                params.paymentGateway = user.paymentGateway 
             }
 
             if(user.employer && user._id.toString() != user.employer.toString())
@@ -57,43 +58,72 @@ module.exports = new class AccountController extends Controller {
     async editEmployerAccount(req, res) {
         try {
 
-            req.checkBody('family', 'please enter family').notEmpty();
-            req.checkBody('nationalIDCode', 'please enter nationalIDCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('company', 'please enter company').optional({nullable: true,checkFalsy: true}).isString();
-            req.checkBody('address', 'please enter address').notEmpty().isString();
-            req.checkBody('nationalCode', 'please enter nationalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('financialCode', 'please enter financialCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('registerNo', 'please enter registerNo').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('postalCode', 'please enter postalCode').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('voipNumbers.*', 'please enter voipNumbers').optional({nullable: true,checkFalsy: true}).isNumeric();
-            req.checkBody('sip', 'please enter sip').optional({nullable: true,checkFalsy: true}).isNumeric();
-
+            req.checkBody("family", "please enter family").notEmpty();
+            req
+              .checkBody("nationalIDCode", "please enter nationalIDCode")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("company", "please enter company")
+              .optional({ nullable: true, checkFalsy: true })
+              .isString();
+            req
+              .checkBody("address", "please enter address")
+              .notEmpty()
+              .isString();
+            req
+              .checkBody("nationalCode", "please enter nationalCode")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("financialCode", "please enter financialCode")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("registerNo", "please enter registerNo")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("postalCode", "please enter postalCode")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("voipNumbers.*", "please enter voipNumbers")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("sip", "please enter sip")
+              .optional({ nullable: true, checkFalsy: true })
+              .isNumeric();
+            req
+              .checkBody("paymentGateway", "please enter sip")
+              .optional({ nullable: true, checkFalsy: true })
+              .isString();
 
             if (this.showValidationErrors(req, res)) return;
 
             let params = {
-                family: req.body.family,
-                address: req.body.address
-            }
+              family: req.body.family,
+              address: req.body.address,
+            };
 
-            if(req.body.nationalIDCode)
-                params.nationalIDCode = req.body.nationalIDCode
-            if(req.body.company)
-                params.company = req.body.company
-            if(req.body.nationalCode)
-                params.nationalCode = req.body.nationalCode
-            if(req.body.financialCode)
-                params.financialCode = req.body.financialCode
-            if(req.body.registerNo)
-                params.registerNo = req.body.registerNo
-            if(req.body.postalCode)
-                params.postalCode = req.body.postalCode
-            if(req.body.voipNumbers)
-                params.voipNumbers = req.body.voipNumbers
-            if(req.body.sip)
-                params.voipNumber = req.body.sip
+            if (req.body.nationalIDCode)
+              params.nationalIDCode = req.body.nationalIDCode;
+            if (req.body.company) params.company = req.body.company;
+            if (req.body.nationalCode)
+              params.nationalCode = req.body.nationalCode;
+            if (req.body.financialCode)
+              params.financialCode = req.body.financialCode;
+            if (req.body.registerNo) params.registerNo = req.body.registerNo;
+            if (req.body.postalCode) params.postalCode = req.body.postalCode;
+            if (req.body.voipNumbers) params.voipNumbers = req.body.voipNumbers;
+            if (req.body.sip) params.voipNumber = req.body.sip;
+            if (req.body.paymentGateway) params.paymentGateway = req.body.paymentGateway;
 
-            await this.model.User.updateOne({ _id: req.decodedData.user_id }, params)
+            await this.model.User.updateOne(
+              { _id: req.decodedData.user_id },
+              params
+            );
 
             return res.json({ success : true, message : 'اطلاعات کاربر با موفقیت ویرایش شد', data: { status: true }})
         }

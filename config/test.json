@@ -262,8 +262,8 @@
       "status": "0"
     },
     "createShareLinkOrder": {
-      "orderId": "614d9f0984b0cd2d747afce7",
-      "type": 0
+      "orderId": "6165463917810c1468222ce6",
+      "type": 1
     },
     "getOrderDetails": {
       "orderId": "614d9f0984b0cd2d747afce7",
@@ -369,7 +369,8 @@
     "editEmployerAccount": {
       "family": "ریحانه شکوهی",
       "address": "معلم 24",
-      "sip": 500
+      "sip": 500,
+      "paymentGateway": "22222222-3232-2323-6565-125252525252"
     },
     "editReceiptNoteStatus": {
       "status": 1,
