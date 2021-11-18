@@ -1250,6 +1250,7 @@ module.exports = new (class OrderController extends Controller {
         postalCode: 1,
         registerNo: 1,
         company: 1,
+        paymentGateway: 1
       });
 
       let providerInfo = provider.find(
@@ -1285,10 +1286,53 @@ module.exports = new (class OrderController extends Controller {
         }
       });
 
+      let total = 0;
+        params.products.map((item) => {
+          total += item.sellingPrice * item.quantity;
+        });
+
+      let data = {
+        ...params
+      }
+
+      //pay link
+      if(params.provider.paymentGateway && orders[0].status == 3){
+        const zarinpal = ZarinpalCheckout.create(
+          params.provider.paymentGateway,
+          false
+        );
+        let zarinRes = await zarinpal.PaymentRequest({
+          Amount: total, // In Tomans
+          CallbackURL: "http://localhost:3000/api/user/v1/order/pay/online",
+          Description: "از خرید شما ممنونیم",
+        });
+        if (zarinRes.status != 100)
+          return res.json({
+            success: true,
+            message: "پرداخت ناموفق",
+            data: { status: zarinRes.status },
+          });
+  
+        let payParams = {
+          amount: total,
+          authority: zarinRes.authority,
+          paymentGateway: params.provider.paymentGateway,
+          employer: params.provider._id
+        };
+        let onlinePay = await this.model.OrderPay.create(payParams);
+
+        orders[0].onlinePay = onlinePay._id
+        orders[0].save()
+  
+        data.payStatus = zarinRes.status
+        data.payURL = zarinRes.url
+      }
+
+
       return res.json({
         success: true,
         message: "فاکتور سفارش با موفقیت ارسال شد",
-        data: params,
+        data: data,
       });
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
@@ -1378,55 +1422,15 @@ module.exports = new (class OrderController extends Controller {
       order.markModified("sharelink");
       await order.save();
 
-      let total = 0;
-      order.products.map((item) => {
-        total += item.sellingPrice * item.quantity;
-      });
-
-      let data = {
-        status: true,
-        orderId: req.body.orderId,
-        keyLink: params._id
-      }
-
-      //pay link
-      //"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-      if(employer.paymentGateway){
-        const zarinpal = ZarinpalCheckout.create(
-          employer.paymentGateway,
-          false
-        );
-        let zarinRes = await zarinpal.PaymentRequest({
-          Amount: total, // In Tomans
-          CallbackURL: "http://localhost:3000/api/user/v1/order/pay/online",
-          Description: "از خرید شما ممنونیم",
-        });
-        if (zarinRes.status != 100)
-          return res.json({
-            success: true,
-            message: "پرداخت ناموفق",
-            data: { status: zarinRes.status },
-          });
-  
-        params = {
-          amount: total,
-          authority: zarinRes.authority,
-          paymentGateway: employer.paymentGateway,
-          employer: employer._id
-        };
-        let onlinePay = await this.model.OrderPay.create(params);
-
-        order.onlinePay = onlinePay._id
-        order.save()
-  
-        data.payStatus = zarinRes.status
-        data.payURL = zarinRes.url
-      }
-
       return res.json({
         success: true,
         message: "لینک اشتراک گذاری با موفقیت ارسال شد",
-        data: data
+        data: {
+          status: true,
+          orderId: req.body.orderId,
+          keyLink: params._id
+        }
+  
       });
       
     } catch (err) {
@@ -2125,11 +2129,14 @@ module.exports = new (class OrderController extends Controller {
         pay.paid = true;
         await pay.save();
 
+        filter = { onlinePay: pay._id }
+        await this.model.Order.findOneAndUpdate(filter, { $set: {status: 0} })
+
         // return res.redirect("http://www.happypizza.ir/pay/success");
-          return res.json({
-              success: true,
-              message: "پرداخت با موفقیت انجام شد",
-            });
+        return res.json({
+            success: true,
+            message: "پرداخت با موفقیت انجام شد",
+          });
       }
 
       return res.json({
