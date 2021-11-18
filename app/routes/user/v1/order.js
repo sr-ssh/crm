@@ -291,6 +291,32 @@ router.delete(
 );
 
 /**
+ * @api {get} /api/user/v1/order/pay/online validate online pay
+ * @apiVersion 1.0.0
+ * @apiName validateOnlinePay
+ * @apiDescription validate online pay. send params as query.Status is "OK",or "NOK"
+ * @apiGroup order
+ * @apiParam {String} Authority pay authority
+ * @apiParam {String} Status pay status
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "پرداخت با موفقیت انجام شد"
+ *      data: { status: true }
+ * }status
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: true,
+ *      message: "پرداخت انجام نشد"
+ *      data: { status: false }
+ * }
+ */
+ router.get(
+  "/pay/online",
+  OrderController.validateOnlinePay.bind(OrderController)
+);
+
+/**
  * @api {post} /api/user/v1/order/delivery/sms send delivery sms
  * @apiVersion 1.0.0
  * @apiName sendDeliverySms

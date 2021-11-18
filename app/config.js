@@ -21,7 +21,8 @@ module.exports = {
         '/api/user/v1/login',
         '/api/user/v1/',
         '/api/user/v1/verificationcode',
-        '/api/user/v1/order/details/'
+        '/api/user/v1/order/details/',
+        '/api/user/v1/order/pay/online'
     ],
     path: {
         controllers: {

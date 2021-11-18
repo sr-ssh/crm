@@ -1390,10 +1390,11 @@ module.exports = new (class OrderController extends Controller {
       }
 
       //pay link
+      //"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
       if(employer.paymentGateway){
         const zarinpal = ZarinpalCheckout.create(
-          employer.paymentGateway || "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-          true
+          employer.paymentGateway,
+          false
         );
         let zarinRes = await zarinpal.PaymentRequest({
           Amount: total, // In Tomans
@@ -1410,7 +1411,8 @@ module.exports = new (class OrderController extends Controller {
         params = {
           amount: total,
           authority: zarinRes.authority,
-          order: order._id
+          paymentGateway: employer.paymentGateway,
+          employer: employer._id
         };
         let onlinePay = await this.model.OrderPay.create(params);
 
@@ -2088,4 +2090,64 @@ module.exports = new (class OrderController extends Controller {
       if (!res.headersSent) return res.status(500).json(handelError);
     }
   }
+
+  async validateOnlinePay(req, res) {
+    try {
+      req
+        .checkQuery("Authority", "please enter Authority")
+        .notEmpty()
+        .isString();
+      req
+        .checkQuery("Status", "please enter Status")
+        .notEmpty()
+        .isIn(["OK", "NOK"]);
+
+      if (this.showValidationErrors(req, res)) return;
+
+      let filter = { authority: req.query.Authority };
+      let pay = await this.model.OrderPay.findOne(filter);
+
+      if (!pay)
+        return res.json({
+          success: true,
+          message: "پرداخت موجود نیست",
+          data: { status: false },
+        });
+
+      const zarinpal = ZarinpalCheckout.create(pay.paymentGateway, false);
+
+      let zarinRes = await zarinpal.PaymentVerification({
+        Amount: pay.amount, // In Tomans
+        Authority: req.query.Authority,
+      });
+
+      if (zarinRes.status === 100 || zarinRes.status === 101) {
+        pay.paid = true;
+        await pay.save();
+
+        // return res.redirect("http://www.happypizza.ir/pay/success");
+          return res.json({
+              success: true,
+              message: "پرداخت با موفقیت انجام شد",
+            });
+      }
+
+      return res.json({
+        success: true,
+        message: "پرداخت انجام نشد"
+      });
+      
+    } catch (err) {
+      let handelError = new this.transforms.ErrorTransform(err)
+        .parent(this.controllerTag)
+        .class(TAG)
+        .method("validateOnlinePay")
+        .inputParams(req.body)
+        .call();
+
+      if (!res.headersSent) return res.status(500).json(handelError);
+    }
+  }
+
+
 })();

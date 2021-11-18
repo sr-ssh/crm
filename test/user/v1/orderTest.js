@@ -22,7 +22,8 @@ let order,
   trackingCode,
   failSaleOpportunity,
   editPriorityOrder,
-  editTrackingTimeOrder;
+  editTrackingTimeOrder,
+  onlinePay;
 const axios = require("axios").default;
 const path = require("path");
 
@@ -31,11 +32,12 @@ chai.use(chaiHttp);
 describe(`${sectionName}`, () => {
   before((done) => {
     console.log("Waiting to ensure database connection established ");
+    onlinePay = appConfig.test.onlinePay;
     failSaleOpportunity = appConfig.test.failSaleOpportunity;
     trackingCode = appConfig.test.trackingCode;
     support = appConfig.test.support;
     order = appConfig.test.order;
-    user = appConfig.test.userMBH;
+    user = appConfig.test.user;
     getOrderParams = appConfig.test.getOrderParams;
     getOrderParams_V1 = appConfig.test.getOrderParams_V1;
     editOrderStatus = appConfig.test.editOrderStatus;
@@ -75,6 +77,7 @@ describe(`${sectionName}`, () => {
   });
 
   describe("Check get Apis", () => {
+    
     it("check get orders", async () => {
       const res = await chai
         .request(server)
@@ -132,6 +135,15 @@ describe(`${sectionName}`, () => {
         .send();
       res.should.have.status(200);
     });
+
+    it("check get validate online pay", async () => {
+      const res = await chai
+      .request(server)
+      .get(`${baseRoute}/pay/online?Authority=${onlinePay.authority}&Status=${onlinePay.status}`)
+      .send();
+      res.should.have.status(200);
+    });
+
   });
 
   describe("Check Post Apis", () => {
