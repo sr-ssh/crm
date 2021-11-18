@@ -1,14 +1,37 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// controllers 
+// controllers
 const { user: userController } = config.path.controllers;
 
-const ReminderController = require(`${userController}/v1/ReminderController`)
+const ReminderController = require(`${userController}/v1/ReminderController`);
 
+/**
+ * @api {post} /api/user/v1/reminder add reminder
+ * @apiVersion 1.0.0
+ * @apiName addReminder
+ * @apiDescription add Reminder: add reminder to remind what you need to.
+ * @apiGroup reminder
+ * @apiParam {varchar} name  name of the reminder
+ * @apiParam {varchar} description  description of the reminder
+ * @apiParam {varchar} date  date of reminder in ISO type. e.g  "2021-11-20T09:11:41.216Z"
+ * @apiParam {Int} typeReminder  send TypeReminder to recognize what is reminder for. 0 -> personal, 1 -> lead, 2 -> order or saleOpportunity , 3 -> factor.
+ * @apiParam {Int} [referenceId]  if TypeReminder was set to number between 1 to 3 it should be set too. otherwise it's optional
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *     success: true,
+ *     message: "یادآوری با موفقیت ایجاد شد",
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *     success: true,
+ *     message: "یادآوری ایجاد نشد",
+ *     data : { success : false }
+ * }
+ */
+router.post("/", ReminderController.addReminder.bind(ReminderController));
 
-
- /**
+/**
  * @api {get} /api/user/v1/reminder get reminders
  * @apiVersion 1.0.0
  * @apiName getReminder
@@ -41,9 +64,6 @@ const ReminderController = require(`${userController}/v1/ReminderController`)
  *      ]}
  * }
  */
-  router.get('/',ReminderController.getReminders.bind(ReminderController)); 
- 
- 
-  
+router.get("/", ReminderController.getReminders.bind(ReminderController));
 
- module.exports = router;
+module.exports = router;
