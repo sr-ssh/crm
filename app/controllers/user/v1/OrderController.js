@@ -435,7 +435,7 @@ module.exports = new (class OrderController extends Controller {
             ],
           };
       } else filter = { status: 0, ...filter };
-
+      
       let sortStatement;
       switch (req.params.sort) {
         case "0":
@@ -579,9 +579,6 @@ module.exports = new (class OrderController extends Controller {
             trackingTime: order.trackingTime,
           };
         })
-        .sort((obj1, obj2) => {
-          return obj2.priority - obj1.priority;
-        });
 
       let update = {};
 
@@ -1250,7 +1247,7 @@ module.exports = new (class OrderController extends Controller {
         postalCode: 1,
         registerNo: 1,
         company: 1,
-        paymentGateway: 1
+        paymentGateway: 1,
       });
 
       let providerInfo = provider.find(
@@ -1287,16 +1284,16 @@ module.exports = new (class OrderController extends Controller {
       });
 
       let total = 0;
-        params.products.map((item) => {
-          total += item.sellingPrice * item.quantity;
-        });
+      params.products.map((item) => {
+        total += item.sellingPrice * item.quantity;
+      });
 
       let data = {
-        ...params
-      }
+        ...params,
+      };
 
       //pay link
-      if(params.provider.paymentGateway && orders[0].status == 3){
+      if (params.provider.paymentGateway && orders[0].status == 3) {
         const zarinpal = ZarinpalCheckout.create(
           params.provider.paymentGateway,
           false
@@ -1312,22 +1309,21 @@ module.exports = new (class OrderController extends Controller {
             message: "پرداخت ناموفق",
             data: { status: zarinRes.status },
           });
-  
+
         let payParams = {
           amount: total,
           authority: zarinRes.authority,
           paymentGateway: params.provider.paymentGateway,
-          employer: params.provider._id
+          employer: params.provider._id,
         };
         let onlinePay = await this.model.OrderPay.create(payParams);
 
-        orders[0].onlinePay = onlinePay._id
-        orders[0].save()
-  
-        data.payStatus = zarinRes.status
-        data.payURL = zarinRes.url
-      }
+        orders[0].onlinePay = onlinePay._id;
+        orders[0].save();
 
+        data.payStatus = zarinRes.status;
+        data.payURL = zarinRes.url;
+      }
 
       return res.json({
         success: true,
@@ -1372,7 +1368,10 @@ module.exports = new (class OrderController extends Controller {
       let timeExpire;
 
       let filter = { _id: req.decodedData.user_employer };
-      let employer = await this.model.User.findOne(filter, "setting.order paymentGateway");
+      let employer = await this.model.User.findOne(
+        filter,
+        "setting.order paymentGateway"
+      );
 
       let { time, unitTime } = employer.setting.order.share;
       if (unitTime == "M") timeExpire = time * Minutes;
@@ -1428,11 +1427,9 @@ module.exports = new (class OrderController extends Controller {
         data: {
           status: true,
           orderId: req.body.orderId,
-          keyLink: params._id
-        }
-  
+          keyLink: params._id,
+        },
       });
-      
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
@@ -2129,21 +2126,22 @@ module.exports = new (class OrderController extends Controller {
         pay.paid = true;
         await pay.save();
 
-        filter = { onlinePay: pay._id }
-        await this.model.Order.findOneAndUpdate(filter, { $set: {status: 0} })
+        filter = { onlinePay: pay._id };
+        await this.model.Order.findOneAndUpdate(filter, {
+          $set: { status: 0 },
+        });
 
         // return res.redirect("http://www.happypizza.ir/pay/success");
         return res.json({
-            success: true,
-            message: "پرداخت با موفقیت انجام شد",
-          });
+          success: true,
+          message: "پرداخت با موفقیت انجام شد",
+        });
       }
 
       return res.json({
         success: true,
-        message: "پرداخت انجام نشد"
+        message: "پرداخت انجام نشد",
       });
-      
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
@@ -2155,6 +2153,4 @@ module.exports = new (class OrderController extends Controller {
       if (!res.headersSent) return res.status(500).json(handelError);
     }
   }
-
-
 })();
