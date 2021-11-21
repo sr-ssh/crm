@@ -24,14 +24,14 @@
   },
   "test": {
     "user": {
-      "password": "1234",
+      "password": "1222",
       "family": "ریحانه شکوهی",
       "email": "m.min@gmail.com",
       "mobile": "09307580142",
       "companyName": "شکوه",
       "companyAddress": "راهنمایی 23",
       "mobileOrEmail": "09307580142",
-      "code": "7386",
+      "code": "3912",
       "position": 1
     },
     "userMJH": {
