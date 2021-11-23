@@ -579,7 +579,7 @@ module.exports = new (class HomeController extends Controller {
 
       let accessToken = jwt.sign(payload, config.secret, options);
 
-      let data = { idToken, accessToken };
+      let data = { idToken, accessToken, status: true };
 
       return res.json({
         success: true,
