@@ -251,7 +251,11 @@ module.exports = new (class OrderController extends Controller {
       let order = await this.model.Order.create(params);
 
       // add reminder
-      if (req.body.reminder.date !== TIME_FLAG && req.body.reminder.date) {
+      if (
+        req.body.reminder != undefined &&
+        req.body.reminder.date !== TIME_FLAG &&
+        req.body.reminder.date
+      ) {
         let param = {
           title: req.body.customer.family,
           description: req.body.reminder.description,
