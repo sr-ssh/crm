@@ -17,7 +17,7 @@ describe(`${sectionName}`, () => {
 
     before((done) => {
         console.log('Waiting to ensure database connection stablished ');
-        user = appConfig.test.userMH;
+        user = appConfig.test.user;
         appInfo = appConfig.test.appInfo;
         newUser = appConfig.test.newUser;
         axios.post(`http://localhost:4000/api/user/v1/login`, user)
@@ -71,14 +71,22 @@ describe(`${sectionName}`, () => {
                 .set('idToken', idToken)
                 .send(appInfo);
             res.should.have.status(200);
-        });
+        })
 
         
         it('check verification code', async () => {
             const res = await chai
                 .request(server)
                 .post(`${baseRoute}/verificationcode`)
-                .send(newUser);
+                .send(user);
+            res.should.have.status(200);
+        });
+
+        it('check password forgetting', async () => {
+            const res = await chai
+                .request(server)
+                .put(`${baseRoute}/password`)
+                .send(user);
             res.should.have.status(200);
         });
 

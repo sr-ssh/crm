@@ -117,4 +117,28 @@ const HomeController = require(`${userController}/v1/HomeController`)
  */
  router.post('/verificationcode',HomeController.verificationCode.bind(HomeController));
 
+ /**
+ * @api {put} /api/user/v1/password register
+ * @apiVersion 1.0.0
+ * @apiName passwordForgetting
+ * @apiDescription password forgetting
+ * @apiGroup home
+ * @apiParam  {varchar} password user new password
+ * @apiParam  {varchar} mobile mobile
+ * @apiParam  {varchar} code verification code 
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *     success:true,
+ *     message:"رمز عبور با موفقیت تغییر کرد",
+ *     data: { }
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *     success:true,
+ *     message:"کاربری با این مشخصات موجود است",
+ *     data: { status: false}
+ * }
+ */
+  router.put('/password',HomeController.passwordForgetting.bind(HomeController));
+
  module.exports = router;
