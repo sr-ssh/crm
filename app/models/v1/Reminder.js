@@ -4,7 +4,7 @@ const timestamps = require('mongoose-timestamp');
 
 let Reminder = new Schema({
     active:{ type: Boolean, default: true },
-    name: { type: String , required: true },
+    title: { type: String , required: true },
     description: { type: String },
     date: { type: Date, required: true },
     orderReference: { type: Schema.Types.ObjectId, ref: 'Order' },

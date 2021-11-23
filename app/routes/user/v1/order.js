@@ -59,7 +59,7 @@ const uploadMiddleware = require("../../middleware/upload");
             "mobile": "05136045232"
         },
         "address": "معلم 24",
-        "reminder": -1,
+        "reminder": { date : "2021-11-08T07:28:50.413Z" , description : "منشی جواب داد گفت که فردا کارفرماشون میاد دوباره تماش بگیرم" },
         "duration":"2021-11-08T07:28:50.413Z",
         "mobile": "09307580140"
  *  }
@@ -311,7 +311,7 @@ router.delete(
  *      data: { status: false }
  * }
  */
- router.get(
+router.get(
   "/pay/online",
   OrderController.validateOnlinePay.bind(OrderController)
 );
@@ -752,10 +752,7 @@ router.get(
  *      message: "خطا در ویرایش اولویت فرصت فروش"
  * }
  */
- router.put(
-  "/priority",
-  OrderController.editPriority.bind(OrderController)
-);
+router.put("/priority", OrderController.editPriority.bind(OrderController));
 
 /**
  * @api {put} /api/user/v1/order/trackingTime edit Tracking Time order

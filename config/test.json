@@ -105,26 +105,25 @@
       "force": 0,
       "products": [
         {
-          "_id": "6182a00703be8215d2419996",
-          "name": "کیک پرتقال ",
-          "quantity": 150000,
+          "_id": "6192639460dbbf610075de06",
+          "name": "کیک هویج",
+          "quantity": 1,
           "sellingPrice": "15000",
-          "ingredients": [
-            {
-              "amount": 1,
-              "stock": {
-                "amount": 0,
-                "_id": "6182a00703be8215d2419995"
-              }
-            }
-          ],
-          "checkWareHouse": true
+          "ingredients": [],
+          "checkWareHouse": false
         }
       ],
       "customer": {
         "family": "محمد جواد حیدری",
-        "phoneNumber": "05136045232"
-      }
+        "phoneNumber": "09105044033",
+        "company":"مممد"
+      },
+      "mobile" : "09105044033",
+      "address" : "مشهد، خیابان امام رضا، بین امام رضا ۳۴ و ۳۶",
+      "notes": [],
+      "reminder" : { "date" : "2021-11-24T14:11:34.787Z" , "description" : "تست برنامه "},
+      "force":0,
+      "priority": 0
     },
     "product": {
       "name": "لیموناد",

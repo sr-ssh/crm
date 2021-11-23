@@ -61,9 +61,14 @@ module.exports = new (class OrderController extends Controller {
         .isNumeric();
 
       req
-        .checkBody("reminder", "please enter customer reminder")
+        .checkBody("reminder.date", "please enter reminder date")
         .optional({ nullable: true, checkFalsy: true })
-        .isInt({ min: -1 });
+        .isISO8601();
+      req
+        .checkBody("reminder.description", "please enter reminder description")
+        .optional({ nullable: true, checkFalsy: true })
+        .isString();
+
       req
         .checkBody("address", "please enter address")
         .optional({ nullable: true, checkFalsy: true })
@@ -95,6 +100,8 @@ module.exports = new (class OrderController extends Controller {
         .checkBody("notes", "please enter notes")
         .optional({ nullable: true, checkFalsy: true });
       if (this.showValidationErrors(req, res)) return;
+
+      console.time("test AddOrder");
 
       const TIME_FLAG = "1900-01-01T05:42:13.845Z";
       const INT_FLAG = "-1";
@@ -244,21 +251,17 @@ module.exports = new (class OrderController extends Controller {
       let order = await this.model.Order.create(params);
 
       // add reminder
-      if (req.body.reminder !== INT_FLAG && req.body.reminder) {
-        // calculate date
-        const event = new Date();
-        event.setDate(event.getDate() + parseInt(req.body.reminder));
-
-        params = {
-          date: event.toISOString(),
-          user: req.decodedData.user_employer,
-          customer: customer._id,
-          order: order._id,
+      if (req.body.reminder.date !== TIME_FLAG && req.body.reminder.date) {
+        let param = {
+          title: req.body.customer.family,
+          description: req.body.reminder.description,
+          date: req.body.reminder.date,
+          user: req.decodedData.user_id,
+          orderReference: order._id,
         };
-        let reminder = await this.model.Reminder.create(params);
-
+        let reminder = await this.model.Reminder.create(param);
         // add reminder to customer
-        await customer.reminder.push(reminder._id);
+        // await customer.reminder.push(reminder._id);
       }
 
       // add order to customer
@@ -308,11 +311,13 @@ module.exports = new (class OrderController extends Controller {
 
         this.sendSms(req.body.customer.mobile, message);
       }
+
+      console.timeEnd("test AddOrder");
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
         .class(TAG)
-        .method("addOrderV1")
+        .method("addOrder")
         .inputParams(req.body)
         .call();
 
@@ -435,7 +440,7 @@ module.exports = new (class OrderController extends Controller {
             ],
           };
       } else filter = { status: 0, ...filter };
-      
+
       let sortStatement;
       switch (req.params.sort) {
         case "0":
@@ -540,45 +545,44 @@ module.exports = new (class OrderController extends Controller {
       }
 
       // edit data to be exactly like getOrders
-      orders = orders
-        .map((order) => {
-          return {
-            id: order._id,
-            active: order.active,
-            address: order.address,
-            products: order.products.map((product) => {
-              if (product._id)
-                return {
-                  _id: product._id._id,
-                  name: product._id.name,
-                  quantity: product.quantity,
-                  sellingPrice: product.sellingPrice,
-                };
-              return {};
-            }),
-            customer: order.customer,
-            financialApproval: {
-              status: order.financialApproval.status,
-              acceptedAt:
-                order.financialApproval.acceptedAt &&
-                order.financialApproval.acceptedAt,
-              acceptedBy:
-                order.financialApproval.acceptedBy &&
-                order.financialApproval.acceptedBy.family,
-            },
-            mobile: order.mobile,
-            notes: order.notes,
-            readyTime: order.readyTime,
-            createdAt: order.createdAt,
-            updatedAt: order.updatedAt,
-            seller: order.seller,
-            sellers: order.sellers,
-            status: order.status,
-            trackingCode: order.trackingCode,
-            priority: order.priority,
-            trackingTime: order.trackingTime,
-          };
-        })
+      orders = orders.map((order) => {
+        return {
+          id: order._id,
+          active: order.active,
+          address: order.address,
+          products: order.products.map((product) => {
+            if (product._id)
+              return {
+                _id: product._id._id,
+                name: product._id.name,
+                quantity: product.quantity,
+                sellingPrice: product.sellingPrice,
+              };
+            return {};
+          }),
+          customer: order.customer,
+          financialApproval: {
+            status: order.financialApproval.status,
+            acceptedAt:
+              order.financialApproval.acceptedAt &&
+              order.financialApproval.acceptedAt,
+            acceptedBy:
+              order.financialApproval.acceptedBy &&
+              order.financialApproval.acceptedBy.family,
+          },
+          mobile: order.mobile,
+          notes: order.notes,
+          readyTime: order.readyTime,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          seller: order.seller,
+          sellers: order.sellers,
+          status: order.status,
+          trackingCode: order.trackingCode,
+          priority: order.priority,
+          trackingTime: order.trackingTime,
+        };
+      });
 
       let update = {};
 
