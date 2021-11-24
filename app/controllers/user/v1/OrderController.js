@@ -154,7 +154,6 @@ module.exports = new (class OrderController extends Controller {
         phoneNumber: req.body.customer.phoneNumber,
         user: req.decodedData.user_employer,
       };
-      let customer = await this.model.Customer.findOne(filter);
 
       let params = {
         family: req.body.customer.family,
@@ -164,7 +163,11 @@ module.exports = new (class OrderController extends Controller {
         company: req.body.customer.company,
       };
 
-      if (!customer) customer = await this.model.Customer.create(params);
+      let customer = await this.model.Customer.findOneAndUpdate(
+        filter,
+        params,
+        { upsert: true, new: true }
+      );
 
       if (req.body.notes && req.body.notes.length > 0)
         req.body.notes = req.body.notes.map((item) => {
@@ -190,8 +193,6 @@ module.exports = new (class OrderController extends Controller {
           mobile: req.body.seller.mobile,
           user: req.decodedData.user_employer,
         };
-        seller = await this.model.Seller.findOne(filter);
-
         params = {
           family: req.body.seller.family,
           mobile: req.body.seller.mobile,
@@ -200,7 +201,10 @@ module.exports = new (class OrderController extends Controller {
           marketer: req.decodedData.user_id,
         };
 
-        if (!seller) seller = await this.model.Seller.create(params);
+        seller = await this.model.Seller.findOneAndUpdate(filter, params, {
+          upsert : true,
+          new: true
+        });
       }
       // add order
       params = {
@@ -1301,9 +1305,14 @@ module.exports = new (class OrderController extends Controller {
       };
 
       //pay link
-      let regex = /^(([a-z]|[0-9]){8})-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){12}/
-      let paymentGatewayValidation = regex.test(params.provider.paymentGateway)
-      if (paymentGatewayValidation && params.provider.paymentGateway && orders[0].status == 3) {
+      let regex =
+        /^(([a-z]|[0-9]){8})-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){12}/;
+      let paymentGatewayValidation = regex.test(params.provider.paymentGateway);
+      if (
+        paymentGatewayValidation &&
+        params.provider.paymentGateway &&
+        orders[0].status == 3
+      ) {
         const zarinpal = ZarinpalCheckout.create(
           params.provider.paymentGateway,
           false
@@ -1317,7 +1326,7 @@ module.exports = new (class OrderController extends Controller {
           return res.json({
             success: true,
             message: "پرداخت ناموفق",
-            data: { payStatus: zarinRes.status, ...data},
+            data: { payStatus: zarinRes.status, ...data },
           });
 
         let payParams = {

@@ -114,16 +114,20 @@
         }
       ],
       "customer": {
-        "family": "محمد جواد حیدری",
+        "family": "محمد ",
         "phoneNumber": "09105044033",
-        "company":"مممد"
+        "company": "teamMammad"
       },
-      "mobile" : "09105044033",
-      "address" : "مشهد، خیابان امام رضا، بین امام رضا ۳۴ و ۳۶",
+      "mobile": "09105044033",
+      "address": "مشهد، خیابان امام۳۶",
       "notes": [],
-      "reminder" : { "date" : "2021-11-24T14:11:34.787Z" , "description" : "تست برنامه "},
-      "force":0,
-      "priority": 0
+      "reminder": {
+        "date": "2021-11-24T14:11:34.787Z",
+        "description": "تست برنامه "
+      },
+      "force": 0,
+      "priority": 0,
+      "seller": { "mobile": "09105044033", "family": " محمد جواد" }
     },
     "product": {
       "name": "لیموناد",
