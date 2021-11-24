@@ -24,7 +24,7 @@
   },
   "test": {
     "user": {
-      "password": "1222",
+      "password": "1111",
       "family": "ریحانه شکوهی",
       "email": "m.min@gmail.com",
       "mobile": "09307580142",
@@ -266,8 +266,8 @@
       "type": 1
     },
     "getOrderDetails": {
-      "orderId": "61619049e0ae163944c89370",
-      "keylink": "KW4O22E7SLP0C"
+      "orderId": "6165461fd4f54d385c3ea69e",
+      "keylink": "KWDEZ3D54TOHW"
     },
     "stock": {
       "name": "شیر",

@@ -1293,7 +1293,9 @@ module.exports = new (class OrderController extends Controller {
       };
 
       //pay link
-      if (params.provider.paymentGateway && orders[0].status == 3) {
+      let regex = /^(([a-z]|[0-9]){8})-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){12}/
+      let paymentGatewayValidation = regex.test(params.provider.paymentGateway)
+      if (paymentGatewayValidation && params.provider.paymentGateway && orders[0].status == 3) {
         const zarinpal = ZarinpalCheckout.create(
           params.provider.paymentGateway,
           false
@@ -1307,7 +1309,7 @@ module.exports = new (class OrderController extends Controller {
           return res.json({
             success: true,
             message: "پرداخت ناموفق",
-            data: { status: zarinRes.status },
+            data: { payStatus: zarinRes.status, ...data},
           });
 
         let payParams = {

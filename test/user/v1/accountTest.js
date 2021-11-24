@@ -6,7 +6,7 @@ const baseRoute = '/api/user/v1/account';
 let chaiHttp = require('chai-http');
 let server = require('../../../server');
 let appConfig = require('config');
-let editAccount, editEmployerAccount;
+let user, editAccount, editEmployerAccount, idToken, accessToken;
 const axios = require('axios').default;
 
 
