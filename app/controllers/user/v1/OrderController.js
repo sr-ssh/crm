@@ -2135,6 +2135,7 @@ module.exports = new (class OrderController extends Controller {
               status: 0,
               "financialApproval.status": 3,
               "financialApproval.acceptedAt": new Date().toISOString(),
+              trackingCode : req.query.Authority
             },
           },
           { new: true }
