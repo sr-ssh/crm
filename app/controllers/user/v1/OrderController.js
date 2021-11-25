@@ -2119,7 +2119,7 @@ module.exports = new (class OrderController extends Controller {
         Amount: pay[0].amount, // In Tomans
         Authority: req.query.Authority,
       });
-
+re
       if (zarinRes.status === 100 || zarinRes.status === 101) {
         pay = await this.model.OrderPay.findOneAndUpdate(
           { authority: req.query.Authority },
@@ -2140,33 +2140,13 @@ module.exports = new (class OrderController extends Controller {
           { new: true }
         );
 
-        console.timeEnd("test validateOnlinePay");
-        return res.json({
-          success: true,
-          message: "پرداخت با موفقیت انجام شد",
-          data: {
-            status: true,
-            redirect: "http://crm-x.ir/payment/successful",
-            returnPage: `http://crm-x.ir/order/factor/${order._id.toString()}/${
-              pay.keylinkOrder
-            }`,
-          },
-        });
+        res.redirect(`http://crm-x.ir/payment/successful/${pay[0].ordersInfo[0]._id.toString()}/${pay[0].keylinkOrder}`)
+
       }
 
-      console.timeEnd("test validateOnlinePay");
-      return res
-        .append("res", {
-          success: true,
-          message: "پرداخت انجام نشد",
-          data: {
-            status: false,
-            returnPage: `http://crm-x.ir/order/factor/${pay[0].ordersInfo[0]._id.toString()}/${
-              pay[0].keylinkOrder
-            }`,
-          },
-        })
-        .redirect("http://localhost:3001/payment/unsuccessful");
+      res.redirect(`http://crm-x.ir/payment/unsuccessful/${pay[0].ordersInfo[0]._id.toString()}/${pay[0].keylinkOrder}`)
+
+
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
