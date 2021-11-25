@@ -23,7 +23,8 @@ let order,
   failSaleOpportunity,
   editPriorityOrder,
   editTrackingTimeOrder,
-  onlinePay;
+  onlinePay,
+  createPaymentlink;
 const axios = require("axios").default;
 const path = require("path");
 
@@ -56,28 +57,28 @@ describe(`${sectionName}`, () => {
     addOrderPush = appConfig.test.addOrderPush;
     editPriorityOrder = appConfig.test.editPriorityOrder;
     editTrackingTimeOrder = appConfig.test.editTrackingTimeOrder;
-    axios
-      .post(`http://localhost:4000/api/user/v1/login`, user)
-      .then(function (response) {
-        response = response.data;
-        if (response.success) {
-          idToken = response.data.idToken;
-          accessToken = response.data.accessToken;
-        } else {
-          console.log("errorrrrrrrrrr: no token provided ");
-        }
-        setTimeout(() => {
-          console.log("Okay, lets begin!");
+    createPaymentlink = appConfig.test.createPaymentlink;
+    // axios
+    //   .post(`http://localhost:4000/api/user/v1/login`, user)
+    //   .then(function (response) {
+    //     response = response.data;
+    //     if (response.success) {
+    //       idToken = response.data.idToken;
+    //       accessToken = response.data.accessToken;
+    //     } else {
+    //       console.log("errorrrrrrrrrr: no token provided ");
+    //     }
+    //     setTimeout(() => {
+    //       console.log("Okay, lets begin!");
           done();
-        }, 1000);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+      //   }, 1000);
+      // })
+      // .catch((error) => {
+      //   console.log("error", error);
+      // });
   });
 
   describe("Check get Apis", () => {
-    
     it("check get orders", async () => {
       const res = await chai
         .request(server)
@@ -88,7 +89,9 @@ describe(`${sectionName}`, () => {
             getOrderParams.startDate
           }/${getOrderParams.endDate}/${encodeURI(
             getOrderParams.startTrackingTime
-          )}/${encodeURIComponent(getOrderParams.endTrackingTime)}/${getOrderParams.sort}`
+          )}/${encodeURIComponent(getOrderParams.endTrackingTime)}/${
+            getOrderParams.sort
+          }`
         )
         .set("Authorization", accessToken)
         .set("idToken", idToken)
@@ -138,11 +141,27 @@ describe(`${sectionName}`, () => {
 
     it("check get validate online pay", async () => {
       const res = await chai
-      .request(server)
-      .get(`${baseRoute}/pay/online?Authority=${onlinePay.authority}&Status=${onlinePay.status}`)
-      .send();
+        .request(server)
+        .get(
+          `${baseRoute}/pay/online?Authority=${onlinePay.authority}&Status=${onlinePay.status}`
+        )
+        .send();
       res.should.have.status(200);
     });
+
+    
+
+    it("check get order Payment link ", async () => {
+      const res = await chai
+        .request(server)
+        .get(
+          `${baseRoute}/payment/${createPaymentlink.orderId}/${createPaymentlink.keylink}`
+        )
+        .send();
+      res.should.have.status(200);
+    });
+
+
 
   });
 

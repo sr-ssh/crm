@@ -1,64 +1,84 @@
-let mongoose = require('mongoose');
+let mongoose = require("mongoose");
 let Schema = mongoose.Schema;
-const timestamps = require('mongoose-timestamp');
+const timestamps = require("mongoose-timestamp");
 
 let Order = new Schema({
-    active: { type: Boolean, default: true },
-    products: {
-        type: Array, default: [{
-            _id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-            quantity: { type: Number, default: 1 },
-            sellingPrice: { type: String, required: true }
-        }]
+  active: { type: Boolean, default: true },
+  products: {
+    type: Array,
+    default: [
+      {
+        _id: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+        quantity: { type: Number, default: 1 },
+        sellingPrice: { type: String, required: true },
+      },
+    ],
+  },
+  notes: {
+    type: Array,
+    default: [
+      {
+        text: { type: String },
+        private: { type: Boolean, default: false },
+        createdAt: { type: Date },
+        writtenBy: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
+  },
+  sharelink: {
+    type: Array,
+    default: [
+      {
+        _id: { type: String },
+        type: { type: Number }, // 0 -> formal , 1 -> informal
+        createdAt: { type: Date },
+        expireTime: { type: Date },
+        createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
+  },
+  financialApproval: {
+    type: Object,
+    default: {
+      status: { type: Number, default: 0 }, // 0->no info, 1-> approved, 2->failed , 3 -> onlinePay
+      acceptedAt: { type: Date },
+      acceptedBy: { type: Schema.Types.ObjectId, ref: "User" },
     },
-    notes: {
-        type: Array, default: [{
-            text: { type: String },
-            private: { type: Boolean, default: false },
-            createdAt: { type: Date },
-            writtenBy: { type: Schema.Types.ObjectId, ref: 'User' }
-        }]
+  },
+  sellers: [
+    {
+      _id: false,
+      id: { type: Schema.Types.ObjectId, ref: "User" },
+      active: { type: Boolean },
     },
-    sharelink: {
-        type: Array, default: [{
-            _id: { type: String },
-            type: { type: Number },  // 0 -> formal , 1 -> informal
-            createdAt: { type: Date },
-            expireTime: { type: Date },
-            createdBy: { type: Schema.Types.ObjectId, ref: 'User' }
-        }]
+  ],
+  customer: { type: Schema.Types.ObjectId, ref: "Customer" },
+  seller: { type: Schema.Types.ObjectId, ref: "Seller" },
+  mobile: { type: Number },
+  lead: { type: Schema.Types.ObjectId, ref: "Lead" },
+  address: { type: String },
+  readyTime: { type: Date },
+  documents: [
+    {
+      _id: false,
+      name: String,
+      key: { type: String, unique: true },
+      location: String,
+      size: Number,
+      fileType: String,
     },
-    financialApproval: {
-        type: Object,
-        default: {
-            status: { type: Number, default: 0 }, // 0->no info, 1-> approved, 2->failed
-            acceptedAt: { type: Date },
-            acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' }
-        }
-    },
-    sellers: [{
-        _id: false, 
-        id: { type: Schema.Types.ObjectId, ref: 'User' },
-        active: { type: Boolean }
-    }],
-    customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
-    seller: { type: Schema.Types.ObjectId, ref: 'Seller' },
-    mobile: { type: Number },
-    lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
-    address: { type: String },
-    readyTime: { type: Date },
-    documents: [{ _id: false, name: String, key: { type: String, unique: true }, location: String, size: Number, fileType: String }],
-    status: { type: Number, default: 0 },
-    failureReason: { id: Number, text: String },
-    trackingCode: { type : Number, unique: true, sparse: true },
-    provider: { type: Schema.Types.ObjectId, ref: 'User' },
-    employee: { type: Schema.Types.ObjectId, ref: 'User' },
-    priority: { type: Number, default: 0 },
-    description: { type: String },
-    trackingTime: { type: Date },
-    onlinePay: { type: Schema.Types.ObjectId, ref: 'OrderPay' }
+  ],
+  status: { type: Number, default: 0 },
+  failureReason: { id: Number, text: String },
+  trackingCode: { type: Number, unique: true, sparse: true },
+  provider: { type: Schema.Types.ObjectId, ref: "User" },
+  employee: { type: Schema.Types.ObjectId, ref: "User" },
+  priority: { type: Number, default: 0 },
+  description: { type: String },
+  trackingTime: { type: Date },
+  onlinePay: [{ type: Schema.Types.ObjectId, ref: "OrderPay" }],
 });
 
 Order.plugin(timestamps);
 
-module.exports = mongoose.model('Order', Order);
+module.exports = mongoose.model("Order", Order);

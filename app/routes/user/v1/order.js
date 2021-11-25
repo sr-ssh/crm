@@ -783,4 +783,35 @@ router.put(
   OrderController.editTrackingTime.bind(OrderController)
 );
 
+/**
+ * @api {get} /api/user/v1/order/payment/:orderId/:keylink  create Payment link
+ * @apiVersion 1.0.0
+ * @apiName createPaymentlink
+ * @apiDescription create Payment link Order : all params are necessary.
+ * @apiGroup order
+ * @apiParam {varchar} orderId  orderId
+ * @apiParam {varchar} keylink
+ * @apiParamExample {json} Request-Example:
+ *  {
+ *     orderId : "60b72a70e353f0385c2fe5af",
+ *     keylink : "KWDEZ3D54TOHW"
+ *  }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *      success: true,
+ *      message: "لینک پرداخت با موفقیت ارسال شد",
+ *      data : 
+ * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *      success: false,
+ *      message: "خطا در ایجاد لینک"
+ * }
+ */
+router.get(
+  "/payment/:orderId/:keylink",
+  OrderController.createPaymentlink.bind(OrderController)
+);
+
+
 module.exports = router;

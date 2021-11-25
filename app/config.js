@@ -23,7 +23,9 @@ module.exports = {
         '/api/user/v1/verificationcode',
         '/api/user/v1/password',
         '/api/user/v1/order/details/',
-        '/api/user/v1/order/pay/online'
+        '/api/user/v1/order/pay/online',
+        '/api/user/v1/order/payment'
+
     ],
     path: {
         controllers: {

@@ -202,8 +202,8 @@ module.exports = new (class OrderController extends Controller {
         };
 
         seller = await this.model.Seller.findOneAndUpdate(filter, params, {
-          upsert : true,
-          new: true
+          upsert: true,
+          new: true,
         });
       }
       // add order
@@ -1229,6 +1229,10 @@ module.exports = new (class OrderController extends Controller {
           (params.updatedAt = orders[index].updatedAt),
           (params.provider = orders[index].provider),
           (params.description = orders[index].description);
+        params.financialApproval = orders[index].financialApproval;
+        params.sharelink = orders[index].sharelink.filter(
+          (item) => item._id == req.params.keylink
+        );
       }
 
       filter = { _id: params.customer };
@@ -1295,53 +1299,14 @@ module.exports = new (class OrderController extends Controller {
         }
       });
 
-      let total = 0;
-      params.products.map((item) => {
-        total += item.sellingPrice * item.quantity;
-      });
-
       let data = {
         ...params,
       };
-
-      //pay link
       let regex =
         /^(([a-z]|[0-9]){8})-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){12}/;
       let paymentGatewayValidation = regex.test(params.provider.paymentGateway);
-      if (
-        paymentGatewayValidation &&
-        params.provider.paymentGateway &&
-        orders[0].status == 3
-      ) {
-        const zarinpal = ZarinpalCheckout.create(
-          params.provider.paymentGateway,
-          false
-        );
-        let zarinRes = await zarinpal.PaymentRequest({
-          Amount: total, // In Tomans
-          CallbackURL: "http://crm-x.ir/api/user/v1/order/pay/online",
-          Description: "از خرید شما ممنونیم",
-        });
-        if (zarinRes.status != 100)
-          return res.json({
-            success: true,
-            message: "پرداخت ناموفق",
-            data: { payStatus: zarinRes.status, ...data },
-          });
-
-        let payParams = {
-          amount: total,
-          authority: zarinRes.authority,
-          paymentGateway: params.provider.paymentGateway,
-          employer: params.provider._id,
-        };
-        let onlinePay = await this.model.OrderPay.create(payParams);
-
-        orders[0].onlinePay = onlinePay._id;
-        orders[0].save();
-
-        data.payStatus = zarinRes.status;
-        data.payURL = zarinRes.url;
+      if (data.financialApproval.status == false && paymentGatewayValidation) {
+        data.btnPayOnline = true;
       }
 
       return res.json({
@@ -2124,8 +2089,22 @@ module.exports = new (class OrderController extends Controller {
 
       if (this.showValidationErrors(req, res)) return;
 
-      let filter = { authority: req.query.Authority };
-      let pay = await this.model.OrderPay.findOne(filter);
+      console.time("test validateOnlinePay");
+
+      let filter = {};
+      let pay = await this.model.OrderPay.aggregate([
+        {
+          $match: { authority: req.query.Authority },
+        },
+        {
+          $lookup: {
+            from: "orders",
+            localField: "_id",
+            foreignField: "onlinePay",
+            as: "ordersInfo",
+          },
+        },
+      ]);
 
       if (!pay)
         return res.json({
@@ -2134,39 +2113,186 @@ module.exports = new (class OrderController extends Controller {
           data: { status: false },
         });
 
-      const zarinpal = ZarinpalCheckout.create(pay.paymentGateway, false);
+      const zarinpal = ZarinpalCheckout.create(pay[0].paymentGateway, false);
 
       let zarinRes = await zarinpal.PaymentVerification({
-        Amount: pay.amount, // In Tomans
+        Amount: pay[0].amount, // In Tomans
         Authority: req.query.Authority,
       });
 
       if (zarinRes.status === 100 || zarinRes.status === 101) {
-        pay.paid = true;
-        await pay.save();
+        pay = await this.model.OrderPay.findOneAndUpdate(
+          { authority: req.query.Authority },
+          { $set: { paid: true } },
+          { new: true }
+        );
 
         filter = { onlinePay: pay._id };
-        await this.model.Order.findOneAndUpdate(filter, {
-          $set: { status: 0 },
-        });
+        let order = await this.model.Order.findOneAndUpdate(
+          filter,
+          {
+            $set: {
+              status: 0,
+              "financialApproval.status": 3,
+              "financialApproval.acceptedAt": new Date().toISOString(),
+            },
+          },
+          { new: true }
+        );
 
-        // return res.redirect("http://www.happypizza.ir/pay/success");
+        console.timeEnd("test validateOnlinePay");
         return res.json({
           success: true,
           message: "پرداخت با موفقیت انجام شد",
+          data: {
+            status: true,
+            redirect: "http://crm-x.ir/payment/successful",
+            returnPage: `http://crm-x.ir/order/factor/${order._id.toString()}/${
+              pay.keylinkOrder
+            }`,
+          },
         });
       }
 
-      return res.json({
-        success: true,
-        message: "پرداخت انجام نشد",
-      });
+      console.timeEnd("test validateOnlinePay");
+      return res
+        .append("res", {
+          success: true,
+          message: "پرداخت انجام نشد",
+          data: {
+            status: false,
+            returnPage: `http://crm-x.ir/order/factor/${pay[0].ordersInfo[0]._id.toString()}/${
+              pay[0].keylinkOrder
+            }`,
+          },
+        })
+        .redirect("http://localhost:3001/payment/unsuccessful");
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)
         .class(TAG)
         .method("validateOnlinePay")
-        .inputParams(req.body)
+        .inputParams(req.query)
+        .call();
+
+      if (!res.headersSent) return res.status(500).json(handelError);
+    }
+  }
+
+  async createPaymentlink(req, res) {
+    try {
+      req.checkParams("orderId", "please set order id").notEmpty().isMongoId();
+      req.checkParams("keylink", "please set keylink").notEmpty();
+      if (this.showValidationErrors(req, res)) return;
+
+      console.time("test createPaymentlink");
+
+      let now = new Date().toISOString();
+      let orders = await this.model.Order.aggregate([
+        {
+          $match: {
+            active: true,
+            _id: ObjectId(req.params.orderId),
+            sharelink: {
+              $elemMatch: { _id: req.params.keylink, expireTime: { $gt: now } },
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "provider",
+            foreignField: "_id",
+            as: "providerInfo",
+          },
+        },
+        {
+          $addFields: {
+            providerInfo: { $arrayElemAt: ["$providerInfo", -1] },
+          },
+        },
+      ]);
+
+      let regex =
+        /^(([a-z]|[0-9]){8})-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){4}-([a-z]|[0-9]){12}/;
+      let paymentGatewayValidation = regex.test(
+        orders[0].providerInfo.paymentGateway
+      );
+
+      if (orders.length == 0) {
+        console.timeEnd("test createPaymentlink");
+        return res.json({
+          success: true,
+          message: "سفارش موجود نیست",
+          data: { status: false },
+        });
+      } else if (orders[0].financialApproval.status != false) {
+        console.timeEnd("test createPaymentlink");
+        return res.json({
+          success: true,
+          message: "سفارش قبلا پرداخت شده است",
+          data: { status: false },
+        });
+      } else if (paymentGatewayValidation == false) {
+        console.timeEnd("test createPaymentlink");
+        return res.json({
+          success: true,
+          message: "ابتدا اطلاعات کارفرما را تکمیل کنید",
+          data: { status: false },
+        });
+      }
+      let total = 0;
+      orders[0].products.map((item) => {
+        total += item.sellingPrice * item.quantity;
+      });
+
+      //pay link
+      const zarinpal = ZarinpalCheckout.create(
+        // orders[0].providerInfo.paymentGateway,
+        "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        true // false [toggle `Sandbox` mode]
+      );
+      let zarinRes = await zarinpal.PaymentRequest({
+        Amount: total, // In Tomans
+        CallbackURL: "http://localhost:3000/api/user/v1/order/pay/online",
+        Description: "از خرید شما ممنونیم",
+      });
+      if (zarinRes.status != 100)
+        return res.json({
+          success: true,
+          message: "پرداخت ناموفق",
+          data: { payStatus: zarinRes.status, ...data },
+        });
+
+      let payParams = {
+        amount: total,
+        authority: zarinRes.authority,
+        paymentGateway: orders[0].providerInfo.paymentGateway,
+        employer: orders[0].provider._id,
+        keylinkOrder: req.params.keylink,
+      };
+
+      let onlinePay = await this.model.OrderPay.create(payParams);
+      let update = { $addToSet: { onlinePay: onlinePay._id } };
+      await this.model.Order.findByIdAndUpdate(req.params.orderId, update);
+
+      let resData = {};
+      resData.payStatus = zarinRes.status;
+      resData.payURL = zarinRes.url;
+
+      console.timeEnd("test createPaymentlink");
+
+      return res.json({
+        success: true,
+        message: "لینک پرداخت با موفقیت ارسال شد",
+        data: { ...resData },
+      });
+    } catch (err) {
+      let handelError = new this.transforms.ErrorTransform(err)
+        .parent(this.controllerTag)
+        .class(TAG)
+        .method("createPaymentlink")
+        .inputParams(req.params)
         .call();
 
       if (!res.headersSent) return res.status(500).json(handelError);
