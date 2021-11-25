@@ -2119,7 +2119,6 @@ module.exports = new (class OrderController extends Controller {
         Amount: pay[0].amount, // In Tomans
         Authority: req.query.Authority,
       });
-re
       if (zarinRes.status === 100 || zarinRes.status === 101) {
         pay = await this.model.OrderPay.findOneAndUpdate(
           { authority: req.query.Authority },
