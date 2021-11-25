@@ -15,7 +15,7 @@ describe(`${sectionName}`, () => {
   before((done) => {
     console.log("Waiting to ensure database connection stablished ");
     getCustomer = appConfig.test.getCustomer;
-    user = appConfig.test.user;
+    user = appConfig.test.userMJH;
     customer = appConfig.test.customer;
     getCustomerParams = appConfig.test.getCustomerParams;
     axios
