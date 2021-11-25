@@ -2228,13 +2228,13 @@ module.exports = new (class OrderController extends Controller {
 
       //pay link
       const zarinpal = ZarinpalCheckout.create(
-        // orders[0].providerInfo.paymentGateway,
-        "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        true // false [toggle `Sandbox` mode]
+        orders[0].providerInfo.paymentGateway,
+        // "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        false // false [toggle `Sandbox` mode]
       );
       let zarinRes = await zarinpal.PaymentRequest({
         Amount: total, // In Tomans
-        CallbackURL: "http://localhost:3000/api/user/v1/order/pay/online",
+        CallbackURL: "http://crm-x.ir/api/user/v1/order/pay/online",
         Description: "از خرید شما ممنونیم",
       });
       if (zarinRes.status != 100)
