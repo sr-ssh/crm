@@ -12,7 +12,7 @@ const ReminderController = require(`${userController}/v1/ReminderController`);
  * @apiName addReminder
  * @apiDescription add Reminder: add reminder to remind what you need to.
  * @apiGroup reminder
- * @apiParam {varchar} name  name of the reminder
+ * @apiParam {varchar} title  title of the reminder
  * @apiParam {varchar} description  description of the reminder
  * @apiParam {varchar} date  date of reminder in ISO type. e.g  "2021-11-20T09:11:41.216Z"
  * @apiParam {Int} typeReminder  send TypeReminder to recognize what is reminder for. 0 -> personal, 1 -> lead, 2 -> order or saleOpportunity , 3 -> factor.
