@@ -462,34 +462,36 @@ module.exports = new (class OrderController extends Controller {
       } else filter = { status: 0, ...filter };
 
       let sortStatement;
-      switch (req.params.sort) {
-        case "0":
-          switch (setting.order.sortGetOrder) {
-            case "0":
-            case "1":
-              sortStatement = { createdAt: -1 };
-              break;
-            case "2":
-              sortStatement = { priority: -1 };
-              break;
-            case "3":
-              sortStatement = { trackingTime: -1 };
-              break;
-            default:
-              break;
-          }
-          break;
-        case "1":
-          sortStatement = { createdAt: -1 };
-          break;
-        case "2":
-          sortStatement = { priority: -1 };
-          break;
-        case "3":
-          sortStatement = { trackingTime: -1 };
-          break;
-        default:
-          break;
+      if (req.params.ordersStatus == 3) {
+        switch (req.params.sort) {
+          case "0":
+            switch (setting.order.sortGetOrder) {
+              case "0":
+              case "1":
+                sortStatement = { createdAt: -1 };
+                break;
+              case "2":
+                sortStatement = { priority: -1 };
+                break;
+              case "3":
+                sortStatement = { trackingTime: -1 };
+                break;
+              default:
+                break;
+            }
+            break;
+          case "1":
+            sortStatement = { createdAt: -1 };
+            break;
+          case "2":
+            sortStatement = { priority: -1 };
+            break;
+          case "3":
+            sortStatement = { trackingTime: -1 };
+            break;
+          default:
+            break;
+        }
       }
 
       let orders = await this.model.Order.find(
@@ -509,7 +511,7 @@ module.exports = new (class OrderController extends Controller {
         .populate("seller", "family mobile")
         .populate("customer", "mobile family company phoneNumber")
         .populate("employee", "family")
-        .sort(sortStatement)
+        .sort(sortStatement || { createdAt: -1 })
         .lean();
 
       if (req.params.mobile !== FLAG) {

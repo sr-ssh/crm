@@ -153,13 +153,13 @@
       "usernameOrMobile": "09105044033"
     },
     "getOrderParams": {
-      "ordersStatus": 3,
+      "ordersStatus": "0",
       "mobile": "0",
       "customerPhoneNumber": "0" ,
       "customerName": "0",
       "customerCompany": "0",
       "sellerMobile": "0",
-      "sellerFamily": "ملایی",
+      "sellerFamily": "0",
       "startDate": "1900-01-01T05:42:13.845Z",
       "endDate": "1900-01-01T05:42:13.845Z",
       "startTrackingTime": "1900-01-01T05:42:13.845Z",
