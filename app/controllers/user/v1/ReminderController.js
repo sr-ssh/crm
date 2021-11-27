@@ -8,7 +8,7 @@ module.exports = new (class ReminderController extends Controller {
 
   async addReminder(req, res) {
     try {
-      req.checkBody("name", "please enter name").notEmpty().isString();
+      req.checkBody("title", "please enter title").notEmpty().isString();
       req
         .checkBody("description", "please enter description")
         .optional({ nullable: true, checkFalsy: true })
@@ -30,7 +30,7 @@ module.exports = new (class ReminderController extends Controller {
       console.time("test addReminder");
 
       let param = {
-        name: req.body.name,
+        title: req.body.title,
         description: req.body.description,
         date: req.body.date,
         user: req.decodedData.user_id,
