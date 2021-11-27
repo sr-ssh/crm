@@ -691,9 +691,13 @@ router.get(
  * @apiName getOrders
  * @apiDescription get orders : all params are necessary and in case of no entry , there is a flag for each optional param.if that flag entered it asumed as no entry.
  * @apiGroup order
- * @apiParam {varchar} orderStatus get order or set status 3 to get order sale opprotunity
- * @apiParam {varchar} customerName customer family (" ")
- * @apiParam {varchar} customerMobile customer mobile number ("0")
+ * @apiParam {varchar} ordersStatus get order or set status 3 to get order sale opprotunity ("0")
+ * @apiParam {varchar} mobile customer mobile  ("0")
+ * @apiParam {varchar} customerPhoneNumber customer PhoneNumber ("0")
+ * @apiParam {varchar} customerName customer Name  ("0")
+ * @apiParam {varchar} customerCompany customer Company ("0")
+ * @apiParam {varchar} sellerMobile  seller Mobile ("0")
+ * @apiParam {varchar} sellerFamily sellerFamily ("0")
  * @apiParam {varchar} startDate get orders from this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} endDate get orders to this date ("1900-01-01T05:42:13.845Z")
  * @apiParam {varchar} startTrackingTime get tracking time orders from this date ("1900-01-01T05:42:13.845Z")
@@ -724,7 +728,7 @@ router.get(
  * }
  */
 router.get(
-  "/:status/:customerName/:customerMobile/:startDate/:endDate/:startTrackingTime/:endTrackingTime/:sort",
+  "/:ordersStatus/:mobile/:customerPhoneNumber/:customerName/:customerCompany/:sellerMobile/:sellerFamily/:startDate/:endDate/:startTrackingTime/:endTrackingTime/:sort",
   OrderController.getOrders.bind(OrderController)
 );
 
@@ -800,7 +804,7 @@ router.put(
  * {
  *      success: true,
  *      message: "لینک پرداخت با موفقیت ارسال شد",
- *      data : 
+ *      data :
  * }
  * @apiErrorExample {json} Error-Response:
  * {
@@ -812,6 +816,5 @@ router.get(
   "/payment/:orderId/:keylink",
   OrderController.createPaymentlink.bind(OrderController)
 );
-
 
 module.exports = router;

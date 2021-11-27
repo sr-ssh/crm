@@ -335,15 +335,26 @@ module.exports = new (class OrderController extends Controller {
 
   async getOrders(req, res) {
     try {
-      req.checkParams("status", "please set status").exists();
+      req.checkParams("mobile", "please set mobile").notEmpty().isInt();
+      req
+        .checkParams("ordersStatus", "please set orderStatus")
+        .notEmpty()
+        .isInt();
+      req
+        .checkParams("customerPhoneNumber", "please set customerPhoneNumber")
+        .notEmpty()
+        .isInt();
       req.checkParams("customerName", "please set customerName").notEmpty();
-      req.checkParams("customerMobile", "please set customerMobile").notEmpty();
+      req
+        .checkParams("customerCompany", "please set customerCompany")
+        .notEmpty();
+      req.checkParams("sellerMobile", "please set sellerMobile").notEmpty();
+      req.checkParams("sellerFamily", "please set sellerFamily").notEmpty();
       req
         .checkParams("startDate", "please set startDate")
         .notEmpty()
         .isISO8601();
       req.checkParams("endDate", "please set endDate").notEmpty().isISO8601();
-
       req
         .checkParams("startTrackingTime", "please set startTrackingTime")
         .notEmpty()
@@ -363,6 +374,7 @@ module.exports = new (class OrderController extends Controller {
       console.time("test getOrders");
 
       const TIME_FLAG = "1900-01-01T05:42:13.845Z";
+      const FLAG = "0";
 
       let { permission, setting } = await this.model.User.findOne(
         { _id: req.decodedData.user_id },
@@ -393,7 +405,7 @@ module.exports = new (class OrderController extends Controller {
         filter.$and.push({ createdAt: { $gt: req.params.startDate } });
       }
 
-      if (req.params.status == 3) {
+      if (req.params.ordersStatus == 3) {
         if (req.params.startTrackingTime !== TIME_FLAG) {
           if (!filter.$and) filter.$and = [];
 
@@ -500,18 +512,52 @@ module.exports = new (class OrderController extends Controller {
         .sort(sortStatement)
         .lean();
 
-      if (req.params.customerMobile !== "0")
+      if (req.params.mobile !== FLAG) {
         orders = orders.filter(
           (param) =>
-            param.customer.phoneNumber === req.params.customerMobile ||
-            param.customer.mobile === req.params.customerMobile
+            param.mobile === parseInt(req.params.mobile) ||
+            param.customer.mobile === req.params.mobile
         );
+      }
 
-      if (req.params.customerName !== " ")
+      if (req.params.customerPhoneNumber !== FLAG) {
+        orders = orders.filter(
+          (param) =>
+            param.customer.phoneNumber === req.params.customerPhoneNumber
+        );
+      }
+
+      if (req.params.customerName !== FLAG)
         orders = orders.filter((param) => {
           if (param.customer) {
             let re = new RegExp(req.params.customerName, "i");
             let find = param.customer.family.search(re);
+            return find !== -1;
+          }
+        });
+
+      if (req.params.customerCompany !== FLAG)
+        orders = orders.filter((param) => {
+          if (param.customer) {
+            let re = new RegExp(req.params.customerCompany, "i");
+            let find = param.customer.company.search(re);
+            return find !== -1;
+          }
+        });
+
+      if (req.params.sellerMobile !== FLAG) {
+        orders = orders.filter((param) => {
+          if (param.seller) {
+            if (param.seller.mobile === req.params.sellerMobile) return param;
+          }
+        });
+      }
+
+      if (req.params.sellerFamily !== FLAG)
+        orders = orders.filter((param) => {
+          if (param.seller) {
+            let re = new RegExp(req.params.sellerFamily, "i");
+            let find = param.seller.family.search(re);
             return find !== -1;
           }
         });
@@ -1811,7 +1857,7 @@ module.exports = new (class OrderController extends Controller {
           status: order.status,
           support: true,
           trackingCode: order.trackingCode,
-          priority: order.priority
+          priority: order.priority,
         };
       });
 
@@ -2120,7 +2166,7 @@ module.exports = new (class OrderController extends Controller {
         Amount: pay[0].amount, // In Tomans
         Authority: req.query.Authority,
       });
-      
+
       if (zarinRes.status === 100 || zarinRes.status === 101) {
         pay = await this.model.OrderPay.findOneAndUpdate(
           { authority: req.query.Authority },
@@ -2136,19 +2182,24 @@ module.exports = new (class OrderController extends Controller {
               status: 0,
               "financialApproval.status": 3,
               "financialApproval.acceptedAt": new Date().toISOString(),
-              trackingCode : req.query.Authority
+              trackingCode: req.query.Authority,
             },
           },
           { new: true }
         );
 
-        res.redirect(`http://crm-x.ir/payment/successful/${pay[0].ordersInfo[0]._id.toString()}/${pay[0].keylinkOrder}`)
-
+        res.redirect(
+          `http://crm-x.ir/payment/successful/${pay[0].ordersInfo[0]._id.toString()}/${
+            pay[0].keylinkOrder
+          }`
+        );
       }
 
-      res.redirect(`http://crm-x.ir/payment/unsuccessful/${pay[0].ordersInfo[0]._id.toString()}/${pay[0].keylinkOrder}`)
-
-
+      res.redirect(
+        `http://crm-x.ir/payment/unsuccessful/${pay[0].ordersInfo[0]._id.toString()}/${
+          pay[0].keylinkOrder
+        }`
+      );
     } catch (err) {
       let handelError = new this.transforms.ErrorTransform(err)
         .parent(this.controllerTag)

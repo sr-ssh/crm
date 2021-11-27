@@ -58,24 +58,24 @@ describe(`${sectionName}`, () => {
     editPriorityOrder = appConfig.test.editPriorityOrder;
     editTrackingTimeOrder = appConfig.test.editTrackingTimeOrder;
     createPaymentlink = appConfig.test.createPaymentlink;
-    // axios
-    //   .post(`http://localhost:4000/api/user/v1/login`, user)
-    //   .then(function (response) {
-    //     response = response.data;
-    //     if (response.success) {
-    //       idToken = response.data.idToken;
-    //       accessToken = response.data.accessToken;
-    //     } else {
-    //       console.log("errorrrrrrrrrr: no token provided ");
-    //     }
-    //     setTimeout(() => {
-    //       console.log("Okay, lets begin!");
+    axios
+      .post(`http://localhost:4000/api/user/v1/login`, user)
+      .then(function (response) {
+        response = response.data;
+        if (response.success) {
+          idToken = response.data.idToken;
+          accessToken = response.data.accessToken;
+        } else {
+          console.log("errorrrrrrrrrr: no token provided ");
+        }
+        setTimeout(() => {
+          console.log("Okay, lets begin!");
           done();
-      //   }, 1000);
-      // })
-      // .catch((error) => {
-      //   console.log("error", error);
-      // });
+        }, 1000);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
   });
 
   describe("Check get Apis", () => {
@@ -83,13 +83,17 @@ describe(`${sectionName}`, () => {
       const res = await chai
         .request(server)
         .get(
-          `${baseRoute}/${encodeURI(getOrderParams.status)}/${encodeURI(
+          `${baseRoute}/${getOrderParams.ordersStatus}/${
+            getOrderParams.mobile
+          }/${getOrderParams.customerPhoneNumber}/${encodeURI(
             getOrderParams.customerName
-          )}/${encodeURI(getOrderParams.customerMobile)}/${
+          )}/${encodeURI(getOrderParams.customerCompany)}/${
+            getOrderParams.sellerMobile
+          }/${encodeURI(getOrderParams.sellerFamily)}/${encodeURI(
             getOrderParams.startDate
-          }/${getOrderParams.endDate}/${encodeURI(
+          )}/${encodeURI(getOrderParams.endDate)}/${encodeURI(
             getOrderParams.startTrackingTime
-          )}/${encodeURIComponent(getOrderParams.endTrackingTime)}/${
+          )}/${encodeURI(getOrderParams.endTrackingTime)}/${
             getOrderParams.sort
           }`
         )
@@ -149,8 +153,6 @@ describe(`${sectionName}`, () => {
       res.should.have.status(200);
     });
 
-    
-
     it("check get order Payment link ", async () => {
       const res = await chai
         .request(server)
@@ -160,9 +162,6 @@ describe(`${sectionName}`, () => {
         .send();
       res.should.have.status(200);
     });
-
-
-
   });
 
   describe("Check Post Apis", () => {
