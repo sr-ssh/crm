@@ -657,7 +657,7 @@ module.exports = new (class OrderController extends Controller {
         data: {
           orders,
           sort:
-            req.params.sort == "0"
+            req.params.sort == "0" && setting.order.sortGetOrder
               ? setting.order.sortGetOrder
               : req.params.sort,
         },
