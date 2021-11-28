@@ -152,6 +152,7 @@ module.exports = new (class HomeController extends Controller {
           purchaseConfirmationInvoice: true,
           addSeller: true,
           getSellers: true,
+          getAllSupport: true
         };
       }
 

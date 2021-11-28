@@ -62,6 +62,7 @@ module.exports = new class EmployeeController extends Controller {
             req.checkBody('permissions.getEmployees', 'please enter getEmployees status').notEmpty().isBoolean();
             req.checkBody('permissions.getDiscounts', 'please enter getDiscounts status').notEmpty().isBoolean();
             req.checkBody('permissions.getAllSaleOpprotunity', 'please enter getAllSaleOpprotunity status').notEmpty().isBoolean();
+            req.checkBody('permissions.getAllSupport', 'please enter getAllSupport status').notEmpty().isBoolean();
             req.checkBody('permissions.leads', 'please enter leads status').notEmpty().isBoolean();
             req.checkBody('permissions.addReceipt', 'please enter addReceipt status').notEmpty().isBoolean();
             req.checkBody('permissions.getReceipts', 'please enter getReceipts status').notEmpty().isBoolean();
@@ -437,7 +438,8 @@ module.exports = new class EmployeeController extends Controller {
                         financialConfirmationOrder: false,
                         purchaseConfirmationInvoice: false,
                         addSeller : false,
-                        getSellers: false
+                        getSellers: false, 
+                        getAllSupport: false
                     },
                     voipNumber: null,
                     setting : {
