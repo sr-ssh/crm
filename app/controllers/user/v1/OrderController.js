@@ -35,6 +35,7 @@ module.exports = new (class OrderController extends Controller {
         )
         .notEmpty();
       req
+
         .checkBody(
           "products.*.ingredients.*.amount",
           "please enter product ingredients"
@@ -1727,7 +1728,30 @@ module.exports = new (class OrderController extends Controller {
       req.checkParams("value", "please set search value").notEmpty();
       if (this.showValidationErrors(req, res)) return;
 
+      let { permission } = await this.model.User.findOne(
+        { _id: req.decodedData.user_id },
+        "permission"
+      );
+
       let filter = { provider: req.decodedData.user_employer };
+      if (!permission.getAllSupport){
+        filter = {
+          $and: [
+            { provider: req.decodedData.user_employer },
+            {
+              $or: [
+                { "sellers.active": { $ne: true } },
+                {
+                  sellers: {
+                    id: req.decodedData.user_id,
+                    active: true,
+                  },
+                },
+              ],
+            },
+          ],
+        };
+        }
 
       let orders = await this.model.Order.find(
         filter,
